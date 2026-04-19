@@ -895,10 +895,31 @@ function startFlashcards() {
 //  Reset all progress
 // ======================================================
 
-function resetAllProgress() {
-  if (!confirm("Erase all best scores and flashcard streaks? This can't be undone.")) return;
+// In-page two-click confirmation. Browser confirm() gets silently blocked
+// after "don't ask again", which is why the reset appeared broken. First
+// click arms the button (shows "Click again to confirm"), second click
+// within 3s wipes localStorage and hard-reloads. No modal dialogs involved.
+const RESET_ARM_MS = 3000;
+const _resetArmState = new WeakMap();
 
-  // Nuke localStorage outright — this is our origin, safe.
+function armResetButton(btn) {
+  const orig = btn.dataset.origLabel || btn.textContent;
+  btn.dataset.origLabel = orig;
+  btn.textContent = "⚠ Click again to confirm";
+  btn.classList.add("armed");
+  const timer = setTimeout(() => disarmResetButton(btn), RESET_ARM_MS);
+  _resetArmState.set(btn, timer);
+}
+
+function disarmResetButton(btn) {
+  const timer = _resetArmState.get(btn);
+  if (timer) clearTimeout(timer);
+  _resetArmState.delete(btn);
+  btn.classList.remove("armed");
+  if (btn.dataset.origLabel) btn.textContent = btn.dataset.origLabel;
+}
+
+function wipeAndReload() {
   const before = localStorage.length;
   try {
     localStorage.clear();
@@ -910,24 +931,22 @@ function resetAllProgress() {
     }
   }
   console.log(`[hindlearn] wiped ${before} localStorage keys — reloading`);
-
-  // Hard reload: simplest possible guarantee the user sees a clean state,
-  // regardless of which tab they're on or which in-memory caches hold old
-  // values. Cache-bust query so the page doesn't come back from bfcache.
   const u = new URL(window.location.href);
   u.searchParams.set("reset", Date.now().toString());
   window.location.replace(u.toString());
 }
 
-// Delegated listener so it still fires if a prior top-level statement threw
-// or if the button is re-rendered. Both #reset-all (footer) and #reset-bests
-// (challenges home) route through here.
+// Delegated listener. Fires even if a prior top-level statement threw.
 document.addEventListener("click", (e) => {
   const t = e.target;
   if (!(t instanceof Element)) return;
-  if (t.id === "reset-all" || t.id === "reset-bests" || t.closest("#reset-all,#reset-bests")) {
-    console.log("[hindlearn] reset button clicked");
-    resetAllProgress();
+  const btn = t.closest("#reset-all,#reset-bests");
+  if (!btn) return;
+  console.log("[hindlearn] reset clicked, armed=", _resetArmState.has(btn));
+  if (_resetArmState.has(btn)) {
+    wipeAndReload();
+  } else {
+    armResetButton(btn);
   }
 });
 
