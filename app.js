@@ -184,18 +184,44 @@ function initTTS() { buildAudioMap(); }
 //  Tab switching
 // ======================================================
 
-document.querySelectorAll("#tabs .tab").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll("#tabs .tab").forEach((b) => b.classList.remove("active"));
-    btn.classList.add("active");
-    const tab = btn.dataset.tab;
-    $("tab-learn").classList.toggle("hidden", tab !== "learn");
-    $("tab-journey").classList.toggle("hidden", tab !== "journey");
-    $("tab-challenges").classList.toggle("hidden", tab !== "challenges");
-    $("tab-flashcards").classList.toggle("hidden", tab !== "flashcards");
-    if (tab === "flashcards" && !flashState.started) startFlashcards();
-    if (tab === "journey") renderJourney();
+// Which tab is currently active (by data-tab value). Drives both manual
+// tab clicks and "return from session" flows — when a session finishes or
+// the user hits Back, we send them to this tab rather than the hard-coded
+// Challenges tab.
+let currentTab = "learn";
+
+function showTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll("#tabs .tab").forEach((b) => {
+    b.classList.toggle("active", b.dataset.tab === tab);
   });
+  // Session shell hidden when user is navigating tabs.
+  $("session-shell").classList.add("hidden");
+  $("ch-study").classList.add("hidden");
+  $("ch-session").classList.add("hidden");
+  $("ch-summary").classList.add("hidden");
+  // Show the selected tab section, hide the rest.
+  $("tab-learn").classList.toggle("hidden", tab !== "learn");
+  $("tab-journey").classList.toggle("hidden", tab !== "journey");
+  $("tab-challenges").classList.toggle("hidden", tab !== "challenges");
+  $("tab-flashcards").classList.toggle("hidden", tab !== "flashcards");
+  // Tab nav is visible while browsing.
+  document.getElementById("tabs").classList.remove("hidden");
+  if (tab === "flashcards" && !flashState.started) startFlashcards();
+  if (tab === "journey") renderJourney();
+}
+
+function showSession(which) {
+  // Hide all tab sections + the tab nav so session feels full-screen.
+  document.querySelectorAll('section[id^="tab-"]').forEach((s) => s.classList.add("hidden"));
+  $("session-shell").classList.remove("hidden");
+  $("ch-study").classList.toggle("hidden", which !== "study");
+  $("ch-session").classList.toggle("hidden", which !== "quiz");
+  $("ch-summary").classList.toggle("hidden", which !== "summary");
+}
+
+document.querySelectorAll("#tabs .tab").forEach((btn) => {
+  btn.addEventListener("click", () => showTab(btn.dataset.tab));
 });
 
 // ======================================================
@@ -389,10 +415,7 @@ function startStudy(levelId) {
   studyState.pool = levelPool(level);
   studyState.idx = 0;
 
-  $("ch-home").classList.add("hidden");
-  $("ch-session").classList.add("hidden");
-  $("ch-summary").classList.add("hidden");
-  $("ch-study").classList.remove("hidden");
+  showSession("study");
   $("study-level-name").textContent = `Lv ${level.id} — ${level.name}`;
   $("study-total").textContent = studyState.pool.length;
 
@@ -443,8 +466,7 @@ function studyPrev() {
 }
 
 function quitStudy() {
-  $("ch-study").classList.add("hidden");
-  $("ch-home").classList.remove("hidden");
+  showTab(currentTab);
   renderLevels();
 }
 
@@ -503,6 +525,13 @@ function renderJourney() {
   $("journey-total").textContent = LEVELS.length;
   $("journey-bar-fill").style.width = `${(done / LEVELS.length) * 100}%`;
 
+  // Recap tiles — pulled from the same localStorage counters used
+  // elsewhere so they stay accurate without any extra bookkeeping.
+  $("recap-levels").textContent = `${done}/${LEVELS.length}`;
+  $("recap-lifetime").textContent = localStorage.getItem("hindlearn:lifetime") || "0";
+  $("recap-best-streak").textContent = localStorage.getItem("hindlearn:best") || "0";
+  $("recap-perfects").textContent = localStorage.getItem("hindlearn:perfects") || "0";
+
   LEVELS.forEach((lvl) => {
     const unlocked = isLevelUnlocked(lvl.id);
     const complete = isLevelDone(lvl.id);
@@ -533,15 +562,13 @@ function renderJourney() {
 
   list.querySelectorAll("[data-jstudy]").forEach((b) => {
     b.addEventListener("click", () => {
-      // Switch to Challenges tab visual state while reusing the study UI
-      // — Study lives inside #tab-challenges. Just trigger it.
-      switchToChallengesTab();
+      // Session runs in the shared shell; currentTab stays "journey" so
+      // we return to Journey when the user quits/finishes.
       startStudy(parseInt(b.dataset.jstudy, 10));
     });
   });
   list.querySelectorAll("[data-jtest]").forEach((b) => {
     b.addEventListener("click", () => {
-      switchToChallengesTab();
       startSession(parseInt(b.dataset.jtest, 10), parseInt(b.dataset.jn, 10));
     });
   });
@@ -566,16 +593,6 @@ function renderJourney() {
       renderJourney();
     });
   });
-}
-
-function switchToChallengesTab() {
-  document.querySelectorAll("#tabs .tab").forEach((b) => b.classList.remove("active"));
-  const chBtn = document.querySelector('#tabs .tab[data-tab="challenges"]');
-  if (chBtn) chBtn.classList.add("active");
-  $("tab-learn").classList.add("hidden");
-  $("tab-journey").classList.add("hidden");
-  $("tab-flashcards").classList.add("hidden");
-  $("tab-challenges").classList.remove("hidden");
 }
 
 $("journey-reset-all").addEventListener("click", () => {
@@ -643,9 +660,7 @@ function startSession(levelId, length) {
   sessionState.mistakes = [];
   sessionState.startTime = Date.now();
 
-  $("ch-home").classList.add("hidden");
-  $("ch-summary").classList.add("hidden");
-  $("ch-session").classList.remove("hidden");
+  showSession("quiz");
   $("ch-level-name").textContent = `Lv ${level.id} — ${level.name}`;
   $("ch-total").textContent = length;
 
@@ -799,8 +814,13 @@ function finishSession() {
   if (isNewBest) saveBest(sessionState.level.id, selected, { score, total, pct, time, ts: Date.now() });
   const best = loadBest(sessionState.level.id, selected);
 
-  $("ch-session").classList.add("hidden");
-  $("ch-summary").classList.remove("hidden");
+  showSession("summary");
+
+  // Track perfect-run count for the recap tab
+  if (pct === 100) {
+    const prevPerfect = parseInt(localStorage.getItem("hindlearn:perfects") || "0", 10);
+    localStorage.setItem("hindlearn:perfects", String(prevPerfect + 1));
+  }
 
   const title = pct === 100 ? "🏆 Perfect!" : pct >= 80 ? "👏 Solid!" : pct >= 60 ? "🙂 Getting there" : "💪 Keep grinding";
   $("ch-summary-title").textContent = `${title} — Lv ${sessionState.level.id} ${sessionState.level.name}`;
@@ -854,11 +874,9 @@ function finishSession() {
 }
 
 function quitSession() {
-  if (!sessionState.active) return;
   sessionState.active = false;
-  $("ch-session").classList.add("hidden");
-  $("ch-summary").classList.add("hidden");
-  $("ch-home").classList.remove("hidden");
+  showTab(currentTab);
+  renderLevels();
 }
 
 $("ch-quit").addEventListener("click", quitSession);

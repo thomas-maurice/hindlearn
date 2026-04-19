@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hindlearn — Read Devanagari</title>
-  <link rel="stylesheet" href="style.css?v=15" />
+  <link rel="stylesheet" href="style.css?v=16" />
 </head>
 <body>
   <header>
@@ -75,7 +75,14 @@
 
     <!-- ================== JOURNEY ================== -->
     <section id="tab-journey" class="hidden">
-      <p class="tagline">Your guided path. Study a level, pass the check, unlock the next one.</p>
+      <p class="tagline">Your guided path and personal recap. Study a level, pass the check, unlock the next one.</p>
+
+      <div class="recap-grid">
+        <div class="recap-tile"><div class="recap-label">Levels done</div><div class="recap-value" id="recap-levels">0/0</div></div>
+        <div class="recap-tile"><div class="recap-label">Lifetime correct</div><div class="recap-value" id="recap-lifetime">0</div></div>
+        <div class="recap-tile"><div class="recap-label">Best streak</div><div class="recap-value" id="recap-best-streak">0</div></div>
+        <div class="recap-tile"><div class="recap-label">Perfect runs</div><div class="recap-value" id="recap-perfects">0</div></div>
+      </div>
 
       <div class="journey-header">
         <div class="journey-progress">
@@ -98,7 +105,13 @@
         </div>
         <div id="ch-levels"></div>
       </div>
+    </section>
 
+    <!-- ================== SHARED SESSION SHELL ==================
+         Study / challenge / summary live here, outside any tab, so they
+         can be launched from either Challenges or Journey without having
+         to hop tabs. When the shell is visible, the tabs are hidden. -->
+    <div id="session-shell" class="hidden">
       <!-- Study walkthrough: no quiz, just absorb -->
       <div id="ch-study" class="hidden">
         <div class="ch-header">
@@ -179,10 +192,10 @@
         <div id="sum-mistakes" class="sum-mistakes"></div>
         <div class="sum-actions">
           <button id="sum-retry">Retry this level</button>
-          <button id="sum-home" class="secondary">← Levels</button>
+          <button id="sum-home" class="secondary">← Back</button>
         </div>
       </div>
-    </section>
+    </div><!-- /session-shell -->
 
     <!-- ================== FLASHCARDS ================== -->
     <section id="tab-flashcards" class="hidden">
@@ -256,6 +269,6 @@
     <div class="toast-text"></div>
   </div>
 
-  <script src="app.js?v=15"></script>
+  <script src="app.js?v=16"></script>
 </body>
 </html>

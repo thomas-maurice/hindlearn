@@ -960,6 +960,38 @@ footer a:hover { text-decoration: underline; }
 
 /* Journey tab */
 
+.recap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+.recap-tile {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.7rem 0.9rem;
+  text-align: center;
+}
+.recap-label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.2rem;
+}
+.recap-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+#session-shell {
+  /* Session shell takes over the main area. No special framing — it's
+     just the session UI on a blank background. */
+}
+
 .journey-header {
   display: flex;
   justify-content: space-between;
