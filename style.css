@@ -1382,6 +1382,12 @@ footer a:hover { text-decoration: underline; }
   border: 1px solid var(--border);
 }
 
+#sum-next {
+  background: var(--ok);
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.3);
+}
+
 .sum-actions button.secondary:hover {
   color: var(--accent);
   border-color: var(--accent);

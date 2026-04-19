@@ -835,6 +835,17 @@ function finishSession() {
     showToast("🎓", `Level ${sessionState.level.id} unlocked the next one!`);
   }
 
+  // "Next level →" button — only when the user actually passed and
+  // there is in fact a next level to progress to.
+  const nextLvl = LEVELS.find((l) => l.id === sessionState.level.id + 1);
+  const nextBtn = $("sum-next");
+  if (pct >= JOURNEY_PASS_PCT && nextLvl) {
+    nextBtn.textContent = `Next: Lv ${nextLvl.id} ${nextLvl.name} →`;
+    nextBtn.classList.remove("hidden");
+  } else {
+    nextBtn.classList.add("hidden");
+  }
+
   $("sum-score").textContent = `${score}/${total}`;
   $("sum-pct").textContent = `${pct}%`;
   $("sum-time").textContent = `${time}s`;
@@ -898,6 +909,13 @@ $("ch-hint").addEventListener("click", () => {
 });
 $("sum-retry").addEventListener("click", () => startSession(sessionState.level.id, sessionState.selectedLength || sessionState.length));
 $("sum-home").addEventListener("click", quitSession);
+$("sum-next").addEventListener("click", () => {
+  const nextLvl = LEVELS.find((l) => l.id === sessionState.level.id + 1);
+  if (!nextLvl) return;
+  // Study the new characters first, then drop straight into a 10q test.
+  showToast("📖", `Lv ${nextLvl.id} — ${nextLvl.name}. Study first!`);
+  startStudy(nextLvl.id);
+});
 
 renderLevels();
 
