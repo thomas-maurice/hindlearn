@@ -307,7 +307,7 @@ const LEVELS = [
   { id: 10, name: "Everything",              emoji: "🔥", desc: "Full alphabet. The final boss.",                cats: ["vowel","guttural","palatal","retroflex","dental","labial","semivowel","sibilant"] },
 ];
 
-const SESSION_LENGTHS = [10, 25];
+const SESSION_LENGTHS = [10, 20, 25];
 
 function levelPool(level) {
   if (level.translits) return CHARACTERS.filter((c) => level.translits.includes(c.translit));
@@ -463,6 +463,10 @@ $("study-speak-word").addEventListener("click", () => {
 $("study-go-10").addEventListener("click", () => {
   $("ch-study").classList.add("hidden");
   startSession(studyState.level.id, 10);
+});
+$("study-go-20").addEventListener("click", () => {
+  $("ch-study").classList.add("hidden");
+  startSession(studyState.level.id, 20);
 });
 $("study-go-25").addEventListener("click", () => {
   $("ch-study").classList.add("hidden");
