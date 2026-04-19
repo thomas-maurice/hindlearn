@@ -879,9 +879,15 @@ function startFlashcards() {
   wireChips("fc-categories", "category", renderCard);
   wireChips("fc-difficulty", "difficulty", renderCard);
   $("fc-reset").addEventListener("click", () => {
+    // Full reset including Best and Lifetime — matches user expectation
+    // of "start from scratch".
     flashState.correct = 0;
     flashState.wrong = 0;
     flashState.streak = 0;
+    flashState.best = 0;
+    flashState.lifetime = 0;
+    localStorage.removeItem("hindlearn:best");
+    localStorage.removeItem("hindlearn:lifetime");
     updateFlashStats();
     renderCard();
   });
