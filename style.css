@@ -919,8 +919,14 @@ footer a:hover { text-decoration: underline; }
 
 .level-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.4rem;
   margin-top: 0.3rem;
+}
+.level-actions .level-btn {
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: nowrap;
 }
 
 .level-btn {

@@ -521,7 +521,7 @@ function renderJourney() {
       </div>
       <div class="journey-actions">
         <button class="level-btn study" data-jstudy="${lvl.id}" ${unlocked ? "" : "disabled"}>📖 Study</button>
-        <button class="level-btn" data-jtest="${lvl.id}" ${unlocked ? "" : "disabled"}>🎯 Check (10)</button>
+        ${SESSION_LENGTHS.map((n) => `<button class="level-btn" data-jtest="${lvl.id}" data-jn="${n}" ${unlocked ? "" : "disabled"}>🎯 Check × ${n}</button>`).join("")}
         ${complete
           ? `<button class="level-btn study" data-junmark="${lvl.id}">↺ Redo</button>`
           : unlocked ? `<button class="level-btn study" data-jmark="${lvl.id}">✔ Mark done</button>` : ""}
@@ -542,7 +542,7 @@ function renderJourney() {
   list.querySelectorAll("[data-jtest]").forEach((b) => {
     b.addEventListener("click", () => {
       switchToChallengesTab();
-      startSession(parseInt(b.dataset.jtest, 10), 10);
+      startSession(parseInt(b.dataset.jtest, 10), parseInt(b.dataset.jn, 10));
     });
   });
   list.querySelectorAll("[data-jmark]").forEach((b) => {
