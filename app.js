@@ -631,6 +631,10 @@ function startSession(levelId, length) {
   if (!level) return;
   sessionState.active = true;
   sessionState.level = level;
+  // selectedLength = what the user picked (keeps Best storage consistent).
+  // length = current queue length, which grows every time a miss re-inserts
+  // the character back into the queue so they have to face it again.
+  sessionState.selectedLength = length;
   sessionState.length = length;
   sessionState.queue = buildSessionQueue(levelPool(level), length);
   sessionState.idx = 0;
@@ -726,6 +730,14 @@ function answerSession(chosen, btn) {
     btn.classList.add("bad");
     sessionState.wrong += 1;
     sessionState.mistakes.push({ answer: correctChar, chosen });
+    // Re-insert the missed character 3-5 slots ahead so the user has to
+    // face it again. Grows the session length; summary reflects the
+    // actual work done, Best still keys off selectedLength.
+    const offset = 3 + Math.floor(Math.random() * 3);
+    const insertAt = Math.min(sessionState.queue.length, sessionState.idx + offset);
+    sessionState.queue.splice(insertAt, 0, correctChar);
+    sessionState.length = sessionState.queue.length;
+    $("ch-total").textContent = sessionState.length;
     buttons.forEach((b) => {
       if (b.dataset.translit === correctChar.translit) b.classList.add("reveal");
       b.disabled = true;
@@ -774,16 +786,18 @@ function advanceSession() {
 }
 
 function finishSession() {
-  const total = sessionState.length;
+  const total = sessionState.length;              // actual questions answered (incl. re-asked misses)
+  const selected = sessionState.selectedLength || total;
   const score = sessionState.correct;
   const pct = Math.round((score / total) * 100);
   const time = Math.round((Date.now() - sessionState.startTime) / 1000);
 
-  // save best if better
-  const prev = loadBest(sessionState.level.id, total);
-  const isNewBest = !prev || score > prev.score || (score === prev.score && time < prev.time);
-  if (isNewBest) saveBest(sessionState.level.id, total, { score, total, pct, time, ts: Date.now() });
-  const best = loadBest(sessionState.level.id, total);
+  // Best is keyed off the selected length so 10/20/25 stay as separate
+  // buckets regardless of how many re-asks happened.
+  const prev = loadBest(sessionState.level.id, selected);
+  const isNewBest = !prev || pct > prev.pct || (pct === prev.pct && time < prev.time);
+  if (isNewBest) saveBest(sessionState.level.id, selected, { score, total, pct, time, ts: Date.now() });
+  const best = loadBest(sessionState.level.id, selected);
 
   $("ch-session").classList.add("hidden");
   $("ch-summary").classList.remove("hidden");
@@ -860,7 +874,7 @@ $("ch-hint").addEventListener("click", () => {
     box.innerHTML = `💡 ${c.tip}<br><span class="muted">IPA <span class="ipa-inline">/${c.ipa}/</span> · ${CAT_LABEL[c.cat]}.</span>`;
   }
 });
-$("sum-retry").addEventListener("click", () => startSession(sessionState.level.id, sessionState.length));
+$("sum-retry").addEventListener("click", () => startSession(sessionState.level.id, sessionState.selectedLength || sessionState.length));
 $("sum-home").addEventListener("click", quitSession);
 
 renderLevels();
