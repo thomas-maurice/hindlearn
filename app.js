@@ -160,6 +160,24 @@ function speak(text) {
   audio.play().catch((err) => console.warn("audio playback failed:", err));
 }
 
+// Play "wrong" then "right" back-to-back so the user hears the contrast.
+// Chains by waiting for the first clip to end rather than guessing a delay.
+function playDiff(wrongText, rightText) {
+  if (!wrongText || !rightText) return;
+  const wrongFile = AUDIO_BY_TEXT[wrongText];
+  const rightFile = AUDIO_BY_TEXT[rightText];
+  if (!wrongFile || !rightFile) return;
+  if (currentAudio) { try { currentAudio.pause(); } catch {} }
+  const a = new Audio(wrongFile);
+  currentAudio = a;
+  a.addEventListener("ended", () => {
+    const b = new Audio(rightFile);
+    currentAudio = b;
+    b.play().catch((err) => console.warn("audio playback failed:", err));
+  }, { once: true });
+  a.play().catch((err) => console.warn("audio playback failed:", err));
+}
+
 function initTTS() { buildAudioMap(); }
 
 // ======================================================
@@ -172,9 +190,11 @@ document.querySelectorAll("#tabs .tab").forEach((btn) => {
     btn.classList.add("active");
     const tab = btn.dataset.tab;
     $("tab-learn").classList.toggle("hidden", tab !== "learn");
+    $("tab-journey").classList.toggle("hidden", tab !== "journey");
     $("tab-challenges").classList.toggle("hidden", tab !== "challenges");
     $("tab-flashcards").classList.toggle("hidden", tab !== "flashcards");
     if (tab === "flashcards" && !flashState.started) startFlashcards();
+    if (tab === "journey") renderJourney();
   });
 });
 
@@ -449,6 +469,116 @@ $("study-go-25").addEventListener("click", () => {
   startSession(studyState.level.id, 25);
 });
 
+// ======================================================
+//  Journey — guided progression through the 10 levels.
+//  Each level has a "done" flag. Done when user scores >=80% on a
+//  challenge session of that level (any length) — or manually via the
+//  "Mark done" button. Next level unlocks once the previous is done.
+// ======================================================
+
+const JOURNEY_PASS_PCT = 80;
+const JOURNEY_KEY = (id) => `hindlearn:journey:lvl${id}`;
+
+function isLevelDone(id) {
+  return localStorage.getItem(JOURNEY_KEY(id)) === "1";
+}
+function setLevelDone(id, done) {
+  if (done) localStorage.setItem(JOURNEY_KEY(id), "1");
+  else localStorage.removeItem(JOURNEY_KEY(id));
+}
+function isLevelUnlocked(id) {
+  if (id === 1) return true;
+  return isLevelDone(id - 1);
+}
+
+function renderJourney() {
+  const list = $("journey-list");
+  list.innerHTML = "";
+  const done = LEVELS.filter((l) => isLevelDone(l.id)).length;
+  $("journey-done").textContent = done;
+  $("journey-total").textContent = LEVELS.length;
+  $("journey-bar-fill").style.width = `${(done / LEVELS.length) * 100}%`;
+
+  LEVELS.forEach((lvl) => {
+    const unlocked = isLevelUnlocked(lvl.id);
+    const complete = isLevelDone(lvl.id);
+    const state = complete ? "done" : unlocked ? "open" : "locked";
+    const icon = complete ? "✅" : unlocked ? "▶" : "🔒";
+
+    const card = document.createElement("div");
+    card.className = `journey-card ${state}`;
+    card.innerHTML = `
+      <div class="journey-card-head">
+        <div class="journey-icon">${icon}</div>
+        <div>
+          <div class="journey-name">Lv ${lvl.id}. ${lvl.name}</div>
+          <div class="journey-desc">${lvl.desc}</div>
+        </div>
+      </div>
+      <div class="journey-actions">
+        <button class="level-btn study" data-jstudy="${lvl.id}" ${unlocked ? "" : "disabled"}>📖 Study</button>
+        <button class="level-btn" data-jtest="${lvl.id}" ${unlocked ? "" : "disabled"}>🎯 Check (10)</button>
+        ${complete
+          ? `<button class="level-btn study" data-junmark="${lvl.id}">↺ Redo</button>`
+          : unlocked ? `<button class="level-btn study" data-jmark="${lvl.id}">✔ Mark done</button>` : ""}
+        <button class="reset-btn journey-reset-here" data-jreset="${lvl.id}" ${complete ? "" : "disabled"} title="Forget this level and everything after it">🔄 Reset from here</button>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+
+  list.querySelectorAll("[data-jstudy]").forEach((b) => {
+    b.addEventListener("click", () => {
+      // Switch to Challenges tab visual state while reusing the study UI
+      // — Study lives inside #tab-challenges. Just trigger it.
+      switchToChallengesTab();
+      startStudy(parseInt(b.dataset.jstudy, 10));
+    });
+  });
+  list.querySelectorAll("[data-jtest]").forEach((b) => {
+    b.addEventListener("click", () => {
+      switchToChallengesTab();
+      startSession(parseInt(b.dataset.jtest, 10), 10);
+    });
+  });
+  list.querySelectorAll("[data-jmark]").forEach((b) => {
+    b.addEventListener("click", () => {
+      setLevelDone(parseInt(b.dataset.jmark, 10), true);
+      renderJourney();
+    });
+  });
+  list.querySelectorAll("[data-junmark]").forEach((b) => {
+    b.addEventListener("click", () => {
+      setLevelDone(parseInt(b.dataset.junmark, 10), false);
+      renderJourney();
+    });
+  });
+  list.querySelectorAll("[data-jreset]").forEach((b) => {
+    b.addEventListener("click", () => {
+      const from = parseInt(b.dataset.jreset, 10);
+      // Wipe this level and every subsequent one. No confirm — there's
+      // no data loss besides a boolean flag.
+      LEVELS.forEach((l) => { if (l.id >= from) setLevelDone(l.id, false); });
+      renderJourney();
+    });
+  });
+}
+
+function switchToChallengesTab() {
+  document.querySelectorAll("#tabs .tab").forEach((b) => b.classList.remove("active"));
+  const chBtn = document.querySelector('#tabs .tab[data-tab="challenges"]');
+  if (chBtn) chBtn.classList.add("active");
+  $("tab-learn").classList.add("hidden");
+  $("tab-journey").classList.add("hidden");
+  $("tab-flashcards").classList.add("hidden");
+  $("tab-challenges").classList.remove("hidden");
+}
+
+$("journey-reset-all").addEventListener("click", () => {
+  LEVELS.forEach((l) => setLevelDone(l.id, false));
+  renderJourney();
+});
+
 // ---- session state ----
 
 const sessionState = {
@@ -602,21 +732,26 @@ function answerSession(chosen, btn) {
       : `You picked a <b>${CAT_LABEL[chosen.cat]}</b>, but the answer is a <b>${CAT_LABEL[correctChar.cat]}</b>.`;
     fb.className = "feedback bad";
     fb.innerHTML = `
-      <div>✘ You picked <b>${chosen.char}</b> = <code class="ans-pill wrong">${chosen.translit}</code> <span class="ipa-inline">/${chosen.ipa}/</span> — <i>${chosen.tip}</i></div>
+      <div>✘ You picked <b>${chosen.char}</b> = <code class="ans-pill wrong">${chosen.translit}</code> <span class="ipa-inline">/${chosen.ipa}/</span> — <i>${chosen.tip}</i>
+        <button class="mini fb-speak-wrong" title="Hear what you picked">🔊 Yours</button>
+      </div>
       <div class="correct-big">
         Correct answer:
         <span class="big-char">${correctChar.char}</span>
         =
         <code class="ans-pill right big">${correctChar.translit}</code>
         <span class="ipa-inline">/${correctChar.ipa}/</span>
-        <button class="mini fb-speak" data-char="${correctChar.char}">🔊 Hear it</button>
+        <button class="mini fb-speak-right">🔊 Correct</button>
+        <button class="mini fb-speak-diff" title="Hear both back-to-back">🔁 Compare</button>
       </div>
       <div class="correct-tip"><i>${correctChar.tip}</i></div>
       <div style="margin-top:0.4rem;color:var(--muted);font-weight:normal">${catLine}</div>
     `;
-    const speakBtn = fb.querySelector(".fb-speak");
-    if (speakBtn) speakBtn.addEventListener("click", () => speak(correctChar.char));
-    speak(correctChar.char);
+    fb.querySelector(".fb-speak-wrong").addEventListener("click", () => speak(chosen.char));
+    fb.querySelector(".fb-speak-right").addEventListener("click", () => speak(correctChar.char));
+    fb.querySelector(".fb-speak-diff").addEventListener("click", () => playDiff(chosen.char, correctChar.char));
+    // Auto-play the diff: wrong first, then correct, so you hear the contrast.
+    playDiff(chosen.char, correctChar.char);
     // wait for Next click
     $("ch-next").classList.remove("hidden");
   }
@@ -651,6 +786,12 @@ function finishSession() {
 
   const title = pct === 100 ? "🏆 Perfect!" : pct >= 80 ? "👏 Solid!" : pct >= 60 ? "🙂 Getting there" : "💪 Keep grinding";
   $("ch-summary-title").textContent = `${title} — Lv ${sessionState.level.id} ${sessionState.level.name}`;
+
+  // Journey auto-complete: crossing the pass threshold marks the level done.
+  if (pct >= JOURNEY_PASS_PCT && !isLevelDone(sessionState.level.id)) {
+    setLevelDone(sessionState.level.id, true);
+    showToast("🎓", `Level ${sessionState.level.id} unlocked the next one!`);
+  }
 
   $("sum-score").textContent = `${score}/${total}`;
   $("sum-pct").textContent = `${pct}%`;
@@ -862,23 +1003,26 @@ function answerCard(chosen, btn) {
       ? `Both are in the <b>${CAT_LABEL[correctChar.cat]}</b> group — a classic trap.`
       : `You picked a <b>${CAT_LABEL[chosen.cat]}</b>, but the answer is a <b>${CAT_LABEL[correctChar.cat]}</b>.`;
     fb.innerHTML = `
-      <div>✘ You picked <b>${chosen.char}</b> = <code class="ans-pill wrong">${chosen.translit}</code> <span class="ipa-inline">/${chosen.ipa}/</span> — <i>${chosen.tip}</i></div>
+      <div>✘ You picked <b>${chosen.char}</b> = <code class="ans-pill wrong">${chosen.translit}</code> <span class="ipa-inline">/${chosen.ipa}/</span> — <i>${chosen.tip}</i>
+        <button class="mini fb-speak-wrong" title="Hear what you picked">🔊 Yours</button>
+      </div>
       <div class="correct-big">
         Correct answer:
         <span class="big-char">${correctChar.char}</span>
         =
         <code class="ans-pill right big">${correctChar.translit}</code>
         <span class="ipa-inline">/${correctChar.ipa}/</span>
-        <button class="mini fb-speak" data-char="${correctChar.char}">🔊 Hear it</button>
+        <button class="mini fb-speak-right">🔊 Correct</button>
+        <button class="mini fb-speak-diff" title="Hear both back-to-back">🔁 Compare</button>
       </div>
       <div class="correct-tip"><i>${correctChar.tip}</i></div>
       <div style="margin-top:0.4rem;color:var(--muted);font-weight:normal">${catLine}</div>
     `;
-    // Wire the hear button + auto-play the correct sound so the user
-    // immediately hears what they missed.
-    const speakBtn = fb.querySelector(".fb-speak");
-    if (speakBtn) speakBtn.addEventListener("click", () => speak(correctChar.char));
-    speak(correctChar.char);
+    fb.querySelector(".fb-speak-wrong").addEventListener("click", () => speak(chosen.char));
+    fb.querySelector(".fb-speak-right").addEventListener("click", () => speak(correctChar.char));
+    fb.querySelector(".fb-speak-diff").addEventListener("click", () => playDiff(chosen.char, correctChar.char));
+    // Auto-play both so the user immediately hears the contrast.
+    playDiff(chosen.char, correctChar.char);
   }
   buttons.forEach((b) => (b.disabled = true));
   updateFlashStats();

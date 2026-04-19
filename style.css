@@ -947,6 +947,98 @@ footer a:hover { text-decoration: underline; }
   background: var(--accent);
   color: #fff;
 }
+.level-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Journey tab */
+
+.journey-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+.journey-progress {
+  flex: 1;
+  min-width: 220px;
+}
+.journey-progress span {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.journey-bar {
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 0.3rem;
+}
+#journey-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent-2), var(--accent));
+  transition: width 0.3s ease;
+}
+
+#journey-list {
+  display: grid;
+  gap: 0.7rem;
+}
+.journey-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.9rem;
+}
+.journey-card.done {
+  border-color: var(--ok);
+  background: color-mix(in srgb, var(--ok) 6%, var(--card));
+}
+.journey-card.locked {
+  opacity: 0.55;
+}
+.journey-card-head {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  margin-bottom: 0.7rem;
+}
+.journey-icon {
+  font-size: 1.4rem;
+  width: 2rem;
+  text-align: center;
+}
+.journey-name {
+  font-weight: 600;
+  color: var(--fg);
+}
+.journey-desc {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.journey-actions {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+.journey-actions .level-btn {
+  flex: 0 1 auto;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.85rem;
+}
+.journey-reset-here {
+  margin: 0;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.8rem;
+}
+.journey-reset-here:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
 
 /* Study walkthrough */
 

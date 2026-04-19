@@ -4,13 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hindlearn — Read Devanagari</title>
-  <link rel="stylesheet" href="style.css?v=10" />
+  <link rel="stylesheet" href="style.css?v=11" />
 </head>
 <body>
   <header>
     <h1>हिन्दी / Hindlearn</h1>
     <nav id="tabs">
       <button class="tab active" data-tab="learn">Learn</button>
+      <button class="tab" data-tab="journey">Journey</button>
       <button class="tab" data-tab="challenges">Challenges</button>
       <button class="tab" data-tab="flashcards">Flashcards</button>
     </nav>
@@ -70,6 +71,21 @@
           <div class="example" id="modal-example"></div>
         </div>
       </div>
+    </section>
+
+    <!-- ================== JOURNEY ================== -->
+    <section id="tab-journey" class="hidden">
+      <p class="tagline">Your guided path. Study a level, pass the check, unlock the next one.</p>
+
+      <div class="journey-header">
+        <div class="journey-progress">
+          <span><b id="journey-done">0</b> / <b id="journey-total">0</b> levels complete</span>
+          <div class="journey-bar"><div id="journey-bar-fill"></div></div>
+        </div>
+        <button id="journey-reset-all" class="reset-btn">🗑 Reset everything</button>
+      </div>
+
+      <div id="journey-list"></div>
     </section>
 
     <!-- ================== CHALLENGES ================== -->
@@ -239,6 +255,6 @@
     <div class="toast-text"></div>
   </div>
 
-  <script src="app.js?v=10"></script>
+  <script src="app.js?v=11"></script>
 </body>
 </html>
