@@ -1,0 +1,34 @@
+# Python venv used only for regenerating audio with gTTS
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# OS cruft
+.DS_Store
+Thumbs.db
+
+# Editor junk
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node (not used, but guard against accidental `npm init`)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build output (none, but reserve common paths)
+dist/
+build/
+
+# Audio generator partials
+audio/*.part
+
+# Logs & env
+*.log
+.env
+.env.local

@@ -1,0 +1,1117 @@
+:root {
+  --bg: #fdf6ec;
+  --fg: #2d1b0e;
+  --accent: #c0392b;
+  --accent-2: #e67e22;
+  --ok: #27ae60;
+  --bad: #c0392b;
+  --muted: #8a7a6b;
+  --card: #fffaf0;
+  --border: #e7d5bf;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  text-align: center;
+  padding: 1.2rem 1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+header h1 {
+  margin: 0 0 0.6rem;
+  font-size: 2rem;
+  color: var(--accent);
+}
+
+#tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+  padding-bottom: 0;
+}
+
+.tab {
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  color: var(--muted);
+  cursor: pointer;
+  margin-bottom: -1px;
+}
+
+.tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 600;
+}
+
+.tagline {
+  margin: 0.6rem 0 1rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+#progress-bar {
+  max-width: 500px;
+  height: 6px;
+  margin: 0 auto;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+#progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent-2), var(--accent));
+  transition: width 0.3s ease;
+}
+
+#score {
+  margin-top: 0.6rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+main {
+  flex: 1;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1.2rem 1rem 3rem;
+  width: 100%;
+}
+
+#challenge-title {
+  margin: 0 0 0.3rem;
+  font-size: 1.4rem;
+}
+
+.hint {
+  color: var(--muted);
+  margin: 0 0 1.2rem;
+  font-style: italic;
+}
+
+#pairs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.pair {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.pair .char {
+  font-size: 3rem;
+  min-width: 4rem;
+  text-align: center;
+  font-family: "Noto Sans Devanagari", "Kohinoor Devanagari", serif;
+  line-height: 1;
+}
+
+.pair .options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  flex: 1;
+}
+
+.pair .options button {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.5rem 0.9rem;
+  font-size: 1rem;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.pair .options button:hover:not(:disabled) {
+  background: var(--accent-2);
+  color: #fff;
+  border-color: var(--accent-2);
+}
+
+.pair .options button.selected {
+  background: var(--fg);
+  color: #fff;
+  border-color: var(--fg);
+}
+
+.pair.correct .options button.selected {
+  background: var(--ok);
+  border-color: var(--ok);
+  color: #fff;
+}
+
+.pair.wrong .options button.selected {
+  background: var(--bad);
+  border-color: var(--bad);
+  color: #fff;
+}
+
+.pair .options button:disabled {
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+
+#check, #next, #done button {
+  margin-top: 1.5rem;
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+#check:disabled {
+  background: var(--muted);
+  cursor: not-allowed;
+}
+
+#check:not(:disabled):hover, #next:hover, #done button:hover {
+  background: var(--accent-2);
+}
+
+.feedback {
+  margin-top: 1rem;
+  font-weight: 600;
+  min-height: 1.3rem;
+  text-align: center;
+}
+
+.feedback.ok { color: var(--ok); }
+.feedback.bad { color: var(--bad); }
+
+.hidden { display: none !important; }
+
+#done {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+#done h2 {
+  font-size: 2rem;
+  color: var(--accent);
+}
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+}
+
+footer code {
+  background: var(--card);
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+}
+
+footer a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+footer a:hover { text-decoration: underline; }
+
+.reset-btn {
+  margin-top: 0.6rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 0.35rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.reset-btn:hover {
+  border-color: var(--bad);
+  color: var(--bad);
+}
+
+.ch-home-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.8rem;
+}
+
+.ch-home-header .tagline { margin: 0; text-align: left; }
+
+/* -------- Milestone toast -------- */
+
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(150%);
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff;
+  padding: 1rem 1.6rem;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  box-shadow: 0 10px 30px rgba(192, 57, 43, 0.35);
+  z-index: 200;
+  opacity: 0;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
+  pointer-events: none;
+  max-width: 90vw;
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.toast.hidden { display: flex; }  /* keep laid-out so transform animates */
+
+.toast-emoji {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.toast-text {
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+/* -------- Flashcards -------- */
+.fc-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.fc-group {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.fc-group > label {
+  font-size: 0.85rem;
+  color: var(--muted);
+  min-width: 85px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.chip {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.chip:hover {
+  border-color: var(--accent-2);
+  color: var(--accent-2);
+}
+
+.chip.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.fc-stats {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.fc-stats b { color: var(--fg); }
+
+.mini {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.mini:hover { border-color: var(--accent); color: var(--accent); }
+
+.fc-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.fc-kind {
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.6rem;
+}
+
+.fc-prompt {
+  font-family: "Noto Sans Devanagari", "Kohinoor Devanagari", serif;
+  font-size: 5rem;
+  line-height: 1.1;
+  margin: 0.2rem 0 1.4rem;
+  min-height: 5.5rem;
+}
+
+.fc-prompt.text {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 3.5rem;
+}
+
+.fc-options {
+  display: grid;
+  gap: 0.5rem;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.fc-options[data-n="4"] {
+  grid-template-columns: repeat(2, 1fr);
+  max-width: 360px;
+}
+
+.fc-options[data-n="5"],
+.fc-options[data-n="10"] {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+@media (max-width: 600px) {
+  .fc-options[data-n="5"] { grid-template-columns: repeat(5, 1fr); }
+  .fc-options[data-n="10"] { grid-template-columns: repeat(5, 1fr); }
+  .fc-options button { font-size: 1.3rem !important; padding: 0.6rem 0.2rem; min-height: 54px; }
+}
+
+.fc-options button {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.9rem 0.6rem;
+  font-size: 1.8rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  min-height: 70px;
+  font-family: "Noto Sans Devanagari", "Kohinoor Devanagari", serif;
+}
+
+.fc-options button.text {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 1.1rem;
+}
+
+.fc-options button:hover:not(:disabled) {
+  border-color: var(--accent-2);
+  background: #fff3e0;
+}
+
+.fc-options button.ok {
+  background: var(--ok);
+  color: #fff;
+  border-color: var(--ok);
+}
+
+.fc-options button.bad {
+  background: var(--bad);
+  color: #fff;
+  border-color: var(--bad);
+}
+
+.fc-options button.reveal {
+  background: var(--ok);
+  color: #fff;
+  border-color: var(--ok);
+  box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.35);
+  animation: pulse-green 0.6s ease-out;
+}
+
+@keyframes pulse-green {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+.fc-options button:disabled {
+  cursor: not-allowed;
+}
+
+/* -------- Learn tab -------- */
+
+.primer {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 1.4rem;
+}
+
+.primer > summary {
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.2rem 0;
+}
+
+.primer > summary:hover { color: var(--accent); }
+
+.primer-body h4 {
+  margin: 1.1rem 0 0.3rem;
+  color: var(--accent);
+}
+
+.primer-body p, .primer-body ul {
+  margin: 0.3rem 0;
+  line-height: 1.55;
+}
+
+.primer-body code {
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 0.05rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.section-heading {
+  margin: 1.6rem 0 0.6rem;
+  font-size: 1.15rem;
+  color: var(--accent);
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 0.3rem;
+}
+
+.chart {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
+  gap: 0.4rem;
+}
+
+.varga-row {
+  display: flex;
+  align-items: stretch;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.varga-label {
+  width: 140px;
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  padding: 0.3rem 0.4rem;
+  border-right: 2px solid var(--border);
+}
+
+.varga-chart {
+  flex: 1;
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.chart-tile {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.5rem 0.3rem 0.4rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+  font-family: inherit;
+}
+
+.chart-tile:hover {
+  border-color: var(--accent);
+  background: #fff3e0;
+  transform: translateY(-1px);
+}
+
+.chart-char {
+  font-family: "Noto Sans Devanagari", "Kohinoor Devanagari", serif;
+  font-size: 2rem;
+  line-height: 1.1;
+}
+
+.chart-translit {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.85rem;
+  color: var(--fg);
+  margin-top: 0.1rem;
+}
+
+.chart-ipa {
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+@media (max-width: 600px) {
+  .varga-row { flex-direction: column; gap: 0.2rem; }
+  .varga-label { width: auto; border-right: none; border-bottom: 1px solid var(--border); }
+}
+
+/* -------- Character modal -------- */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(45, 27, 14, 0.55);
+  backdrop-filter: blur(2px);
+}
+
+.modal-card {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.5rem 1.8rem 1.4rem;
+  width: min(92vw, 520px);
+  max-height: 88vh;
+  overflow-y: auto;
+  text-align: center;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.7rem;
+  background: transparent;
+  border: none;
+  font-size: 1.8rem;
+  line-height: 1;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+}
+
+.modal-close:hover { color: var(--accent); }
+
+.modal-char {
+  font-family: "Noto Sans Devanagari", "Kohinoor Devanagari", serif;
+  font-size: 5rem;
+  line-height: 1.1;
+  margin: 0.3rem 0 0.2rem;
+  color: var(--accent);
+}
+
+.modal-translit {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.8rem;
+}
+
+.big-translit {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.ipa-badge, .cat-badge {
+  font-size: 0.8rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--muted);
+}
+
+.ipa-badge {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+.modal-card h4 {
+  margin: 1rem 0 0.3rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.modal-card p {
+  margin: 0;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.speak-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-top: 0.3rem;
+  transition: background 0.15s;
+}
+
+.speak-btn:hover:not(:disabled) { background: var(--accent-2); }
+
+.speak-btn.small {
+  padding: 0.3rem 0.7rem;
+  font-size: 0.8rem;
+  margin-top: 0.6rem;
+}
+
+.example {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.7rem;
+  text-align: center;
+}
+
+.example-word {
+  font-family: "Noto Sans Devanagari", "Kohinoor Devanagari", serif;
+  font-size: 1.8rem;
+  line-height: 1.1;
+  color: var(--accent);
+}
+
+.example-translit {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  margin-top: 0.2rem;
+}
+
+.example-meaning {
+  color: var(--muted);
+  font-style: italic;
+  margin-top: 0.2rem;
+}
+
+/* -------- Flashcard hint box + toolbar -------- */
+
+.fc-toolbar {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.fc-hint-box {
+  background: #fff8e6;
+  border: 1px solid #e0c878;
+  border-radius: 8px;
+  padding: 0.7rem 0.9rem;
+  margin: 0 auto 0.8rem;
+  max-width: 600px;
+  text-align: left;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.fc-hint-box .muted {
+  color: var(--muted);
+  font-size: 0.85rem;
+  display: inline-block;
+  margin-top: 0.3rem;
+}
+
+.ipa-inline {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  color: var(--muted);
+  font-size: 0.9em;
+}
+
+.feedback .ipa-inline { color: inherit; opacity: 0.8; }
+
+.ans-pill {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border-radius: 5px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-weight: 700;
+  font-size: 1em;
+}
+
+.ans-pill.right {
+  background: var(--ok);
+  color: #fff;
+}
+
+.ans-pill.wrong {
+  background: var(--bad);
+  color: #fff;
+  text-decoration: line-through;
+  opacity: 0.85;
+}
+
+.ans-pill.big {
+  font-size: 1.6rem;
+  padding: 0.25rem 0.9rem;
+  border-radius: 8px;
+}
+
+.correct-big {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.8rem 0 0.2rem;
+  padding: 0.7rem;
+  background: #e8f5ee;
+  border: 2px solid var(--ok);
+  border-radius: 10px;
+  font-size: 1.05rem;
+}
+
+.correct-big .big-char {
+  font-family: "Noto Sans Devanagari", "Kohinoor Devanagari", serif;
+  font-size: 3.2rem;
+  line-height: 1;
+  color: var(--ok);
+  font-weight: 700;
+}
+
+.correct-tip {
+  text-align: center;
+  margin-top: 0.3rem;
+  font-size: 0.95rem;
+}
+
+/* -------- Challenge levels + session -------- */
+
+#ch-levels {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0.8rem;
+}
+
+.level-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.level-head {
+  display: flex;
+  gap: 0.7rem;
+  align-items: center;
+}
+
+.level-emoji {
+  font-family: "Noto Sans Devanagari", "Kohinoor Devanagari", serif;
+  font-size: 2.2rem;
+  color: var(--accent);
+  min-width: 3rem;
+  text-align: center;
+  line-height: 1;
+}
+
+.level-name {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.level-desc {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.level-preview {
+  font-family: "Noto Sans Devanagari", "Kohinoor Devanagari", serif;
+  font-size: 1.4rem;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  text-align: center;
+  letter-spacing: 0.1em;
+}
+
+.level-bests {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+.level-best span {
+  color: var(--fg);
+  font-weight: 600;
+}
+
+.level-actions {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.3rem;
+}
+
+.level-btn {
+  flex: 1;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.55rem 0.8rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.level-btn:hover { background: var(--accent-2); }
+
+/* session header */
+
+.ch-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.ch-level-name {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.ch-progress-label {
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+#ch-progress-bar {
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+#ch-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent-2), var(--accent));
+  transition: width 0.25s ease;
+}
+
+/* next button (shared by flashcards + challenges) */
+
+#ch-next, #fc-next {
+  margin: 0.8rem auto 0;
+  display: block;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem 1.6rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+#ch-next:hover, #fc-next:hover { background: var(--accent-2); }
+
+/* summary */
+
+#ch-summary {
+  text-align: center;
+}
+
+#ch-summary h2 {
+  color: var(--accent);
+}
+
+.summary-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.6rem;
+  margin: 1rem 0;
+}
+
+.stat {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.7rem 0.4rem;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.stat-value {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-top: 0.15rem;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+.new-best {
+  background: var(--ok);
+  color: #fff;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  vertical-align: middle;
+}
+
+#ch-summary h3 {
+  margin: 1.2rem 0 0.5rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sum-mistakes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: left;
+}
+
+.no-mistakes {
+  color: var(--ok);
+  font-weight: 600;
+  padding: 0.8rem;
+  background: #e8f5ee;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.miss {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+}
+
+.miss-char {
+  font-family: "Noto Sans Devanagari", "Kohinoor Devanagari", serif;
+  font-size: 2.5rem;
+  color: var(--accent);
+  min-width: 2.5rem;
+  text-align: center;
+  line-height: 1;
+}
+
+.miss-info { flex: 1; font-size: 0.9rem; }
+.miss-tip { color: var(--muted); font-size: 0.85rem; margin-top: 0.15rem; }
+.miss-confused { color: var(--bad); font-size: 0.8rem; margin-top: 0.2rem; }
+
+.miss-speak {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.sum-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 1.3rem;
+}
+
+.sum-actions button {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem 1.4rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.sum-actions button.secondary {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.sum-actions button.secondary:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+@media (max-width: 600px) {
+  .summary-stats { grid-template-columns: repeat(2, 1fr); }
+}

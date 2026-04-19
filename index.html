@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hindlearn — Read Devanagari</title>
+  <link rel="stylesheet" href="style.css?v=5" />
+</head>
+<body>
+  <header>
+    <h1>हिन्दी / Hindlearn</h1>
+    <nav id="tabs">
+      <button class="tab active" data-tab="learn">Learn</button>
+      <button class="tab" data-tab="challenges">Challenges</button>
+      <button class="tab" data-tab="flashcards">Flashcards</button>
+    </nav>
+  </header>
+
+  <main id="app">
+    <!-- ================== LEARN ================== -->
+    <section id="tab-learn">
+      <p class="tagline">Start here. Read the primer, then tap any character for a tip, an example word, and audio.</p>
+
+      <details class="primer" open>
+        <summary><b>Primer — five things English speakers need to know</b></summary>
+        <div class="primer-body">
+          <h4>1. Aspirated vs plain</h4>
+          <p>Many consonants come in pairs: a plain one and an <i>aspirated</i> one with a little puff of air. In English, the <code>p</code> in "pat" is aspirated, the one in "spat" is not — but English doesn't care about the difference. Hindi does: <code>पल</code> (pal, "moment") and <code>फल</code> (phal, "fruit") are completely different words. Aspirated letters are written with an extra <code>h</code>: <code>kha, gha, cha, chha, jha, Tha, Dha, tha, dha, pha, bha</code>.</p>
+
+          <h4>2. Voiced vs unvoiced</h4>
+          <p>Unvoiced = vocal cords silent (k, t, p). Voiced = vocal cords humming (g, d, b). Every consonant row pairs them up.</p>
+
+          <h4>3. Retroflex vs dental (the "two T's" trap)</h4>
+          <p>Hindi has <i>two</i> T's and <i>two</i> D's:</p>
+          <ul>
+            <li><b>Dental</b> (त, द) — tongue touches the back of your <b>upper teeth</b>. Softer than English, closer to Spanish or French <i>t/d</i>.</li>
+            <li><b>Retroflex</b> (ट, ड) — tongue curled <b>back</b>, tip on the roof of your mouth. Harder and drier. Capitalized in transliteration: <code>Ta, Da</code>.</li>
+          </ul>
+          <p>English <i>t/d</i> sit roughly between the two — which is why native English speakers confuse them.</p>
+
+          <h4>4. Long vs short vowels</h4>
+          <p>Vowel length <i>changes the word</i>. <code>इ</code> (i) is short like "sit", <code>ई</code> (ii) is long like "see". Hold the long ones about twice as long.</p>
+
+          <h4>5. The varga (the consonant table)</h4>
+          <p>Consonants are organized by where they're made in the mouth: <b>back → front</b>. Five rows of five, each row: <i>unvoiced / unvoiced+aspirated / voiced / voiced+aspirated / nasal</i>. Once you see the pattern you don't need to memorize 25 random letters — you memorize one table.</p>
+        </div>
+      </details>
+
+      <h2 class="section-heading">Vowels (स्वर)</h2>
+      <div class="chart" id="chart-vowels"></div>
+
+      <h2 class="section-heading">Consonants — the varga</h2>
+      <p class="hint">Each row, left → right: unvoiced · unvoiced aspirated · voiced · voiced aspirated · nasal.</p>
+      <div id="chart-varga"></div>
+
+      <h2 class="section-heading">Outside the varga</h2>
+      <div class="chart" id="chart-other"></div>
+
+      <!-- Character detail popover -->
+      <div id="char-modal" class="modal hidden" aria-hidden="true">
+        <div class="modal-backdrop"></div>
+        <div class="modal-card">
+          <button class="modal-close" id="modal-close" aria-label="Close">×</button>
+          <div class="modal-char" id="modal-char"></div>
+          <div class="modal-translit" id="modal-translit"></div>
+          <button class="speak-btn" id="modal-speak">🔊 Hear it</button>
+          <h4>How to make the sound</h4>
+          <p id="modal-tip"></p>
+          <h4>Example word</h4>
+          <div class="example" id="modal-example"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================== CHALLENGES ================== -->
+    <section id="tab-challenges" class="hidden">
+      <!-- Home / level select -->
+      <div id="ch-home">
+        <div class="ch-home-header">
+          <p class="tagline">Pick a level, pick a session length, track your progress.</p>
+          <button id="reset-bests" class="reset-btn">🗑 Reset progress</button>
+        </div>
+        <div id="ch-levels"></div>
+      </div>
+
+      <!-- In-session view -->
+      <div id="ch-session" class="hidden">
+        <div class="ch-header">
+          <button id="ch-quit" class="mini">← Levels</button>
+          <div class="ch-level-name" id="ch-level-name"></div>
+          <div class="ch-progress-label">Q <b id="ch-q">1</b> / <b id="ch-total">10</b> · ✔ <b id="ch-correct">0</b> · ✘ <b id="ch-wrong">0</b></div>
+        </div>
+        <div id="ch-progress-bar"><div id="ch-progress-fill"></div></div>
+
+        <div class="fc-card">
+          <div id="ch-prompt-kind" class="fc-kind"></div>
+          <div id="ch-prompt" class="fc-prompt"></div>
+          <div class="fc-toolbar">
+            <button id="ch-speak" class="mini">🔊 Hear it</button>
+            <button id="ch-hint" class="mini">💡 Hint</button>
+          </div>
+          <div id="ch-hint-box" class="fc-hint-box hidden"></div>
+          <div id="ch-options" class="fc-options"></div>
+          <div id="ch-feedback" class="feedback"></div>
+          <button id="ch-next" class="hidden">Next →</button>
+        </div>
+      </div>
+
+      <!-- End-of-session summary -->
+      <div id="ch-summary" class="hidden">
+        <h2 id="ch-summary-title">Session complete!</h2>
+        <div class="summary-stats">
+          <div class="stat"><div class="stat-label">Score</div><div class="stat-value" id="sum-score">0/0</div></div>
+          <div class="stat"><div class="stat-label">Accuracy</div><div class="stat-value" id="sum-pct">0%</div></div>
+          <div class="stat"><div class="stat-label">Time</div><div class="stat-value" id="sum-time">0s</div></div>
+          <div class="stat"><div class="stat-label">Best</div><div class="stat-value" id="sum-best">—</div></div>
+        </div>
+        <h3>Missed letters</h3>
+        <div id="sum-mistakes" class="sum-mistakes"></div>
+        <div class="sum-actions">
+          <button id="sum-retry">Retry this level</button>
+          <button id="sum-home" class="secondary">← Levels</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================== FLASHCARDS ================== -->
+    <section id="tab-flashcards" class="hidden">
+      <p class="tagline">Rapid-fire matching. Stuck? Hit the hint button.</p>
+
+      <div class="fc-settings">
+        <div class="fc-group">
+          <label>Direction</label>
+          <div class="chips" id="fc-direction">
+            <button class="chip active" data-dir="both">Both ways</button>
+            <button class="chip" data-dir="sound-to-letter">Sound → Letter</button>
+            <button class="chip" data-dir="letter-to-sound">Letter → Sound</button>
+          </div>
+        </div>
+        <div class="fc-group">
+          <label>Categories</label>
+          <div class="chips" id="fc-categories">
+            <button class="chip active" data-cat="all">All</button>
+            <button class="chip" data-cat="vowel">Vowels</button>
+            <button class="chip" data-cat="guttural">Gutturals (k-family)</button>
+            <button class="chip" data-cat="palatal">Palatals (c-family)</button>
+            <button class="chip" data-cat="retroflex">Retroflex (T/D)</button>
+            <button class="chip" data-cat="dental">Dentals (t/d)</button>
+            <button class="chip" data-cat="labial">Labials (p/b/m)</button>
+            <button class="chip" data-cat="semivowel">Semivowels</button>
+            <button class="chip" data-cat="sibilant">Sibilants + h</button>
+          </div>
+        </div>
+        <div class="fc-group">
+          <label>Distractors</label>
+          <div class="chips" id="fc-difficulty">
+            <button class="chip" data-diff="easy">Easy (4 choices)</button>
+            <button class="chip active" data-diff="medium">Medium (5)</button>
+            <button class="chip" data-diff="hard">Hard (10, same family)</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="fc-stats">
+        <span>✔ <b id="fc-correct">0</b></span>
+        <span>✘ <b id="fc-wrong">0</b></span>
+        <span>🔥 Streak <b id="fc-streak">0</b></span>
+        <span>Best <b id="fc-best">0</b></span>
+        <span>🌱 Lifetime <b id="fc-lifetime">0</b></span>
+        <button id="fc-reset" class="mini">Reset</button>
+      </div>
+
+      <div class="fc-card">
+        <div id="fc-prompt-kind" class="fc-kind"></div>
+        <div id="fc-prompt" class="fc-prompt"></div>
+        <div class="fc-toolbar">
+          <button id="fc-speak" class="mini">🔊 Hear it</button>
+          <button id="fc-hint" class="mini">💡 Hint</button>
+        </div>
+        <div id="fc-hint-box" class="fc-hint-box hidden"></div>
+        <div id="fc-options" class="fc-options"></div>
+        <div id="fc-feedback" class="feedback"></div>
+        <button id="fc-next" class="hidden">Next →</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Transliterations use a light IAST-ish style. <code>T/D/N</code> = retroflex, <code>Sh</code> = ष, <code>aa/ii/uu</code> = long vowels. Audio pre-generated with <a href="https://github.com/pndurette/gTTS" target="_blank" rel="noopener">gTTS</a> (open source), served as static MP3s.</p>
+    <button id="reset-all" class="reset-btn">🗑 Reset all progress</button>
+  </footer>
+
+  <!-- Milestone toast -->
+  <div id="toast" class="toast hidden">
+    <div class="toast-emoji"></div>
+    <div class="toast-text"></div>
+  </div>
+
+  <script src="app.js?v=5"></script>
+</body>
+</html>
