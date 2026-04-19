@@ -452,8 +452,12 @@ function studyNext() {
     studyState.idx += 1;
     renderStudyCard();
   } else {
-    // End of the walkthrough — offer to start a challenge.
-    $("study-finish").classList.remove("hidden");
+    // End of the walkthrough — jump straight into a 10-question test
+    // with a little toast. The extended-options finish panel is still
+    // available if the user hits Prev and comes back.
+    const lvl = studyState.level;
+    showToast("🎯", `Study done — let's test you on Lv ${lvl.id}!`);
+    setTimeout(() => startSession(lvl.id, 10), 200);
   }
 }
 
