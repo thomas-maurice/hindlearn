@@ -509,10 +509,14 @@ function answerSession(chosen, btn) {
         =
         <code class="ans-pill right big">${correctChar.translit}</code>
         <span class="ipa-inline">/${correctChar.ipa}/</span>
+        <button class="mini fb-speak" data-char="${correctChar.char}">🔊 Hear it</button>
       </div>
       <div class="correct-tip"><i>${correctChar.tip}</i></div>
       <div style="margin-top:0.4rem;color:var(--muted);font-weight:normal">${catLine}</div>
     `;
+    const speakBtn = fb.querySelector(".fb-speak");
+    if (speakBtn) speakBtn.addEventListener("click", () => speak(correctChar.char));
+    speak(correctChar.char);
     // wait for Next click
     $("ch-next").classList.remove("hidden");
   }
@@ -765,10 +769,16 @@ function answerCard(chosen, btn) {
         =
         <code class="ans-pill right big">${correctChar.translit}</code>
         <span class="ipa-inline">/${correctChar.ipa}/</span>
+        <button class="mini fb-speak" data-char="${correctChar.char}">🔊 Hear it</button>
       </div>
       <div class="correct-tip"><i>${correctChar.tip}</i></div>
       <div style="margin-top:0.4rem;color:var(--muted);font-weight:normal">${catLine}</div>
     `;
+    // Wire the hear button + auto-play the correct sound so the user
+    // immediately hears what they missed.
+    const speakBtn = fb.querySelector(".fb-speak");
+    if (speakBtn) speakBtn.addEventListener("click", () => speak(correctChar.char));
+    speak(correctChar.char);
   }
   buttons.forEach((b) => (b.disabled = true));
   updateFlashStats();
@@ -899,23 +909,14 @@ function resetAllProgress() {
       if (k) localStorage.removeItem(k);
     }
   }
-  console.log(`[hindlearn] wiped ${before} localStorage keys`);
+  console.log(`[hindlearn] wiped ${before} localStorage keys — reloading`);
 
-  // Reset in-memory flashcard state + UI.
-  flashState.correct = 0;
-  flashState.wrong = 0;
-  flashState.streak = 0;
-  flashState.best = 0;
-  flashState.lifetime = 0;
-  updateFlashStats();
-  if (flashState.started) renderCard();
-
-  // Kill any running challenge session and go home.
-  sessionState.active = false;
-  $("ch-session").classList.add("hidden");
-  $("ch-summary").classList.add("hidden");
-  $("ch-home").classList.remove("hidden");
-  renderLevels();
+  // Hard reload: simplest possible guarantee the user sees a clean state,
+  // regardless of which tab they're on or which in-memory caches hold old
+  // values. Cache-bust query so the page doesn't come back from bfcache.
+  const u = new URL(window.location.href);
+  u.searchParams.set("reset", Date.now().toString());
+  window.location.replace(u.toString());
 }
 
 // Delegated listener so it still fires if a prior top-level statement threw
