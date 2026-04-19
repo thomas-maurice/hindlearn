@@ -938,6 +938,139 @@ footer a:hover { text-decoration: underline; }
 
 .level-btn:hover { background: var(--accent-2); }
 
+.level-btn.study {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+.level-btn.study:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* Study walkthrough */
+
+#study-progress-bar {
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+#study-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent-2), var(--accent));
+  transition: width 0.25s ease;
+}
+
+.study-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+}
+
+.study-char {
+  font-size: 7rem;
+  line-height: 1;
+  margin-bottom: 0.6rem;
+  color: var(--fg);
+}
+
+.study-translit-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.4rem;
+}
+
+.study-cat {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+.study-card h4 {
+  margin: 1rem 0 0.3rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.study-card p {
+  margin: 0 0 0.5rem;
+  line-height: 1.5;
+}
+
+.study-example {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.study-ex-word {
+  font-size: 1.8rem;
+  color: var(--fg);
+}
+.study-ex-translit {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  color: var(--accent);
+}
+.study-ex-meaning {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.study-nav {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+.study-nav button {
+  flex: 1;
+  padding: 0.7rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: var(--accent);
+  color: #fff;
+}
+.study-nav button.secondary {
+  background: transparent;
+  color: var(--fg);
+  border: 1px solid var(--border);
+}
+.study-nav button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.study-finish {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  text-align: center;
+}
+.study-finish h3 { margin: 0 0 0.3rem; }
+.study-finish-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 0.7rem;
+}
+
 /* session header */
 
 .ch-header {

@@ -337,17 +337,117 @@ function renderLevels() {
       <div class="level-preview">${preview}${more}</div>
       <div class="level-bests">${bestLines}</div>
       <div class="level-actions">
+        <button class="level-btn study" data-study-lvl="${lvl.id}">📖 Study</button>
         ${SESSION_LENGTHS.map((n) => `<button class="level-btn" data-lvl="${lvl.id}" data-n="${n}">Start × ${n}</button>`).join("")}
       </div>
     `;
     el.appendChild(card);
   });
-  el.querySelectorAll(".level-btn").forEach((b) => {
+  el.querySelectorAll(".level-btn[data-lvl]").forEach((b) => {
     b.addEventListener("click", () => {
       startSession(parseInt(b.dataset.lvl, 10), parseInt(b.dataset.n, 10));
     });
   });
+  el.querySelectorAll(".level-btn[data-study-lvl]").forEach((b) => {
+    b.addEventListener("click", () => {
+      startStudy(parseInt(b.dataset.studyLvl, 10));
+    });
+  });
 }
+
+// ======================================================
+//  Study mode — self-paced walkthrough of a level's characters.
+//  No quiz, no scoring — just read / listen / move on.
+// ======================================================
+
+const studyState = { level: null, pool: [], idx: 0 };
+
+function startStudy(levelId) {
+  const level = LEVELS.find((l) => l.id === levelId);
+  if (!level) return;
+  studyState.level = level;
+  studyState.pool = levelPool(level);
+  studyState.idx = 0;
+
+  $("ch-home").classList.add("hidden");
+  $("ch-session").classList.add("hidden");
+  $("ch-summary").classList.add("hidden");
+  $("ch-study").classList.remove("hidden");
+  $("study-level-name").textContent = `Lv ${level.id} — ${level.name}`;
+  $("study-total").textContent = studyState.pool.length;
+
+  renderStudyCard();
+}
+
+function renderStudyCard() {
+  const c = studyState.pool[studyState.idx];
+  if (!c) return;
+
+  $("study-finish").classList.add("hidden");
+  $("study-idx").textContent = studyState.idx + 1;
+  $("study-progress-fill").style.width = `${((studyState.idx + 1) / studyState.pool.length) * 100}%`;
+
+  $("study-char").textContent = c.char;
+  $("study-translit").textContent = c.translit;
+  $("study-ipa").textContent = `/${c.ipa}/`;
+  $("study-cat").textContent = CAT_LABEL[c.cat] || "";
+  $("study-tip").textContent = c.tip;
+  $("study-ex-word").textContent = c.ex.word;
+  $("study-ex-translit").textContent = c.ex.translit;
+  $("study-ex-meaning").textContent = `"${c.ex.meaning}"`;
+
+  $("study-prev").disabled = studyState.idx === 0;
+  const atLast = studyState.idx === studyState.pool.length - 1;
+  $("study-next").textContent = atLast ? "Finish →" : "Next →";
+
+  // Auto-play the letter so the user hears it as the card appears.
+  speak(c.char);
+}
+
+function studyNext() {
+  if (studyState.idx < studyState.pool.length - 1) {
+    studyState.idx += 1;
+    renderStudyCard();
+  } else {
+    // End of the walkthrough — offer to start a challenge.
+    $("study-finish").classList.remove("hidden");
+  }
+}
+
+function studyPrev() {
+  if (studyState.idx > 0) {
+    studyState.idx -= 1;
+    $("study-finish").classList.add("hidden");
+    renderStudyCard();
+  }
+}
+
+function quitStudy() {
+  $("ch-study").classList.add("hidden");
+  $("ch-home").classList.remove("hidden");
+  renderLevels();
+}
+
+$("study-quit").addEventListener("click", quitStudy);
+$("study-home").addEventListener("click", quitStudy);
+$("study-prev").addEventListener("click", studyPrev);
+$("study-next").addEventListener("click", studyNext);
+$("study-speak").addEventListener("click", () => {
+  const c = studyState.pool[studyState.idx];
+  if (c) speak(c.char);
+});
+$("study-speak-word").addEventListener("click", () => {
+  const c = studyState.pool[studyState.idx];
+  if (c) speak(c.ex.word);
+});
+$("study-go-10").addEventListener("click", () => {
+  $("ch-study").classList.add("hidden");
+  startSession(studyState.level.id, 10);
+});
+$("study-go-25").addEventListener("click", () => {
+  $("ch-study").classList.add("hidden");
+  startSession(studyState.level.id, 25);
+});
 
 // ---- session state ----
 
