@@ -895,30 +895,10 @@ function startFlashcards() {
 //  Reset all progress
 // ======================================================
 
-// In-page two-click confirmation. Browser confirm() gets silently blocked
-// after "don't ask again", which is why the reset appeared broken. First
-// click arms the button (shows "Click again to confirm"), second click
-// within 3s wipes localStorage and hard-reloads. No modal dialogs involved.
-const RESET_ARM_MS = 3000;
-const _resetArmState = new WeakMap();
-
-function armResetButton(btn) {
-  const orig = btn.dataset.origLabel || btn.textContent;
-  btn.dataset.origLabel = orig;
-  btn.textContent = "⚠ Click again to confirm";
-  btn.classList.add("armed");
-  const timer = setTimeout(() => disarmResetButton(btn), RESET_ARM_MS);
-  _resetArmState.set(btn, timer);
-}
-
-function disarmResetButton(btn) {
-  const timer = _resetArmState.get(btn);
-  if (timer) clearTimeout(timer);
-  _resetArmState.delete(btn);
-  btn.classList.remove("armed");
-  if (btn.dataset.origLabel) btn.textContent = btn.dataset.origLabel;
-}
-
+// Single-click reset. Wipes ALL saved progress (best scores per level,
+// flashcard streak + best + lifetime counter) and hard-reloads so the
+// UI visibly shows a clean state. The reload URL carries ?reset=... so
+// we can show a "Progress reset" toast on the fresh page.
 function wipeAndReload() {
   const before = localStorage.length;
   try {
@@ -942,13 +922,14 @@ document.addEventListener("click", (e) => {
   if (!(t instanceof Element)) return;
   const btn = t.closest("#reset-all,#reset-bests");
   if (!btn) return;
-  console.log("[hindlearn] reset clicked, armed=", _resetArmState.has(btn));
-  if (_resetArmState.has(btn)) {
-    wipeAndReload();
-  } else {
-    armResetButton(btn);
-  }
+  console.log("[hindlearn] reset clicked — wiping");
+  wipeAndReload();
 });
+
+// Show confirmation toast on the reloaded page.
+if (new URL(window.location.href).searchParams.has("reset")) {
+  setTimeout(() => showToast("🗑", "Progress reset — starting fresh!"), 200);
+}
 
 // ======================================================
 //  Init
