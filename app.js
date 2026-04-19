@@ -1100,11 +1100,25 @@ function recordCorrect() {
     return;
   }
 
-  // Generic every-10 nudge
-  if (flashState.correct > 0 && flashState.correct % 10 === 0) {
-    showToast("💪", `${flashState.correct} correct! Keep going.`);
+  // Encouragement every 5 correct — cycles through a pool so it stays fresh.
+  if (flashState.correct > 0 && flashState.correct % 5 === 0) {
+    const nudge = ENCOURAGEMENTS[(flashState.correct / 5 - 1) % ENCOURAGEMENTS.length];
+    showToast(nudge.emoji, `${flashState.correct} correct — ${nudge.text}`);
   }
 }
+
+const ENCOURAGEMENTS = [
+  { emoji: "💪", text: "keep going!" },
+  { emoji: "✨", text: "nice rhythm." },
+  { emoji: "🚀", text: "you're flying." },
+  { emoji: "👏", text: "don't stop now." },
+  { emoji: "🎯", text: "dialed in." },
+  { emoji: "🧠", text: "the script is clicking." },
+  { emoji: "🪔", text: "शाबाश! (well done!)" },
+  { emoji: "🌶", text: "you're on fire." },
+  { emoji: "😎", text: "smooth."  },
+  { emoji: "📈", text: "steady progress." },
+];
 
 function wireChips(containerId, field, onChange) {
   document.querySelectorAll(`#${containerId} .chip`).forEach((c) => {
