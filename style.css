@@ -620,6 +620,140 @@ footer a:hover { text-decoration: underline; }
   .varga-label { width: auto; border-right: none; border-bottom: 1px solid var(--border); }
 }
 
+/* -------- Matras (vowel signs) -------- */
+
+.matra-pattern {
+  background: #fff8ec;
+  border: 1px solid #f0d9a8;
+  border-radius: 10px;
+  padding: 0.7rem 0.9rem;
+  margin: 0.4rem 0 1rem;
+}
+
+.matra-pattern-head {
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 0.4rem;
+}
+
+.matra-pattern-row {
+  font-size: 0.95rem;
+  margin: 0.15rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.matra-pattern-syl {
+  font-family: "Noto Sans Devanagari", "Kohinoor Devanagari", serif;
+  font-size: 1.5rem;
+  min-width: 1.8rem;
+  text-align: center;
+}
+
+.matra-pattern-eq {
+  color: var(--muted);
+}
+
+.matra-pattern-row code {
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 0.05rem 0.4rem;
+  border-radius: 4px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+.matra-pattern-note {
+  margin-top: 0.45rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.matra-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.6rem;
+}
+
+.matra-tile {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.7rem 0.8rem 0.8rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.matra-tile:hover {
+  border-color: var(--accent);
+  background: #fff3e0;
+  transform: translateY(-1px);
+}
+
+.matra-mark-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.matra-mark, .matra-syllable {
+  font-family: "Noto Sans Devanagari", "Kohinoor Devanagari", serif;
+  font-size: 2rem;
+  line-height: 1.1;
+}
+
+.matra-mark-none {
+  color: var(--muted);
+  font-size: 1.5rem;
+}
+
+.matra-arrow {
+  color: var(--muted);
+  font-size: 1.2rem;
+}
+
+.matra-translit {
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.matra-translit code {
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 0.05rem 0.4rem;
+  border-radius: 4px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+.matra-vowel-hint {
+  color: var(--muted);
+  font-size: 0.8rem;
+  margin-left: 0.25rem;
+}
+
+.matra-pos {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  text-align: center;
+}
+
+.matra-note {
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.4;
+  text-align: center;
+}
+
 /* -------- Character modal -------- */
 
 .modal {

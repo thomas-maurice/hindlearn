@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hindlearn — Read Devanagari</title>
-  <link rel="stylesheet" href="style.css?v=18" />
+  <link rel="stylesheet" href="style.css?v=19" />
 </head>
 <body>
   <header>
@@ -44,11 +44,31 @@
 
           <h4>5. The varga (the consonant table)</h4>
           <p>Consonants are organized by where they're made in the mouth: <b>back → front</b>. Five rows of five, each row: <i>unvoiced / unvoiced+aspirated / voiced / voiced+aspirated / nasal</i>. Once you see the pattern you don't need to memorize 25 random letters — you memorize one table.</p>
+
+          <h4>6. Matras — vowel signs (the lines above & below)</h4>
+          <p>Vowels have <i>two</i> forms. The big standalone letters (<code>अ आ इ ई …</code>) are only used at the <b>start</b> of a word. Everywhere else, the vowel becomes a <i>matra</i> — a little mark that attaches to a consonant: above, below, before, or after.</p>
+          <p>So <code>का</code> (kaa) is not क + आ. It's क + the <code>ा</code> matra. <code>के</code> (ke) is क + a single stroke above. <code>कै</code> (kai) is k + <i>two</i> strokes above. Once you spot the pattern you can read most vowel combinations on sight — see the chart below.</p>
         </div>
       </details>
 
       <h2 class="section-heading">Vowels (स्वर)</h2>
       <div class="chart" id="chart-vowels"></div>
+
+      <h2 class="section-heading">Vowel signs — matras (मात्रा)</h2>
+      <p class="hint">Each vowel has a "diacritic" form used <b>on consonants</b>. Tap any tile to hear the vowel sound. Pay attention to the position — that's where most of the visual logic hides.</p>
+
+      <div class="matra-pattern">
+        <div class="matra-pattern-head">✨ The "lines above" pattern</div>
+        <div class="matra-pattern-body">
+          <div class="matra-pattern-row"><span class="matra-pattern-syl">के</span> <span class="matra-pattern-eq">=</span> क + <b>1 stroke above</b> <span class="matra-pattern-eq">→</span> <code>ke</code></div>
+          <div class="matra-pattern-row"><span class="matra-pattern-syl">कै</span> <span class="matra-pattern-eq">=</span> क + <b>2 strokes above</b> <span class="matra-pattern-eq">→</span> <code>kai</code></div>
+          <div class="matra-pattern-row"><span class="matra-pattern-syl">को</span> <span class="matra-pattern-eq">=</span> क + ा + <b>1 stroke above</b> <span class="matra-pattern-eq">→</span> <code>ko</code></div>
+          <div class="matra-pattern-row"><span class="matra-pattern-syl">कौ</span> <span class="matra-pattern-eq">=</span> क + ा + <b>2 strokes above</b> <span class="matra-pattern-eq">→</span> <code>kau</code></div>
+          <div class="matra-pattern-note">One stroke = "e-ish" · Two strokes = "ai-ish" · Add the <code>ा</code> stick after and the vowel slides toward <code>o</code> / <code>au</code>.</div>
+        </div>
+      </div>
+
+      <div class="matra-grid" id="chart-matras"></div>
 
       <h2 class="section-heading">Consonants — the varga</h2>
       <p class="hint">Each row, left → right: unvoiced · unvoiced aspirated · voiced · voiced aspirated · nasal.</p>
@@ -270,6 +290,6 @@
     <div class="toast-text"></div>
   </div>
 
-  <script src="app.js?v=18"></script>
+  <script src="app.js?v=19"></script>
 </body>
 </html>

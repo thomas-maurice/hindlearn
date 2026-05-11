@@ -240,6 +240,73 @@ function makeChartTile(c) {
   return btn;
 }
 
+// ---- matras (vowel signs) — how vowels attach to consonants ----
+// Each entry: the matra mark itself, its vowel partner, an example with क as
+// the demo consonant, and a note about its visual position. Used purely in
+// the Learn tab — no quiz / journey integration (yet).
+const MATRAS = [
+  { mark: "(none)", translit: "a",   vowelTranslit: "a",   syllable: "क",   syllableTranslit: "ka",  pos: "Inherent",
+    note: "Every consonant has a built-in 'a'. क alone reads 'ka' — nothing extra needed." },
+  { mark: "ा",      translit: "aa",  vowelTranslit: "aa",  syllable: "का",  syllableTranslit: "kaa", pos: "After",
+    note: "A vertical stick to the RIGHT of the letter. Doubles the vowel length." },
+  { mark: "ि",      translit: "i",   vowelTranslit: "i",   syllable: "कि",  syllableTranslit: "ki",  pos: "Before (looks like)",
+    note: "It LOOKS like it sits before the letter, but it's pronounced AFTER. क + ि → ki, not 'ik'." },
+  { mark: "ी",      translit: "ii",  vowelTranslit: "ii",  syllable: "की",  syllableTranslit: "kii", pos: "After",
+    note: "Like ा but with a curl at the top. Long 'ee'." },
+  { mark: "ु",      translit: "u",   vowelTranslit: "u",   syllable: "कु",  syllableTranslit: "ku",  pos: "Below",
+    note: "Tiny hook tucked UNDER the letter." },
+  { mark: "ू",      translit: "uu",  vowelTranslit: "uu",  syllable: "कू",  syllableTranslit: "kuu", pos: "Below",
+    note: "Like ु but with an extra tail — long 'oo'." },
+  { mark: "ृ",      translit: "ri",  vowelTranslit: "ri",  syllable: "कृ",  syllableTranslit: "kri", pos: "Below",
+    note: "Vocalic R. Hooks down off the letter. Rare — mostly Sanskrit loanwords." },
+  { mark: "े",      translit: "e",   vowelTranslit: "e",   syllable: "के",  syllableTranslit: "ke",  pos: "Above (1 stroke)",
+    note: "ONE small stroke on the headline. Long 'e' like 'prey'." },
+  { mark: "ै",      translit: "ai",  vowelTranslit: "ai",  syllable: "कै",  syllableTranslit: "kai", pos: "Above (2 strokes)",
+    note: "TWO strokes on top. Open 'ai' — between 'cat' and 'air'." },
+  { mark: "ो",      translit: "o",   vowelTranslit: "o",   syllable: "को",  syllableTranslit: "ko",  pos: "Above + after",
+    note: "ा stick after + ONE stroke above. (Visually: ‘e-mark’ on top of ‘aa’.) Long 'o' like 'go'." },
+  { mark: "ौ",      translit: "au",  vowelTranslit: "au",  syllable: "कौ",  syllableTranslit: "kau", pos: "Above + after",
+    note: "ा stick after + TWO strokes above. (Visually: ‘ai-mark’ on top of ‘aa’.) Open 'au' like 'saw'." },
+  { mark: "्",      translit: "—",   vowelTranslit: null,  syllable: "क्",  syllableTranslit: "k",   pos: "Below (halant)",
+    note: "Virama / halant — KILLS the inherent 'a'. Used to glue consonants together into conjuncts." },
+];
+
+function makeMatraTile(m) {
+  const btn = document.createElement("button");
+  btn.className = "matra-tile";
+  // Show the matra alone using a dotted circle ◌ for clarity. For "(none)"
+  // and ◌-less marks, just show the syllable.
+  const markVisual = m.mark === "(none)" ? '<span class="matra-mark-none">∅</span>'
+                  : `◌${m.mark}`;
+  btn.innerHTML = `
+    <div class="matra-mark-row">
+      <div class="matra-mark">${markVisual}</div>
+      <div class="matra-arrow">→</div>
+      <div class="matra-syllable">${m.syllable}</div>
+    </div>
+    <div class="matra-translit"><code>${m.syllableTranslit}</code> <span class="matra-vowel-hint">(vowel: <b>${m.translit}</b>)</span></div>
+    <div class="matra-pos">${m.pos}</div>
+    <div class="matra-note">${m.note}</div>
+  `;
+  // Click → play the vowel sound (the matra carries the vowel). For virama
+  // there's no vowel to play, so we play the bare consonant क instead.
+  btn.addEventListener("click", () => {
+    if (m.vowelTranslit) {
+      const v = CHAR_BY_TRANSLIT[m.vowelTranslit];
+      if (v) speak(v.char);
+    } else {
+      speak("क");
+    }
+  });
+  return btn;
+}
+
+function renderMatras() {
+  const el = $("chart-matras");
+  if (!el) return;
+  MATRAS.forEach((m) => el.appendChild(makeMatraTile(m)));
+}
+
 function renderCharts() {
   // vowels
   const vEl = $("chart-vowels");
@@ -315,6 +382,7 @@ document.addEventListener("keydown", (e) => {
 });
 
 renderCharts();
+renderMatras();
 
 // ======================================================
 //  CHALLENGES MODE — levels + timed sessions
