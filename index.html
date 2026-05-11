@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hindlearn — Read Devanagari</title>
-  <link rel="stylesheet" href="style.css?v=21" />
+  <link rel="stylesheet" href="style.css?v=22" />
 </head>
 <body>
   <header>
@@ -256,6 +256,13 @@
             <button class="chip" data-diff="hard">Hard (10, same family)</button>
           </div>
         </div>
+        <div class="fc-group">
+          <label>Matra mix</label>
+          <div class="chips" id="fc-mixmatras">
+            <button class="chip active" data-mix="on">Mix syllables in</button>
+            <button class="chip" data-mix="off">Bare letters only</button>
+          </div>
+        </div>
       </div>
 
       <div class="fc-stats">
@@ -293,6 +300,6 @@
     <div class="toast-text"></div>
   </div>
 
-  <script src="app.js?v=21"></script>
+  <script src="app.js?v=22"></script>
 </body>
 </html>

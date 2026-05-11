@@ -88,19 +88,20 @@ DATA = [
 ]
 
 # ---- Syllables (consonant + matra) — mirrors SYLLABLES in app.js ----
-# 3 base consonants × 9 vowel matras = 27 syllables. The inherent-'a' form
-# is the bare consonant which is already in DATA above.
-SYLLABLE_BASES = {
-    "ka": "क",
-    "ma": "म",
-    "na": "न",
-}
+# Derived from DATA: every consonant base × 9 vowel matras. The inherent-'a'
+# form is the bare consonant which is already in DATA above. The first 11
+# DATA entries are vowels; everything after is a consonant base.
+VOWEL_COUNT = 11
+SYLLABLE_BASES = {translit: char for char, translit, _ in DATA[VOWEL_COUNT:]}
 
 MATRA_DEFS = [
     ("aa", "ा"), ("i", "ि"), ("ii", "ी"), ("u", "ु"), ("uu", "ू"),
     ("e", "े"),  ("ai", "ै"), ("o", "ो"), ("au", "ौ"),
 ]
 
+# Hand-picked example words for the matras-intro level (k/m/n bases only).
+# All other syllables are generated without an example word — the mega-level
+# is about pure syllable reading, not vocabulary.
 SYLLABLE_EXAMPLES = {
     "kaa": "काम", "ki": "किसी", "kii": "की", "ku": "कुछ",
     "ke":  "के",  "kai": "कैसे", "ko":  "को", "kau": "कौन",
@@ -110,10 +111,20 @@ SYLLABLE_EXAMPLES = {
     "nau": "नौ",
 }
 
+
+def safe_syl_slug(translit: str) -> str:
+    """Syllable filename slug. Retroflex bases (Ta, Da, Sha, …) produce
+    mixed-case translits like 'Tii'/'Daa'; prefix with ret_ to avoid
+    case-insensitive filesystem collisions with dental 'tii'/'daa'."""
+    if any(c.isupper() for c in translit):
+        return f"ret_{translit.lower()}"
+    return translit
+
+
 # Built as (syllable_char, syllable_translit, example_word_or_None)
 SYLLABLE_DATA: list[tuple[str, str, str | None]] = []
 for _base, _base_char in SYLLABLE_BASES.items():
-    _cons = _base[:-1]  # strip trailing 'a'
+    _cons = _base[:-1]  # strip trailing 'a' (works for both 'ka' and 'kha')
     for _matra, _mark in MATRA_DEFS:
         _translit = _cons + _matra
         SYLLABLE_DATA.append((_base_char + _mark, _translit, SYLLABLE_EXAMPLES.get(_translit)))
@@ -174,9 +185,10 @@ def main() -> int:
     # Syllables (consonant + matra) and their example words.
     print(f"\n-- Syllables ({len(SYLLABLE_DATA)}) --")
     for char, translit, word in SYLLABLE_DATA:
-        items: list[tuple[str, str, str]] = [("syl", char, f"syl_{translit}.mp3")]
+        slug = safe_syl_slug(translit)
+        items: list[tuple[str, str, str]] = [("syl", char, f"syl_{slug}.mp3")]
         if word:
-            items.append(("word", word, f"sylword_{translit}.mp3"))
+            items.append(("word", word, f"sylword_{slug}.mp3"))
         for label, text, name in items:
             manifest[text] = name
             out = OUT / name

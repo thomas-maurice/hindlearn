@@ -114,7 +114,10 @@ const CAT_LABEL = {
 //  covers them).
 // ======================================================
 
-const SYLLABLE_BASES = ["ka", "ma", "na"];
+// Every non-vowel CHARACTERS entry is eligible as a syllable base.
+// The matras-intro level filters this down to just k/m/n; the mega-level
+// uses the full set.
+const SYLLABLE_BASES = CHARACTERS.filter((c) => c.cat !== "vowel").map((c) => c.translit);
 
 const MATRA_DEFS = [
   { matra: "aa",  mark: "ा", pos: "After (vertical stick)" },
@@ -218,6 +221,13 @@ function safeSlug(translit) {
   return RETROFLEX_TRANSLITS.has(translit) ? `ret_${translit.toLowerCase()}` : translit;
 }
 
+// Syllable filename slug. Retroflex bases produce mixed-case translits like
+// 'Tii' or 'Daa' — prefix with ret_ to avoid macOS case-insensitive
+// collisions with dental 'tii'/'daa'. Mirrors safe_syl_slug in gen_audio.py.
+function safeSylSlug(translit) {
+  return /[A-Z]/.test(translit) ? `ret_${translit.toLowerCase()}` : translit;
+}
+
 // Build lookup: Devanagari text → audio filename. Done once CHARACTERS is
 // populated (this file loads top-to-bottom, so by the time any click fires
 // the map exists).
@@ -232,9 +242,10 @@ function buildAudioMap() {
   // with gTTS — same pipeline as the chars). Falls through to the chain
   // fallback in speakWithCallback if a file is missing.
   SYLLABLES.forEach((s) => {
-    AUDIO_BY_TEXT[s.char] = `audio/syl_${s.translit}.mp3`;
+    const slug = safeSylSlug(s.translit);
+    AUDIO_BY_TEXT[s.char] = `audio/syl_${slug}.mp3`;
     if (s.ex && !AUDIO_BY_TEXT[s.ex.word]) {
-      AUDIO_BY_TEXT[s.ex.word] = `audio/sylword_${s.translit}.mp3`;
+      AUDIO_BY_TEXT[s.ex.word] = `audio/sylword_${slug}.mp3`;
     }
   });
 }
@@ -514,7 +525,7 @@ renderMatras();
 const LEVELS = [
   { id: 1,  name: "Short vowels",            emoji: "ए",  desc: "The core 6: अ आ इ ई उ ऊ",                     translits: ["a","aa","i","ii","u","uu"] },
   { id: 2,  name: "All vowels",              emoji: "औ",  desc: "11 independent vowels including ए ऐ ओ औ ऋ",    cats: ["vowel"] },
-  { id: 11, name: "Matras (vowel signs)",    emoji: "ा",  desc: "Read consonant + vowel marks: का कि की कु कू के कै को कौ — on क, म, न.", syllables: true },
+  { id: 11, name: "Matras — intro (क/म/न)",  emoji: "ा",  desc: "First taste of vowel marks: का कि की कु कू के कै को कौ — drilled on क, म, न.", syllables: true, syllableBases: ["ka","ma","na"] },
   { id: 3,  name: "Gutturals (क family)",    emoji: "क",  desc: "Throat sounds: क ख ग घ ङ",                      cats: ["guttural"] },
   { id: 4,  name: "Palatals (च family)",     emoji: "च",  desc: "Palate sounds: च छ ज झ ञ",                      cats: ["palatal"] },
   { id: 5,  name: "Retroflex (ट family)",    emoji: "ट",  desc: "Tongue-back: ट ठ ड ढ ण ड़ ढ़",                  cats: ["retroflex"] },
@@ -522,6 +533,7 @@ const LEVELS = [
   { id: 7,  name: "Labials (प family)",      emoji: "प",  desc: "Lip sounds: प फ ब भ म",                         cats: ["labial"] },
   { id: 8,  name: "Semivowels + sibilants",  emoji: "श",  desc: "य र ल व and श ष स ह",                           cats: ["semivowel","sibilant"] },
   { id: 9,  name: "All consonants",          emoji: "भ",  desc: "Every consonant — no vowels",                   cats: ["guttural","palatal","retroflex","dental","labial","semivowel","sibilant"] },
+  { id: 12, name: "Matras on every consonant", emoji: "✍", desc: "Every consonant × every matra. The bridge to reading actual words.", syllables: true },
   { id: 10, name: "Everything",              emoji: "🔥", desc: "Full alphabet. The final boss.",                cats: ["vowel","guttural","palatal","retroflex","dental","labial","semivowel","sibilant"] },
 ];
 
@@ -544,9 +556,15 @@ function previousLevel(level) {
 function levelPool(level) {
   if (level.translits) return CHARACTERS.filter((c) => level.translits.includes(c.translit));
   if (level.syllables) {
-    // Matras level: bare base consonants + all syllables built on them.
-    const bases = SYLLABLE_BASES.map((t) => CHAR_BY_TRANSLIT[t]).filter(Boolean);
-    return [...bases, ...SYLLABLES];
+    // Matras level: bare base consonants + syllables built on them.
+    // syllableBases narrows the pool (the intro level uses k/m/n only);
+    // omitting it = every consonant base.
+    const baseTranslits = level.syllableBases || SYLLABLE_BASES;
+    const bases = baseTranslits.map((t) => CHAR_BY_TRANSLIT[t]).filter(Boolean);
+    const syllables = level.syllableBases
+      ? SYLLABLES.filter((s) => level.syllableBases.includes(s.base))
+      : SYLLABLES;
+    return [...bases, ...syllables];
   }
   if (level.cats) return CHARACTERS.filter((c) => level.cats.includes(c.cat));
   return CHARACTERS;
@@ -1188,6 +1206,11 @@ const flashState = {
   direction: "both",
   category: "all",
   difficulty: "medium",
+  // When true (default), any time the random pick is a non-vowel base we
+  // sometimes swap it for one of its matra-bearing syllables. Lets you
+  // train matra reading inside *any* category instead of having to switch
+  // to the dedicated "Matras" chip.
+  mixMatras: localStorage.getItem("hindlearn:flash:mixmatras") !== "0",
   correct: 0,
   wrong: 0,
   streak: 0,
@@ -1210,21 +1233,44 @@ function numOptions() {
 function pickCard() {
   const pool = getPool();
   if (pool.length < 2) return null;
-  const answer = pool[Math.floor(Math.random() * pool.length)];
+  let answer = pool[Math.floor(Math.random() * pool.length)];
+
+  // Mix-matras: when enabled (default), randomly swap a non-vowel base for
+  // one of its matra-bearing syllables. Only active for the consonant-y
+  // categories — vowels stay vowels, the dedicated Matras chip is always
+  // pure syllables.
+  if (flashState.mixMatras
+      && flashState.category !== "syllable"
+      && flashState.category !== "vowel"
+      && answer.cat !== "vowel"
+      && answer.cat !== "syllable"
+      && Math.random() < 0.5) {
+    const candidates = SYLLABLES.filter((s) => s.base === answer.translit);
+    if (candidates.length > 0) {
+      answer = candidates[Math.floor(Math.random() * candidates.length)];
+    }
+  }
+
   let dir = flashState.direction;
   if (dir === "both") dir = Math.random() < 0.5 ? "sound-to-letter" : "letter-to-sound";
 
   const n = numOptions();
   let distractorPool;
   if (answer.cat === "syllable") {
-    // Same logic as in challenges: never show "ko" alongside "uu/na/pha".
-    // Hard mode locks distractors to same-base — pure matra discrimination.
+    // When the answer is a syllable that got mixed-in from a category like
+    // "Gutturals", we want guttural-y distractors — not random palatals
+    // and labials that would tip off the answer.
+    const inCategoryBases = flashState.category === "all" || flashState.category === "syllable"
+      ? null  // no category restriction
+      : new Set(CHARACTERS.filter((c) => c.cat === flashState.category).map((c) => c.translit));
+    const inCategory = (s) => !inCategoryBases || inCategoryBases.has(s.base);
+
     if (flashState.difficulty === "hard") {
       distractorPool = SYLLABLES.filter((s) => s.base === answer.base && s.translit !== answer.translit);
     } else {
       const sameBase  = SYLLABLES.filter((s) => s.base === answer.base && s.translit !== answer.translit);
-      const sameMatra = SYLLABLES.filter((s) => s.matra === answer.matra && s.base !== answer.base);
-      const others    = SYLLABLES.filter((s) => s.base !== answer.base && s.matra !== answer.matra);
+      const sameMatra = SYLLABLES.filter((s) => s.matra === answer.matra && s.base !== answer.base && inCategory(s));
+      const others    = SYLLABLES.filter((s) => s.base !== answer.base && s.matra !== answer.matra && inCategory(s));
       distractorPool = [...shuffle(sameBase), ...shuffle(sameMatra), ...shuffle(others)];
     }
   } else if (flashState.difficulty === "hard") {
@@ -1469,6 +1515,20 @@ function startFlashcards() {
   wireChips("fc-direction", "direction", renderCard);
   wireChips("fc-categories", "category", renderCard);
   wireChips("fc-difficulty", "difficulty", renderCard);
+  // Reflect persisted state in the UI BEFORE wiring, so the active class
+  // is on the correct chip after a reload.
+  document.querySelectorAll("#fc-mixmatras .chip").forEach((c) => {
+    c.classList.toggle("active", c.dataset.mix === (flashState.mixMatras ? "on" : "off"));
+  });
+  document.querySelectorAll("#fc-mixmatras .chip").forEach((c) => {
+    c.addEventListener("click", () => {
+      document.querySelectorAll("#fc-mixmatras .chip").forEach((x) => x.classList.remove("active"));
+      c.classList.add("active");
+      flashState.mixMatras = c.dataset.mix === "on";
+      localStorage.setItem("hindlearn:flash:mixmatras", flashState.mixMatras ? "1" : "0");
+      renderCard();
+    });
+  });
   $("fc-reset").addEventListener("click", () => {
     // Full reset including Best and Lifetime — matches user expectation
     // of "start from scratch".
