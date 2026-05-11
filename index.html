@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hindlearn — Read Devanagari</title>
-  <link rel="stylesheet" href="style.css?v=19" />
+  <link rel="stylesheet" href="style.css?v=21" />
 </head>
 <body>
   <header>
@@ -151,12 +151,14 @@
           <div class="study-cat" id="study-cat"></div>
           <h4>How to make the sound</h4>
           <p id="study-tip"></p>
-          <h4>Example word</h4>
-          <div class="study-example">
-            <span class="study-ex-word" id="study-ex-word"></span>
-            <span class="study-ex-translit" id="study-ex-translit"></span>
-            <span class="study-ex-meaning" id="study-ex-meaning"></span>
-            <button id="study-speak-word" class="mini">🔊 Hear word</button>
+          <div id="study-ex-section">
+            <h4>Example word</h4>
+            <div class="study-example">
+              <span class="study-ex-word" id="study-ex-word"></span>
+              <span class="study-ex-translit" id="study-ex-translit"></span>
+              <span class="study-ex-meaning" id="study-ex-meaning"></span>
+              <button id="study-speak-word" class="mini">🔊 Hear word</button>
+            </div>
           </div>
         </div>
 
@@ -236,6 +238,7 @@
           <div class="chips" id="fc-categories">
             <button class="chip active" data-cat="all">All</button>
             <button class="chip" data-cat="vowel">Vowels</button>
+            <button class="chip" data-cat="syllable">Matras (मात्रा)</button>
             <button class="chip" data-cat="guttural">Gutturals (k-family)</button>
             <button class="chip" data-cat="palatal">Palatals (c-family)</button>
             <button class="chip" data-cat="retroflex">Retroflex (T/D)</button>
@@ -290,6 +293,6 @@
     <div class="toast-text"></div>
   </div>
 
-  <script src="app.js?v=19"></script>
+  <script src="app.js?v=21"></script>
 </body>
 </html>

@@ -9,6 +9,8 @@ Run:
 Outputs:
     audio/char_<translit>.mp3        — single Devanagari character
     audio/word_<translit>.mp3        — example word
+    audio/syl_<translit>.mp3         — consonant+matra syllable (e.g. का, के, को)
+    audio/sylword_<translit>.mp3     — example word for a syllable
     audio/manifest.json              — for debugging
 
 Only regenerates files that are missing. Pass --force to redo everything.
@@ -85,6 +87,38 @@ DATA = [
     ("ह", "ha",  "हम"),
 ]
 
+# ---- Syllables (consonant + matra) — mirrors SYLLABLES in app.js ----
+# 3 base consonants × 9 vowel matras = 27 syllables. The inherent-'a' form
+# is the bare consonant which is already in DATA above.
+SYLLABLE_BASES = {
+    "ka": "क",
+    "ma": "म",
+    "na": "न",
+}
+
+MATRA_DEFS = [
+    ("aa", "ा"), ("i", "ि"), ("ii", "ी"), ("u", "ु"), ("uu", "ू"),
+    ("e", "े"),  ("ai", "ै"), ("o", "ो"), ("au", "ौ"),
+]
+
+SYLLABLE_EXAMPLES = {
+    "kaa": "काम", "ki": "किसी", "kii": "की", "ku": "कुछ",
+    "ke":  "के",  "kai": "कैसे", "ko":  "को", "kau": "कौन",
+    "maa": "माँ", "mii": "मीन", "mu":  "मुख", "muu": "मूल",
+    "me":  "मेज़", "mai": "मैं",  "mo":  "मोर", "mau": "मौसम",
+    "naa": "नाम", "nii": "नीला", "ne":  "ने",  "no":  "नोट",
+    "nau": "नौ",
+}
+
+# Built as (syllable_char, syllable_translit, example_word_or_None)
+SYLLABLE_DATA: list[tuple[str, str, str | None]] = []
+for _base, _base_char in SYLLABLE_BASES.items():
+    _cons = _base[:-1]  # strip trailing 'a'
+    for _matra, _mark in MATRA_DEFS:
+        _translit = _cons + _matra
+        SYLLABLE_DATA.append((_base_char + _mark, _translit, SYLLABLE_EXAMPLES.get(_translit)))
+
+
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "audio"
 
@@ -125,6 +159,25 @@ def main() -> int:
             ("char", char, f"char_{slug}.mp3"),
             ("word", word, f"word_{slug}.mp3"),
         ):
+            manifest[text] = name
+            out = OUT / name
+            try:
+                if synth(text, out, args.force):
+                    print(f"  + {name}  ({label}: {text})")
+                    made += 1
+                    time.sleep(args.sleep)
+                else:
+                    skipped += 1
+            except Exception as e:
+                print(f"  ! failed {name} ({text}): {e}", file=sys.stderr)
+
+    # Syllables (consonant + matra) and their example words.
+    print(f"\n-- Syllables ({len(SYLLABLE_DATA)}) --")
+    for char, translit, word in SYLLABLE_DATA:
+        items: list[tuple[str, str, str]] = [("syl", char, f"syl_{translit}.mp3")]
+        if word:
+            items.append(("word", word, f"sylword_{translit}.mp3"))
+        for label, text, name in items:
             manifest[text] = name
             out = OUT / name
             try:

@@ -103,6 +103,92 @@ const CAT_LABEL = {
   labial: "Labial (lips)",
   semivowel: "Semivowel",
   sibilant: "Sibilant / h",
+  syllable: "Syllable (consonant + matra)",
+};
+
+// ======================================================
+//  Syllables — consonant + matra combinations
+//  Used in the Matras challenge level and as a flashcard category.
+//  3 bases × 9 matra-bearing vowels = 27 syllables (the bare inherent-'a'
+//  forms are NOT in here because the base consonant in CHARACTERS already
+//  covers them).
+// ======================================================
+
+const SYLLABLE_BASES = ["ka", "ma", "na"];
+
+const MATRA_DEFS = [
+  { matra: "aa",  mark: "ा", pos: "After (vertical stick)" },
+  { matra: "i",   mark: "ि", pos: "Before (looks like — pronounced after)" },
+  { matra: "ii",  mark: "ी", pos: "After (stick + curl)" },
+  { matra: "u",   mark: "ु", pos: "Below" },
+  { matra: "uu",  mark: "ू", pos: "Below (long)" },
+  { matra: "e",   mark: "े", pos: "Above (1 stroke)" },
+  { matra: "ai",  mark: "ै", pos: "Above (2 strokes)" },
+  { matra: "o",   mark: "ो", pos: "Above (1 stroke) + ा after" },
+  { matra: "au",  mark: "ौ", pos: "Above (2 strokes) + ा after" },
+];
+
+// Hand-picked example word per syllable. Skipped entries fall back to no
+// example (study mode hides the section gracefully).
+const SYLLABLE_EXAMPLES = {
+  kaa: { word: "काम",   translit: "kaam",   meaning: "work" },
+  ki:  { word: "किसी",  translit: "kisii",  meaning: "someone" },
+  kii: { word: "की",    translit: "kii",    meaning: "of (postposition)" },
+  ku:  { word: "कुछ",   translit: "kuchh",  meaning: "something" },
+  ke:  { word: "के",    translit: "ke",     meaning: "of (postposition)" },
+  kai: { word: "कैसे",  translit: "kaise",  meaning: "how" },
+  ko:  { word: "को",    translit: "ko",     meaning: "to (postposition)" },
+  kau: { word: "कौन",   translit: "kaun",   meaning: "who" },
+  maa: { word: "माँ",   translit: "maa̐",    meaning: "mother" },
+  mii: { word: "मीन",   translit: "miin",   meaning: "fish" },
+  mu:  { word: "मुख",   translit: "mukh",   meaning: "face" },
+  muu: { word: "मूल",   translit: "muul",   meaning: "root, origin" },
+  me:  { word: "मेज़",   translit: "mez",    meaning: "table" },
+  mai: { word: "मैं",   translit: "mai̐",    meaning: "I, me" },
+  mo:  { word: "मोर",   translit: "mor",    meaning: "peacock" },
+  mau: { word: "मौसम",  translit: "mausam", meaning: "weather, season" },
+  naa: { word: "नाम",   translit: "naam",   meaning: "name" },
+  nii: { word: "नीला",  translit: "niilaa", meaning: "blue" },
+  ne:  { word: "ने",    translit: "ne",     meaning: "ergative marker" },
+  no:  { word: "नोट",   translit: "noT",    meaning: "note (loanword)" },
+  nau: { word: "नौ",    translit: "nau",    meaning: "nine" },
+};
+
+const SYLLABLES = [];
+SYLLABLE_BASES.forEach((baseTranslit) => {
+  const baseObj = CHAR_BY_TRANSLIT[baseTranslit];
+  if (!baseObj) return;
+  const baseChar = baseObj.char;
+  const baseConsonant = baseTranslit.slice(0, -1); // strip trailing "a"
+  MATRA_DEFS.forEach((md) => {
+    const translit = baseConsonant + md.matra;
+    const baseIpa = IPA[baseTranslit] || "";
+    const vowelIpa = IPA[md.matra] || "";
+    SYLLABLES.push({
+      char: baseChar + md.mark,
+      translit,
+      base: baseTranslit,
+      baseChar,
+      matra: md.matra,
+      matraMark: md.mark,
+      pos: md.pos,
+      cat: "syllable",
+      ipa: baseIpa + vowelIpa,
+      tip: `${baseChar} (${baseConsonant}) + ${md.mark} matra → '${translit}'. The matra sits ${md.pos.toLowerCase()}.`,
+      ex: SYLLABLE_EXAMPLES[translit] || null,
+    });
+  });
+});
+
+const SYLLABLE_BY_CHAR    = Object.fromEntries(SYLLABLES.map((s) => [s.char, s]));
+const SYLLABLE_BY_TRANSLIT = Object.fromEntries(SYLLABLES.map((s) => [s.translit, s]));
+
+// Map each matra back to its standalone vowel character — used to chain
+// audio (we play base-consonant.mp3 then vowel.mp3 to fake syllable audio
+// without regenerating any MP3s).
+const MATRA_VOWEL_CHAR = {
+  a: "अ", aa: "आ", i: "इ", ii: "ई", u: "उ", uu: "ऊ",
+  e: "ए", ai: "ऐ", o: "ओ", au: "औ",
 };
 
 const $ = (id) => document.getElementById(id);
@@ -142,40 +228,73 @@ function buildAudioMap() {
     AUDIO_BY_TEXT[c.char]    = `audio/char_${slug}.mp3`;
     AUDIO_BY_TEXT[c.ex.word] = `audio/word_${slug}.mp3`;
   });
+  // Syllables get their own pre-rendered MP3s (gen_audio.py generates them
+  // with gTTS — same pipeline as the chars). Falls through to the chain
+  // fallback in speakWithCallback if a file is missing.
+  SYLLABLES.forEach((s) => {
+    AUDIO_BY_TEXT[s.char] = `audio/syl_${s.translit}.mp3`;
+    if (s.ex && !AUDIO_BY_TEXT[s.ex.word]) {
+      AUDIO_BY_TEXT[s.ex.word] = `audio/sylword_${s.translit}.mp3`;
+    }
+  });
 }
 
 let currentAudio = null;
 
-function speak(text) {
-  if (!text) return;
+// Play a single MP3 file. Stops anything currently playing first. onEnd is
+// called when the clip finishes; onError is called separately if the file
+// can't be played (404, decode error, etc.) so callers can fall back.
+function _playOne(file, onEnd, onError) {
+  if (!file) { (onError || onEnd) && (onError || onEnd)(); return; }
   if (currentAudio) { try { currentAudio.pause(); } catch {} }
-
-  const file = AUDIO_BY_TEXT[text];
-  if (!file) {
-    console.warn("No audio mapped for:", text);
-    return;
-  }
   const audio = new Audio(file);
   currentAudio = audio;
-  audio.play().catch((err) => console.warn("audio playback failed:", err));
+  let fired = false;
+  const fireEnd = () => { if (!fired) { fired = true; onEnd && onEnd(); } };
+  const fireErr = () => { if (!fired) { fired = true; (onError || onEnd) && (onError || onEnd)(); } };
+  audio.addEventListener("ended", fireEnd, { once: true });
+  audio.addEventListener("error", fireErr, { once: true });
+  audio.play().catch((err) => { console.warn("audio playback failed:", err, file); fireErr(); });
 }
 
+// Speak the given Devanagari text and call onEnd when done. For everything
+// with a pre-rendered MP3 (CHARACTERS, syllables, example words) we just
+// play that file. For syllables whose MP3 happens to be missing we fall
+// back to chaining base-consonant.mp3 + vowel.mp3.
+function _chainSyllable(syl, onEnd) {
+  const baseFile  = AUDIO_BY_TEXT[syl.baseChar];
+  const vowelChar = MATRA_VOWEL_CHAR[syl.matra];
+  const vowelFile = AUDIO_BY_TEXT[vowelChar];
+  if (!baseFile || !vowelFile) {
+    console.warn("Missing syllable fallback parts for:", syl.char);
+    onEnd && onEnd();
+    return;
+  }
+  _playOne(baseFile, () => _playOne(vowelFile, onEnd));
+}
+
+function speakWithCallback(text, onEnd) {
+  if (!text) { onEnd && onEnd(); return; }
+  const file = AUDIO_BY_TEXT[text];
+  const syl = SYLLABLE_BY_CHAR[text];
+  if (file) {
+    // Try the direct file. If the syllable MP3 is missing on disk, fall
+    // back to chaining base + vowel so we always make *some* noise.
+    _playOne(file, onEnd, syl ? () => _chainSyllable(syl, onEnd) : onEnd);
+    return;
+  }
+  if (syl) { _chainSyllable(syl, onEnd); return; }
+  console.warn("No audio mapped for:", text);
+  onEnd && onEnd();
+}
+
+function speak(text) { speakWithCallback(text, null); }
+
 // Play "wrong" then "right" back-to-back so the user hears the contrast.
-// Chains by waiting for the first clip to end rather than guessing a delay.
+// Uses speakWithCallback so syllables get chained too.
 function playDiff(wrongText, rightText) {
   if (!wrongText || !rightText) return;
-  const wrongFile = AUDIO_BY_TEXT[wrongText];
-  const rightFile = AUDIO_BY_TEXT[rightText];
-  if (!wrongFile || !rightFile) return;
-  if (currentAudio) { try { currentAudio.pause(); } catch {} }
-  const a = new Audio(wrongFile);
-  currentAudio = a;
-  a.addEventListener("ended", () => {
-    const b = new Audio(rightFile);
-    currentAudio = b;
-    b.play().catch((err) => console.warn("audio playback failed:", err));
-  }, { once: true });
-  a.play().catch((err) => console.warn("audio playback failed:", err));
+  speakWithCallback(wrongText, () => speakWithCallback(rightText, null));
 }
 
 function initTTS() { buildAudioMap(); }
@@ -388,9 +507,14 @@ renderMatras();
 //  CHALLENGES MODE — levels + timed sessions
 // ======================================================
 
+// NOTE: `id` is the *stable* identifier (used for localStorage keys — best
+// scores, journey-done flags). The number shown to the user is the position
+// in this array (computed via levelPosition). That keeps existing progress
+// intact when we insert a new level in the middle.
 const LEVELS = [
   { id: 1,  name: "Short vowels",            emoji: "ए",  desc: "The core 6: अ आ इ ई उ ऊ",                     translits: ["a","aa","i","ii","u","uu"] },
   { id: 2,  name: "All vowels",              emoji: "औ",  desc: "11 independent vowels including ए ऐ ओ औ ऋ",    cats: ["vowel"] },
+  { id: 11, name: "Matras (vowel signs)",    emoji: "ा",  desc: "Read consonant + vowel marks: का कि की कु कू के कै को कौ — on क, म, न.", syllables: true },
   { id: 3,  name: "Gutturals (क family)",    emoji: "क",  desc: "Throat sounds: क ख ग घ ङ",                      cats: ["guttural"] },
   { id: 4,  name: "Palatals (च family)",     emoji: "च",  desc: "Palate sounds: च छ ज झ ञ",                      cats: ["palatal"] },
   { id: 5,  name: "Retroflex (ट family)",    emoji: "ट",  desc: "Tongue-back: ट ठ ड ढ ण ड़ ढ़",                  cats: ["retroflex"] },
@@ -403,8 +527,27 @@ const LEVELS = [
 
 const SESSION_LENGTHS = [10, 20, 25];
 
+// Position (1-based) the level shows up as in the UI. This is decoupled
+// from `id` so re-ordering or inserting levels doesn't shift storage.
+function levelPosition(level) {
+  return LEVELS.indexOf(level) + 1;
+}
+function nextLevel(level) {
+  const i = LEVELS.indexOf(level);
+  return i >= 0 && i < LEVELS.length - 1 ? LEVELS[i + 1] : null;
+}
+function previousLevel(level) {
+  const i = LEVELS.indexOf(level);
+  return i > 0 ? LEVELS[i - 1] : null;
+}
+
 function levelPool(level) {
   if (level.translits) return CHARACTERS.filter((c) => level.translits.includes(c.translit));
+  if (level.syllables) {
+    // Matras level: bare base consonants + all syllables built on them.
+    const bases = SYLLABLE_BASES.map((t) => CHAR_BY_TRANSLIT[t]).filter(Boolean);
+    return [...bases, ...SYLLABLES];
+  }
   if (level.cats) return CHARACTERS.filter((c) => level.cats.includes(c.cat));
   return CHARACTERS;
 }
@@ -444,7 +587,7 @@ function renderLevels() {
       <div class="level-head">
         <div class="level-emoji">${lvl.emoji}</div>
         <div>
-          <div class="level-name">Lv ${lvl.id}. ${lvl.name}</div>
+          <div class="level-name">Lv ${levelPosition(lvl)}. ${lvl.name}</div>
           <div class="level-desc">${lvl.desc}</div>
         </div>
       </div>
@@ -484,7 +627,7 @@ function startStudy(levelId) {
   studyState.idx = 0;
 
   showSession("study");
-  $("study-level-name").textContent = `Lv ${level.id} — ${level.name}`;
+  $("study-level-name").textContent = `Lv ${levelPosition(level)} — ${level.name}`;
   $("study-total").textContent = studyState.pool.length;
 
   renderStudyCard();
@@ -503,9 +646,20 @@ function renderStudyCard() {
   $("study-ipa").textContent = `/${c.ipa}/`;
   $("study-cat").textContent = CAT_LABEL[c.cat] || "";
   $("study-tip").textContent = c.tip;
-  $("study-ex-word").textContent = c.ex.word;
-  $("study-ex-translit").textContent = c.ex.translit;
-  $("study-ex-meaning").textContent = `"${c.ex.meaning}"`;
+  const exSection = $("study-ex-section");
+  if (c.ex) {
+    exSection.classList.remove("hidden");
+    $("study-ex-word").textContent = c.ex.word;
+    $("study-ex-translit").textContent = c.ex.translit;
+    $("study-ex-meaning").textContent = `"${c.ex.meaning}"`;
+    // Only show the play button if we actually have audio for this word.
+    // (Syllable example words like काम aren't in the pre-rendered MP3 map.)
+    $("study-speak-word").classList.toggle("hidden", !AUDIO_BY_TEXT[c.ex.word]);
+  } else {
+    // Syllables without a hand-picked example word — hide the section
+    // instead of showing an empty placeholder.
+    exSection.classList.add("hidden");
+  }
 
   $("study-prev").disabled = studyState.idx === 0;
   const atLast = studyState.idx === studyState.pool.length - 1;
@@ -524,7 +678,7 @@ function studyNext() {
     // with a little toast. The extended-options finish panel is still
     // available if the user hits Prev and comes back.
     const lvl = studyState.level;
-    showToast("🎯", `Study done — let's test you on Lv ${lvl.id}!`);
+    showToast("🎯", `Study done — let's test you on Lv ${levelPosition(lvl)}!`);
     setTimeout(() => startSession(lvl.id, 10), 200);
   }
 }
@@ -552,7 +706,7 @@ $("study-speak").addEventListener("click", () => {
 });
 $("study-speak-word").addEventListener("click", () => {
   const c = studyState.pool[studyState.idx];
-  if (c) speak(c.ex.word);
+  if (c && c.ex) speak(c.ex.word);
 });
 $("study-go-10").addEventListener("click", () => {
   $("ch-study").classList.add("hidden");
@@ -585,8 +739,11 @@ function setLevelDone(id, done) {
   else localStorage.removeItem(JOURNEY_KEY(id));
 }
 function isLevelUnlocked(id) {
-  if (id === 1) return true;
-  return isLevelDone(id - 1);
+  const level = LEVELS.find((l) => l.id === id);
+  if (!level) return false;
+  const prev = previousLevel(level);
+  if (!prev) return true;
+  return isLevelDone(prev.id);
 }
 
 function renderJourney() {
@@ -616,7 +773,7 @@ function renderJourney() {
       <div class="journey-card-head">
         <div class="journey-icon">${icon}</div>
         <div>
-          <div class="journey-name">Lv ${lvl.id}. ${lvl.name}</div>
+          <div class="journey-name">Lv ${levelPosition(lvl)}. ${lvl.name}</div>
           <div class="journey-desc">${lvl.desc}</div>
         </div>
       </div>
@@ -658,10 +815,13 @@ function renderJourney() {
   });
   list.querySelectorAll("[data-jreset]").forEach((b) => {
     b.addEventListener("click", () => {
-      const from = parseInt(b.dataset.jreset, 10);
-      // Wipe this level and every subsequent one. No confirm — there's
-      // no data loss besides a boolean flag.
-      LEVELS.forEach((l) => { if (l.id >= from) setLevelDone(l.id, false); });
+      const fromId = parseInt(b.dataset.jreset, 10);
+      // Wipe this level and every subsequent one by *array position* (since
+      // ids are stable but don't reflect display order anymore). No confirm
+      // — there's no data loss besides a boolean flag.
+      const fromIdx = LEVELS.findIndex((l) => l.id === fromId);
+      if (fromIdx < 0) return;
+      LEVELS.slice(fromIdx).forEach((l) => setLevelDone(l.id, false));
       renderJourney();
     });
   });
@@ -698,18 +858,49 @@ function buildSessionQueue(pool, n) {
 
 function pickSessionCard(answer, pool) {
   const dir = Math.random() < 0.5 ? "sound-to-letter" : "letter-to-sound";
-  // distractors: prefer same pool, fall back to all characters
-  const localPool = pool.filter((c) => c.translit !== answer.translit);
-  const fallback = CHARACTERS.filter((c) => c.translit !== answer.translit);
-  const distractorSource = localPool.length >= 4 ? localPool : fallback;
+
+  // Distractor selection. The dumb version is "pick any 4 from the pool"
+  // which produces trivially wrong options (e.g. को vs uu/na/pha). For
+  // syllables we deliberately bias the distractors toward the same base
+  // (forces matra discrimination) and the same matra (forces base
+  // recognition), so passing requires *reading* the syllable.
+  let distractorSource;
+  if (answer.cat === "syllable") {
+    const sameBase   = pool.filter((c) => c.cat === "syllable" && c.base === answer.base && c.translit !== answer.translit);
+    const sameMatra  = pool.filter((c) => c.cat === "syllable" && c.matra === answer.matra && c.base !== answer.base);
+    const otherSyl   = pool.filter((c) => c.cat === "syllable" && c.base !== answer.base && c.matra !== answer.matra);
+    const bareBases  = pool.filter((c) => c.cat !== "syllable" && c.translit !== answer.translit);
+    distractorSource = [
+      ...shuffle(sameBase).slice(0, 3),   // top priority: same base
+      ...shuffle(sameMatra).slice(0, 2),  // also tricky: same matra
+      ...shuffle(otherSyl).slice(0, 1),   // one fully different syllable
+      ...shuffle(bareBases).slice(0, 1),  // sprinkle in a bare base as variety
+    ];
+  } else {
+    const localPool = pool.filter((c) => c.translit !== answer.translit);
+    const fallback = CHARACTERS.filter((c) => c.translit !== answer.translit);
+    distractorSource = shuffle(localPool.length >= 4 ? localPool : fallback);
+  }
+
   const seen = new Set();
   const distinct = [];
-  for (const c of shuffle(distractorSource)) {
+  for (const c of distractorSource) {
     const key = dir === "sound-to-letter" ? c.char : c.translit;
     if (seen.has(key)) continue;
     seen.add(key);
     distinct.push(c);
     if (distinct.length >= 4) break;
+  }
+  // Top up from the wider pool if we somehow got fewer than 4 distractors.
+  if (distinct.length < 4) {
+    const more = shuffle(pool.filter((c) => c.translit !== answer.translit && !distinct.includes(c)));
+    for (const c of more) {
+      const key = dir === "sound-to-letter" ? c.char : c.translit;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      distinct.push(c);
+      if (distinct.length >= 4) break;
+    }
   }
   const options = shuffle([answer, ...distinct]);
   return { answer, options, dir };
@@ -733,7 +924,7 @@ function startSession(levelId, length) {
   sessionState.startTime = Date.now();
 
   showSession("quiz");
-  $("ch-level-name").textContent = `Lv ${level.id} — ${level.name}`;
+  $("ch-level-name").textContent = `Lv ${levelPosition(level)} — ${level.name}`;
   $("ch-total").textContent = length;
 
   renderSessionCard();
@@ -895,20 +1086,20 @@ function finishSession() {
   }
 
   const title = pct === 100 ? "🏆 Perfect!" : pct >= 80 ? "👏 Solid!" : pct >= 60 ? "🙂 Getting there" : "💪 Keep grinding";
-  $("ch-summary-title").textContent = `${title} — Lv ${sessionState.level.id} ${sessionState.level.name}`;
+  $("ch-summary-title").textContent = `${title} — Lv ${levelPosition(sessionState.level)} ${sessionState.level.name}`;
 
   // Journey auto-complete: crossing the pass threshold marks the level done.
   if (pct >= JOURNEY_PASS_PCT && !isLevelDone(sessionState.level.id)) {
     setLevelDone(sessionState.level.id, true);
-    showToast("🎓", `Level ${sessionState.level.id} unlocked the next one!`);
+    showToast("🎓", `Level ${levelPosition(sessionState.level)} unlocked the next one!`);
   }
 
   // "Next level →" button — only when the user actually passed and
   // there is in fact a next level to progress to.
-  const nextLvl = LEVELS.find((l) => l.id === sessionState.level.id + 1);
+  const nextLvl = nextLevel(sessionState.level);
   const nextBtn = $("sum-next");
   if (pct >= JOURNEY_PASS_PCT && nextLvl) {
-    nextBtn.textContent = `Next: Lv ${nextLvl.id} ${nextLvl.name} →`;
+    nextBtn.textContent = `Next: Lv ${levelPosition(nextLvl)} ${nextLvl.name} →`;
     nextBtn.classList.remove("hidden");
   } else {
     nextBtn.classList.add("hidden");
@@ -970,7 +1161,8 @@ $("ch-hint").addEventListener("click", () => {
   const box = $("ch-hint-box");
   box.classList.remove("hidden");
   if (sessionState.currentCard.dir === "sound-to-letter") {
-    box.innerHTML = `💡 <b>${c.translit}</b> <span class="ipa-inline">/${c.ipa}/</span>: ${c.tip}<br><span class="muted">Example: <b>${c.ex.word}</b> (${c.ex.translit}) "${c.ex.meaning}"</span>`;
+    const exPart = c.ex ? `<br><span class="muted">Example: <b>${c.ex.word}</b> (${c.ex.translit}) "${c.ex.meaning}"</span>` : "";
+    box.innerHTML = `💡 <b>${c.translit}</b> <span class="ipa-inline">/${c.ipa}/</span>: ${c.tip}${exPart}`;
   } else {
     box.innerHTML = `💡 ${c.tip}<br><span class="muted">IPA <span class="ipa-inline">/${c.ipa}/</span> · ${CAT_LABEL[c.cat]}.</span>`;
   }
@@ -978,10 +1170,10 @@ $("ch-hint").addEventListener("click", () => {
 $("sum-retry").addEventListener("click", () => startSession(sessionState.level.id, sessionState.selectedLength || sessionState.length));
 $("sum-home").addEventListener("click", quitSession);
 $("sum-next").addEventListener("click", () => {
-  const nextLvl = LEVELS.find((l) => l.id === sessionState.level.id + 1);
+  const nextLvl = nextLevel(sessionState.level);
   if (!nextLvl) return;
   // Study the new characters first, then drop straight into a 10q test.
-  showToast("📖", `Lv ${nextLvl.id} — ${nextLvl.name}. Study first!`);
+  showToast("📖", `Lv ${levelPosition(nextLvl)} — ${nextLvl.name}. Study first!`);
   startStudy(nextLvl.id);
 });
 
@@ -1007,6 +1199,7 @@ const flashState = {
 
 function getPool() {
   if (flashState.category === "all") return CHARACTERS;
+  if (flashState.category === "syllable") return SYLLABLES;
   return CHARACTERS.filter((c) => c.cat === flashState.category);
 }
 
@@ -1023,14 +1216,27 @@ function pickCard() {
 
   const n = numOptions();
   let distractorPool;
-  if (flashState.difficulty === "hard") {
-    distractorPool = CHARACTERS.filter((c) => c.cat === answer.cat && c.translit !== answer.translit);
+  if (answer.cat === "syllable") {
+    // Same logic as in challenges: never show "ko" alongside "uu/na/pha".
+    // Hard mode locks distractors to same-base — pure matra discrimination.
+    if (flashState.difficulty === "hard") {
+      distractorPool = SYLLABLES.filter((s) => s.base === answer.base && s.translit !== answer.translit);
+    } else {
+      const sameBase  = SYLLABLES.filter((s) => s.base === answer.base && s.translit !== answer.translit);
+      const sameMatra = SYLLABLES.filter((s) => s.matra === answer.matra && s.base !== answer.base);
+      const others    = SYLLABLES.filter((s) => s.base !== answer.base && s.matra !== answer.matra);
+      distractorPool = [...shuffle(sameBase), ...shuffle(sameMatra), ...shuffle(others)];
+    }
+  } else if (flashState.difficulty === "hard") {
+    distractorPool = shuffle(CHARACTERS.filter((c) => c.cat === answer.cat && c.translit !== answer.translit));
   } else {
-    distractorPool = CHARACTERS.filter((c) => c.translit !== answer.translit);
+    distractorPool = shuffle(CHARACTERS.filter((c) => c.translit !== answer.translit));
   }
+  // distractorPool is already ordered (syllable branch wants priority preserved;
+  // the non-syllable branches shuffle in-place above), so iterate as-is.
   const seen = new Set();
   const distinct = [];
-  for (const c of shuffle(distractorPool)) {
+  for (const c of distractorPool) {
     const key = dir === "sound-to-letter" ? c.char : c.translit;
     if (seen.has(key)) continue;
     seen.add(key);
@@ -1171,7 +1377,8 @@ function showHint() {
   // sound-to-letter: they see the sound already; hint gives the shape hint + example
   // letter-to-sound: they see the letter already; hint gives the mouth tip but not the answer
   if (flashState.current.dir === "sound-to-letter") {
-    box.innerHTML = `💡 <b>${c.translit}</b> <span class="ipa-inline">/${c.ipa}/</span>: ${c.tip}<br><span class="muted">Example word: <b>${c.ex.word}</b> (${c.ex.translit}) "${c.ex.meaning}"</span>`;
+    const exPart = c.ex ? `<br><span class="muted">Example word: <b>${c.ex.word}</b> (${c.ex.translit}) "${c.ex.meaning}"</span>` : "";
+    box.innerHTML = `💡 <b>${c.translit}</b> <span class="ipa-inline">/${c.ipa}/</span>: ${c.tip}${exPart}`;
   } else {
     box.innerHTML = `💡 ${c.tip}<br><span class="muted">IPA <span class="ipa-inline">/${c.ipa}/</span> · Category: ${CAT_LABEL[c.cat]}.</span>`;
   }
