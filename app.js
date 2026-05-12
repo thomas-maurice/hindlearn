@@ -194,6 +194,100 @@ const MATRA_VOWEL_CHAR = {
   e: "ए", ai: "ऐ", o: "ओ", au: "औ",
 };
 
+// ======================================================
+//  R-blends — when र combines with another consonant it shrinks into one
+//  of two compact marks:
+//    rakar: consonant + ्र (the र hooks BELOW the base)   क्र = "kra", प्र = "pra"
+//    reph:  र् + consonant (the र hooks ABOVE the next)   र्क = "rka", र्व = "rva" (रिज़र्व)
+//  Modeled on SYLLABLES so audio/distractors/flashcards reuse the same shape.
+// ======================================================
+
+// All consonants except र itself (र + र is degenerate) and ड़ (flapped
+// retroflex Ra): its translit "Ra" produces a slug ("rra") that collides
+// with rRa on case-insensitive filesystems, and र-blends with ड़ are
+// vanishingly rare in actual Hindi anyway.
+const R_BLEND_BASES = SYLLABLE_BASES.filter((t) => t !== "ra" && t !== "Ra");
+
+// Hand-picked example words. Sparse on purpose — many r-blends only show up
+// in loanwords or very specialized vocab. Empty entries fall back to no
+// example (study mode hides the section).
+const R_BLEND_EXAMPLES = {
+  // rakar
+  kra:  { word: "क्रम",     translit: "kram",     meaning: "order, sequence" },
+  gra:  { word: "ग्राम",    translit: "graam",    meaning: "village" },
+  ghra: { word: "घ्राण",    translit: "ghraaN",   meaning: "smell, scent" },
+  pra:  { word: "प्रेम",    translit: "prem",     meaning: "love" },
+  phra: { word: "फ्रांस",   translit: "phraans",  meaning: "France" },
+  bra:  { word: "ब्रज",     translit: "braj",     meaning: "Braj (region)" },
+  bhra: { word: "भ्रम",     translit: "bhram",    meaning: "illusion" },
+  tra:  { word: "त्रिवेणी", translit: "triveNii", meaning: "confluence" },
+  dra:  { word: "द्रव",     translit: "drav",     meaning: "liquid" },
+  dhra: { word: "ध्रुव",    translit: "dhruv",    meaning: "pole, fixed" },
+  sra:  { word: "स्रोत",    translit: "srot",     meaning: "source" },
+  shra: { word: "श्रम",     translit: "shram",    meaning: "labor" },
+  hra:  { word: "ह्रास",    translit: "hraas",    meaning: "decline" },
+  // reph
+  rka:  { word: "अर्क",     translit: "ark",      meaning: "essence, extract" },
+  rga:  { word: "मार्ग",    translit: "maarg",    meaning: "path, way" },
+  rja:  { word: "ऊर्जा",    translit: "uurjaa",   meaning: "energy" },
+  rta:  { word: "वर्तमान",  translit: "vartmaan", meaning: "present, current" },
+  rtha: { word: "अर्थ",     translit: "arth",     meaning: "meaning" },
+  rda:  { word: "दर्द",     translit: "dard",     meaning: "pain" },
+  rdha: { word: "वर्धन",    translit: "vardhan",  meaning: "growth" },
+  rNa:  { word: "वर्ण",     translit: "varN",     meaning: "letter, color" },
+  rpa:  { word: "दर्पण",    translit: "darpaN",   meaning: "mirror" },
+  rbha: { word: "गर्भ",     translit: "garbh",    meaning: "womb" },
+  rma:  { word: "कर्म",     translit: "karm",     meaning: "deed, work" },
+  rya:  { word: "कार्य",    translit: "kaary",    meaning: "work, action" },
+  rva:  { word: "रिज़र्व",   translit: "rizarv",   meaning: "reserve (as on banknotes)" },
+  rla:  { word: "दुर्लभ",   translit: "durlabh",  meaning: "rare" },
+  rSha: { word: "वर्ष",     translit: "varSh",    meaning: "year" },
+};
+
+const R_BLENDS = [];
+R_BLEND_BASES.forEach((baseTranslit) => {
+  const baseObj = CHAR_BY_TRANSLIT[baseTranslit];
+  if (!baseObj) return;
+  const baseChar = baseObj.char;
+  const baseConsonant = baseTranslit.slice(0, -1); // strip trailing "a"
+  const baseIpa = IPA[baseTranslit] || baseConsonant;
+
+  // Rakar: <base>्र — pronounced "<base>ra"
+  const rakarTranslit = baseConsonant + "ra";
+  R_BLENDS.push({
+    char: baseChar + "्र",
+    translit: rakarTranslit,
+    type: "rakar",
+    base: baseTranslit,
+    baseChar,
+    sign: "्र",
+    cat: "rblend",
+    ipa: baseIpa + "ɾə",
+    tip: `${baseChar} (${baseConsonant}) + a small diagonal stroke below = '${rakarTranslit}'. The stroke is a shrunk र — pronounce it after the base.`,
+    pos: "After (र attached below)",
+    ex: R_BLEND_EXAMPLES[rakarTranslit] || null,
+  });
+
+  // Reph: र्<base> — pronounced "r<base>a"
+  const rephTranslit = "r" + baseTranslit;
+  R_BLENDS.push({
+    char: "र्" + baseChar,
+    translit: rephTranslit,
+    type: "reph",
+    base: baseTranslit,
+    baseChar,
+    sign: "र्",
+    cat: "rblend",
+    ipa: "ɾ" + baseIpa + "ə",
+    tip: `A small hook above ${baseChar} (${baseConsonant}) = '${rephTranslit}'. The hook is a shrunk र — pronounce it before the consonant.`,
+    pos: "Before (र as hook above)",
+    ex: R_BLEND_EXAMPLES[rephTranslit] || null,
+  });
+});
+
+const R_BLEND_BY_CHAR     = Object.fromEntries(R_BLENDS.map((r) => [r.char, r]));
+const R_BLEND_BY_TRANSLIT = Object.fromEntries(R_BLENDS.map((r) => [r.translit, r]));
+
 const $ = (id) => document.getElementById(id);
 
 function shuffle(arr) {
@@ -248,6 +342,15 @@ function buildAudioMap() {
       AUDIO_BY_TEXT[s.ex.word] = `audio/sylword_${slug}.mp3`;
     }
   });
+  // R-blends (rakar + reph). Same naming convention as syllables but with
+  // an "rb_" prefix so the two namespaces never collide.
+  R_BLENDS.forEach((r) => {
+    const slug = safeSylSlug(r.translit);
+    AUDIO_BY_TEXT[r.char] = `audio/rb_${slug}.mp3`;
+    if (r.ex && !AUDIO_BY_TEXT[r.ex.word]) {
+      AUDIO_BY_TEXT[r.ex.word] = `audio/rbword_${slug}.mp3`;
+    }
+  });
 }
 
 let currentAudio = null;
@@ -284,17 +387,33 @@ function _chainSyllable(syl, onEnd) {
   _playOne(baseFile, () => _playOne(vowelFile, onEnd));
 }
 
+// Fallback for r-blends if the dedicated MP3 is missing. Rakar plays
+// base-consonant then र; reph plays र then base-consonant. Crude but
+// at least makes the right sound order audible.
+function _chainRblend(rb, onEnd) {
+  const baseFile = AUDIO_BY_TEXT[rb.baseChar];
+  const raFile   = AUDIO_BY_TEXT["र"];
+  if (!baseFile || !raFile) { onEnd && onEnd(); return; }
+  if (rb.type === "rakar") _playOne(baseFile, () => _playOne(raFile, onEnd));
+  else _playOne(raFile, () => _playOne(baseFile, onEnd));
+}
+
 function speakWithCallback(text, onEnd) {
   if (!text) { onEnd && onEnd(); return; }
   const file = AUDIO_BY_TEXT[text];
   const syl = SYLLABLE_BY_CHAR[text];
+  const rb  = R_BLEND_BY_CHAR[text];
   if (file) {
-    // Try the direct file. If the syllable MP3 is missing on disk, fall
-    // back to chaining base + vowel so we always make *some* noise.
-    _playOne(file, onEnd, syl ? () => _chainSyllable(syl, onEnd) : onEnd);
+    // Try the direct file. If the dedicated MP3 is missing on disk, fall
+    // back to chaining components so we always make *some* noise.
+    const fallback = syl ? () => _chainSyllable(syl, onEnd)
+                       : rb  ? () => _chainRblend(rb, onEnd)
+                       : onEnd;
+    _playOne(file, onEnd, fallback);
     return;
   }
   if (syl) { _chainSyllable(syl, onEnd); return; }
+  if (rb)  { _chainRblend(rb, onEnd); return; }
   console.warn("No audio mapped for:", text);
   onEnd && onEnd();
 }
@@ -307,6 +426,17 @@ function playDiff(wrongText, rightText) {
   if (!wrongText || !rightText) return;
   speakWithCallback(wrongText, () => speakWithCallback(rightText, null));
 }
+
+// Global toggle for automatic playback (study card on appearance, post-answer
+// audio in sessions/flashcards). Manual play buttons always work regardless.
+// Persisted as "1"/"0" in localStorage; default is OFF.
+let audioAutoplay = localStorage.getItem("hindlearn:audio:autoplay") === "1";
+function setAudioAutoplay(on) {
+  audioAutoplay = !!on;
+  localStorage.setItem("hindlearn:audio:autoplay", audioAutoplay ? "1" : "0");
+}
+function autoSpeak(text)                  { if (audioAutoplay) speak(text); }
+function autoPlayDiff(wrongText, right)   { if (audioAutoplay) playDiff(wrongText, right); }
 
 function initTTS() { buildAudioMap(); }
 
@@ -353,6 +483,20 @@ function showSession(which) {
 document.querySelectorAll("#tabs .tab").forEach((btn) => {
   btn.addEventListener("click", () => showTab(btn.dataset.tab));
 });
+
+// ---- audio autoplay toggle (header) ----
+function renderAudioToggle() {
+  const btn = $("audio-autoplay-toggle");
+  if (!btn) return;
+  btn.classList.toggle("on", audioAutoplay);
+  btn.querySelector(".audio-toggle-icon").textContent = audioAutoplay ? "🔊" : "🔇";
+  btn.querySelector(".audio-toggle-label").textContent = audioAutoplay ? "Auto-audio on" : "Auto-audio off";
+}
+$("audio-autoplay-toggle").addEventListener("click", () => {
+  setAudioAutoplay(!audioAutoplay);
+  renderAudioToggle();
+});
+renderAudioToggle();
 
 // ======================================================
 //  LEARN MODE — chart rendering + character modal
@@ -437,6 +581,37 @@ function renderMatras() {
   MATRAS.forEach((m) => el.appendChild(makeMatraTile(m)));
 }
 
+function makeRblendTile(rb) {
+  const btn = document.createElement("button");
+  btn.className = "matra-tile";
+  const exHtml = rb.ex
+    ? `<div class="matra-note">e.g. <b>${rb.ex.word}</b> <code>${rb.ex.translit}</code> — ${rb.ex.meaning}</div>`
+    : `<div class="matra-note">${rb.tip}</div>`;
+  btn.innerHTML = `
+    <div class="matra-mark-row">
+      <div class="matra-mark">${rb.baseChar}</div>
+      <div class="matra-arrow">+ ${rb.sign} →</div>
+      <div class="matra-syllable">${rb.char}</div>
+    </div>
+    <div class="matra-translit"><code>${rb.translit}</code> <span class="matra-vowel-hint">(${rb.type})</span></div>
+    <div class="matra-pos">${rb.pos}</div>
+    ${exHtml}
+  `;
+  btn.addEventListener("click", () => speak(rb.char));
+  return btn;
+}
+
+function renderRblends() {
+  const el = $("chart-rblends");
+  if (!el) return;
+  // Featured pairs (rakar + reph) for common consonants — full 68 lives in
+  // the Journey level. Keep this gallery scannable.
+  const featured = ["ka", "ga", "pa", "ba", "ta", "da", "ma", "va", "sa"];
+  featured.forEach((t) => {
+    R_BLENDS.filter((r) => r.base === t).forEach((r) => el.appendChild(makeRblendTile(r)));
+  });
+}
+
 function renderCharts() {
   // vowels
   const vEl = $("chart-vowels");
@@ -513,6 +688,7 @@ document.addEventListener("keydown", (e) => {
 
 renderCharts();
 renderMatras();
+renderRblends();
 
 // ======================================================
 //  CHALLENGES MODE — levels + timed sessions
@@ -534,6 +710,7 @@ const LEVELS = [
   { id: 8,  name: "Semivowels + sibilants",  emoji: "श",  desc: "य र ल व and श ष स ह",                           cats: ["semivowel","sibilant"] },
   { id: 9,  name: "All consonants",          emoji: "भ",  desc: "Every consonant — no vowels",                   cats: ["guttural","palatal","retroflex","dental","labial","semivowel","sibilant"] },
   { id: 12, name: "Matras on every consonant", emoji: "✍", desc: "Every consonant × every matra. The bridge to reading actual words.", syllables: true },
+  { id: 13, name: "र-blends (र्, ्र)",        emoji: "र्", desc: "When र meets another consonant: hook above (र्क = rka, like रिज़र्व) or stroke below (क्र = kra, प्र = pra). 66 blends.", rblends: true },
   { id: 10, name: "Everything",              emoji: "🔥", desc: "Full alphabet. The final boss.",                cats: ["vowel","guttural","palatal","retroflex","dental","labial","semivowel","sibilant"] },
 ];
 
@@ -565,6 +742,12 @@ function levelPool(level) {
       ? SYLLABLES.filter((s) => level.syllableBases.includes(s.base))
       : SYLLABLES;
     return [...bases, ...syllables];
+  }
+  if (level.rblends) {
+    // R-blends level: bare consonant bases (so distractors can mix them in
+    // naturally) plus every rakar + reph.
+    const bases = R_BLEND_BASES.map((t) => CHAR_BY_TRANSLIT[t]).filter(Boolean);
+    return [...bases, ...R_BLENDS];
   }
   if (level.cats) return CHARACTERS.filter((c) => level.cats.includes(c.cat));
   return CHARACTERS;
@@ -684,7 +867,8 @@ function renderStudyCard() {
   $("study-next").textContent = atLast ? "Finish →" : "Next →";
 
   // Auto-play the letter so the user hears it as the card appears.
-  speak(c.char);
+  // No-op when the autoplay toggle is off (default).
+  autoSpeak(c.char);
 }
 
 function studyNext() {
@@ -894,6 +1078,20 @@ function pickSessionCard(answer, pool) {
       ...shuffle(otherSyl).slice(0, 1),   // one fully different syllable
       ...shuffle(bareBases).slice(0, 1),  // sprinkle in a bare base as variety
     ];
+  } else if (answer.cat === "rblend") {
+    // R-blend distractors: same base (= the opposite-type partner of this
+    // blend) tests direction-reading; same type with a different base tests
+    // base recognition. A handful of opposite-type and bare bases for variety.
+    const sameBase     = pool.filter((c) => c.cat === "rblend" && c.base === answer.base && c.translit !== answer.translit);
+    const sameType     = pool.filter((c) => c.cat === "rblend" && c.type === answer.type && c.base !== answer.base);
+    const oppositeType = pool.filter((c) => c.cat === "rblend" && c.type !== answer.type && c.base !== answer.base);
+    const bareBases    = pool.filter((c) => c.cat !== "rblend" && c.translit !== answer.translit);
+    distractorSource = [
+      ...shuffle(sameBase).slice(0, 1),
+      ...shuffle(sameType).slice(0, 3),
+      ...shuffle(oppositeType).slice(0, 2),
+      ...shuffle(bareBases).slice(0, 1),
+    ];
   } else {
     const localPool = pool.filter((c) => c.translit !== answer.translit);
     const fallback = CHARACTERS.filter((c) => c.translit !== answer.translit);
@@ -1018,7 +1216,7 @@ function answerSession(chosen, btn) {
     }
     fb.className = "feedback ok";
     fb.innerHTML = `✔ <b>${correctChar.char}</b> = <b>${correctChar.translit}</b> <span class="ipa-inline">/${correctChar.ipa}/</span>`;
-    speak(correctChar.char);
+    autoSpeak(correctChar.char);
     buttons.forEach((b) => (b.disabled = true));
     // auto advance on correct
     setTimeout(advanceSession, 700);
@@ -1063,7 +1261,7 @@ function answerSession(chosen, btn) {
     fb.querySelector(".fb-speak-right").addEventListener("click", () => speak(correctChar.char));
     fb.querySelector(".fb-speak-diff").addEventListener("click", () => playDiff(chosen.char, correctChar.char));
     // Auto-play the diff: wrong first, then correct, so you hear the contrast.
-    playDiff(chosen.char, correctChar.char);
+    autoPlayDiff(chosen.char, correctChar.char);
     // wait for Next click
     $("ch-next").classList.remove("hidden");
   }
@@ -1223,6 +1421,7 @@ const flashState = {
 function getPool() {
   if (flashState.category === "all") return CHARACTERS;
   if (flashState.category === "syllable") return SYLLABLES;
+  if (flashState.category === "rblend") return R_BLENDS;
   return CHARACTERS.filter((c) => c.cat === flashState.category);
 }
 
@@ -1236,16 +1435,20 @@ function pickCard() {
   let answer = pool[Math.floor(Math.random() * pool.length)];
 
   // Mix-matras: when enabled (default), randomly swap a non-vowel base for
-  // one of its matra-bearing syllables. Only active for the consonant-y
-  // categories — vowels stay vowels, the dedicated Matras chip is always
-  // pure syllables.
+  // one of its matra-bearing syllables OR one of its r-blends. Only active
+  // for the consonant-y categories — vowels stay vowels, the dedicated
+  // Matras / R-blend chips stay pure.
   if (flashState.mixMatras
       && flashState.category !== "syllable"
+      && flashState.category !== "rblend"
       && flashState.category !== "vowel"
       && answer.cat !== "vowel"
       && answer.cat !== "syllable"
+      && answer.cat !== "rblend"
       && Math.random() < 0.5) {
-    const candidates = SYLLABLES.filter((s) => s.base === answer.translit);
+    const sylCandidates = SYLLABLES.filter((s) => s.base === answer.translit);
+    const rbCandidates  = R_BLENDS.filter((r) => r.base === answer.translit);
+    const candidates = [...sylCandidates, ...rbCandidates];
     if (candidates.length > 0) {
       answer = candidates[Math.floor(Math.random() * candidates.length)];
     }
@@ -1272,6 +1475,24 @@ function pickCard() {
       const sameMatra = SYLLABLES.filter((s) => s.matra === answer.matra && s.base !== answer.base && inCategory(s));
       const others    = SYLLABLES.filter((s) => s.base !== answer.base && s.matra !== answer.matra && inCategory(s));
       distractorPool = [...shuffle(sameBase), ...shuffle(sameMatra), ...shuffle(others)];
+    }
+  } else if (answer.cat === "rblend") {
+    // Same category-aware logic as syllables: keep distractors visually
+    // plausible to the current flashcard category.
+    const inCategoryBases = flashState.category === "all" || flashState.category === "rblend"
+      ? null
+      : new Set(CHARACTERS.filter((c) => c.cat === flashState.category).map((c) => c.translit));
+    const inCategory = (r) => !inCategoryBases || inCategoryBases.has(r.base);
+
+    if (flashState.difficulty === "hard") {
+      // Hard: distractors are the same TYPE (all rakars or all rephs) so the
+      // base consonant is the only differentiator.
+      distractorPool = R_BLENDS.filter((r) => r.type === answer.type && r.translit !== answer.translit);
+    } else {
+      const sameBase     = R_BLENDS.filter((r) => r.base === answer.base && r.translit !== answer.translit);
+      const sameType     = R_BLENDS.filter((r) => r.type === answer.type && r.base !== answer.base && inCategory(r));
+      const oppositeType = R_BLENDS.filter((r) => r.type !== answer.type && r.base !== answer.base && inCategory(r));
+      distractorPool = [...shuffle(sameBase), ...shuffle(sameType), ...shuffle(oppositeType)];
     }
   } else if (flashState.difficulty === "hard") {
     distractorPool = shuffle(CHARACTERS.filter((c) => c.cat === answer.cat && c.translit !== answer.translit));
@@ -1364,7 +1585,7 @@ function answerCard(chosen, btn) {
     }
     fb.className = "feedback ok";
     fb.innerHTML = `✔ <b>${correctChar.char}</b> = <b>${correctChar.translit}</b> <span class="ipa-inline">/${correctChar.ipa}/</span> — ${correctChar.tip}`;
-    speak(correctChar.char);
+    autoSpeak(correctChar.char);
     recordCorrect();
   } else {
     btn.classList.add("bad");
@@ -1400,7 +1621,7 @@ function answerCard(chosen, btn) {
     fb.querySelector(".fb-speak-right").addEventListener("click", () => speak(correctChar.char));
     fb.querySelector(".fb-speak-diff").addEventListener("click", () => playDiff(chosen.char, correctChar.char));
     // Auto-play both so the user immediately hears the contrast.
-    playDiff(chosen.char, correctChar.char);
+    autoPlayDiff(chosen.char, correctChar.char);
   }
   buttons.forEach((b) => (b.disabled = true));
   updateFlashStats();

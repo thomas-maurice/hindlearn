@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hindlearn — Read Devanagari</title>
-  <link rel="stylesheet" href="style.css?v=22" />
+  <link rel="stylesheet" href="style.css?v=24" />
 </head>
 <body>
   <header>
@@ -15,6 +15,11 @@
       <button class="tab" data-tab="challenges">Challenges</button>
       <button class="tab" data-tab="flashcards">Flashcards</button>
     </nav>
+    <button id="audio-autoplay-toggle" class="audio-toggle" type="button"
+      title="Toggle automatic audio playback (manual 🔊 buttons always work)">
+      <span class="audio-toggle-icon">🔇</span>
+      <span class="audio-toggle-label">Auto-audio off</span>
+    </button>
   </header>
 
   <main id="app">
@@ -48,6 +53,10 @@
           <h4>6. Matras — vowel signs (the lines above & below)</h4>
           <p>Vowels have <i>two</i> forms. The big standalone letters (<code>अ आ इ ई …</code>) are only used at the <b>start</b> of a word. Everywhere else, the vowel becomes a <i>matra</i> — a little mark that attaches to a consonant: above, below, before, or after.</p>
           <p>So <code>का</code> (kaa) is not क + आ. It's क + the <code>ा</code> matra. <code>के</code> (ke) is क + a single stroke above. <code>कै</code> (kai) is k + <i>two</i> strokes above. Once you spot the pattern you can read most vowel combinations on sight — see the chart below.</p>
+
+          <h4>7. र-blends — the disappearing र</h4>
+          <p>When र combines with another consonant it doesn't write itself out as a full र. It shrinks into one of two marks: a tiny <b>hook above</b> the next letter (called <i>reph</i>) or a small <b>diagonal stroke below</b> the previous letter (called <i>rakar</i>).</p>
+          <p>The hook above means र comes <b>first</b>: <code>र्क</code> = <i>rka</i>, <code>र्व</code> = <i>rva</i> — you've seen it on every Indian banknote (रिज़र्व बैंक). The stroke below means र comes <b>after</b>: <code>क्र</code> = <i>kra</i>, <code>प्र</code> = <i>pra</i>. Same idea as the matras: a full letter gets compressed into a small attached mark.</p>
         </div>
       </details>
 
@@ -69,6 +78,22 @@
       </div>
 
       <div class="matra-grid" id="chart-matras"></div>
+
+      <h2 class="section-heading">र-blends — when र attaches to another consonant</h2>
+      <p class="hint">When र combines with another consonant it shrinks into a small mark. Hook on top → र comes <b>first</b> (<i>reph</i>). Stroke below → र comes <b>after</b> (<i>rakar</i>). Tap a tile to hear it.</p>
+
+      <div class="matra-pattern">
+        <div class="matra-pattern-head">✨ The two र-blend patterns</div>
+        <div class="matra-pattern-body">
+          <div class="matra-pattern-row"><span class="matra-pattern-syl">क्र</span> <span class="matra-pattern-eq">=</span> क + <b>tiny diagonal stroke below</b> <span class="matra-pattern-eq">→</span> <code>kra</code> (base first, then र)</div>
+          <div class="matra-pattern-row"><span class="matra-pattern-syl">प्र</span> <span class="matra-pattern-eq">=</span> प + <b>same stroke below</b> <span class="matra-pattern-eq">→</span> <code>pra</code> (this is the <i>rakar</i>)</div>
+          <div class="matra-pattern-row"><span class="matra-pattern-syl">र्क</span> <span class="matra-pattern-eq">=</span> <b>hook above</b> + क <span class="matra-pattern-eq">→</span> <code>rka</code> (र first, then base — this is the <i>reph</i>)</div>
+          <div class="matra-pattern-row"><span class="matra-pattern-syl">र्व</span> <span class="matra-pattern-eq">=</span> <b>same hook above</b> + व <span class="matra-pattern-eq">→</span> <code>rva</code> — the "rv" in <span class="matra-pattern-syl">रिज़र्व</span></div>
+          <div class="matra-pattern-note">Hook on top = read र <b>first</b>. Stroke below = read र <b>after</b>. That's the whole rule.</div>
+        </div>
+      </div>
+
+      <div class="matra-grid" id="chart-rblends"></div>
 
       <h2 class="section-heading">Consonants — the varga</h2>
       <p class="hint">Each row, left → right: unvoiced · unvoiced aspirated · voiced · voiced aspirated · nasal.</p>
@@ -239,6 +264,7 @@
             <button class="chip active" data-cat="all">All</button>
             <button class="chip" data-cat="vowel">Vowels</button>
             <button class="chip" data-cat="syllable">Matras (मात्रा)</button>
+            <button class="chip" data-cat="rblend">र-blends (र्, ्र)</button>
             <button class="chip" data-cat="guttural">Gutturals (k-family)</button>
             <button class="chip" data-cat="palatal">Palatals (c-family)</button>
             <button class="chip" data-cat="retroflex">Retroflex (T/D)</button>
@@ -257,9 +283,9 @@
           </div>
         </div>
         <div class="fc-group">
-          <label>Matra mix</label>
+          <label>Matra + र mix</label>
           <div class="chips" id="fc-mixmatras">
-            <button class="chip active" data-mix="on">Mix syllables in</button>
+            <button class="chip active" data-mix="on">Mix matras & र-blends in</button>
             <button class="chip" data-mix="off">Bare letters only</button>
           </div>
         </div>
@@ -300,6 +326,6 @@
     <div class="toast-text"></div>
   </div>
 
-  <script src="app.js?v=22"></script>
+  <script src="app.js?v=24"></script>
 </body>
 </html>

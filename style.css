@@ -26,6 +26,40 @@ header {
   text-align: center;
   padding: 1.2rem 1rem 0;
   border-bottom: 1px solid var(--border);
+  position: relative;
+}
+
+.audio-toggle {
+  position: absolute;
+  top: 0.8rem;
+  right: 0.9rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.audio-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.audio-toggle.on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.audio-toggle.on:hover { color: #fff; opacity: 0.9; }
+.audio-toggle-icon { font-size: 0.95rem; line-height: 1; }
+@media (max-width: 520px) {
+  .audio-toggle { top: 0.5rem; right: 0.5rem; padding: 0.25rem 0.55rem; }
+  .audio-toggle-label { display: none; }
 }
 
 header h1 {

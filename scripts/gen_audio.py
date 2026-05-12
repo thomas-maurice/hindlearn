@@ -130,6 +130,35 @@ for _base, _base_char in SYLLABLE_BASES.items():
         SYLLABLE_DATA.append((_base_char + _mark, _translit, SYLLABLE_EXAMPLES.get(_translit)))
 
 
+# ---- R-blends — rakar (consonant + ्र) and reph (र् + consonant) ----
+# Mirrors R_BLENDS in app.js. Excludes र itself as a base.
+R_BLEND_BASES = {translit: char for char, translit, _ in DATA[VOWEL_COUNT:] if translit not in ("ra", "Ra")}
+
+R_BLEND_EXAMPLES = {
+    # rakar
+    "kra":  "क्रम",   "gra":  "ग्राम",  "ghra": "घ्राण",  "pra":  "प्रेम",
+    "phra": "फ्रांस", "bra":  "ब्रज",   "bhra": "भ्रम",   "tra":  "त्रिवेणी",
+    "dra":  "द्रव",   "dhra": "ध्रुव",  "sra":  "स्रोत",  "shra": "श्रम",
+    "hra":  "ह्रास",
+    # reph
+    "rka":  "अर्क",   "rga":  "मार्ग",  "rja":  "ऊर्जा",  "rta":  "वर्तमान",
+    "rtha": "अर्थ",   "rda":  "दर्द",   "rdha": "वर्धन",  "rNa":  "वर्ण",
+    "rpa":  "दर्पण",  "rbha": "गर्भ",   "rma":  "कर्म",   "rya":  "कार्य",
+    "rva":  "रिज़र्व", "rla":  "दुर्लभ", "rSha": "वर्ष",
+}
+
+# Built as (blend_char, blend_translit, example_word_or_None)
+R_BLEND_DATA: list[tuple[str, str, str | None]] = []
+for _base, _base_char in R_BLEND_BASES.items():
+    _cons = _base[:-1]
+    # rakar: <base>्र (small र attached below the base)
+    _rakar_t = _cons + "ra"
+    R_BLEND_DATA.append((_base_char + "्र", _rakar_t, R_BLEND_EXAMPLES.get(_rakar_t)))
+    # reph: र्<base> (hook above the next consonant)
+    _reph_t = "r" + _base
+    R_BLEND_DATA.append(("र्" + _base_char, _reph_t, R_BLEND_EXAMPLES.get(_reph_t)))
+
+
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "audio"
 
@@ -189,6 +218,26 @@ def main() -> int:
         items: list[tuple[str, str, str]] = [("syl", char, f"syl_{slug}.mp3")]
         if word:
             items.append(("word", word, f"sylword_{slug}.mp3"))
+        for label, text, name in items:
+            manifest[text] = name
+            out = OUT / name
+            try:
+                if synth(text, out, args.force):
+                    print(f"  + {name}  ({label}: {text})")
+                    made += 1
+                    time.sleep(args.sleep)
+                else:
+                    skipped += 1
+            except Exception as e:
+                print(f"  ! failed {name} ({text}): {e}", file=sys.stderr)
+
+    # R-blends (rakar + reph) and their example words.
+    print(f"\n-- R-blends ({len(R_BLEND_DATA)}) --")
+    for char, translit, word in R_BLEND_DATA:
+        slug = safe_syl_slug(translit)
+        items = [("rblend", char, f"rb_{slug}.mp3")]
+        if word:
+            items.append(("word", word, f"rbword_{slug}.mp3"))
         for label, text, name in items:
             manifest[text] = name
             out = OUT / name
