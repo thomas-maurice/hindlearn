@@ -69,6 +69,40 @@ const CHARACTERS = [
   { char: "ष",  translit: "Sha", cat: "sibilant", tip: "Retroflex 'sh' — tongue curled back. In modern Hindi often sounds like श.",                              ex: { word: "भाषा",  translit: "bhaashaa", meaning: "language" } },
   { char: "स",  translit: "sa",  cat: "sibilant", tip: "Plain 's' like 'see'.",                                                                                  ex: { word: "साल",   translit: "saal",    meaning: "year" } },
   { char: "ह",  translit: "ha",  cat: "sibilant", tip: "Soft 'h' like 'hello'.",                                                                                 ex: { word: "हम",    translit: "ham",     meaning: "we" } },
+
+  // ---- nukta letters (a dot below = a Perso-Arabic sound) ----
+  // Everywhere in real Hindi — ज़ and फ़ especially — and two of this app's
+  // own example words (मेज़, रिज़र्व) already contain ज़.
+  { char: "क़", translit: "qa", cat: "nukta", ipa: "qə", tip: "A 'k' made further back, at the uvula. Many speakers just say क. The dot below is the only difference.", ex: { word: "क़लम",  translit: "qalam",    meaning: "pen" } },
+  { char: "ख़", translit: "xa", cat: "nukta", ipa: "xə", tip: "The rasping 'ch' of Scottish 'loch' or German 'Bach'. ख with a dot.", ex: { word: "ख़बर",  translit: "xabar",    meaning: "news" } },
+  { char: "ग़", translit: "Ga", cat: "nukta", ipa: "ɣə", tip: "The voiced twin of ख़ — like a French 'r' gargled at the back. Capital G here means throaty, not retroflex.", ex: { word: "ग़लत",  translit: "Galat",    meaning: "wrong" } },
+  { char: "ज़", translit: "za", cat: "nukta", ipa: "zə", tip: "Plain 'z' as in 'zoo'. Extremely common — ज़रूरी, मेज़, रिज़र्व.", ex: { word: "ज़रूरी", translit: "zaruurii", meaning: "necessary" } },
+  { char: "फ़", translit: "fa", cat: "nukta", ipa: "fə", tip: "'f' as in 'food'. This — not फ — is the letter in loanwords like फ़ोन and फ़िल्म.", ex: { word: "फ़ोन",  translit: "fon",      meaning: "phone" } },
+
+  // ---- conjuncts (two consonants fused into one glyph) ----
+  // त्र and श्र are deliberately absent: they are the rakar forms of त and श
+  // and already live in R_BLENDS.
+  { char: "क्ष", translit: "ksha", cat: "conjunct", ipa: "kʃə",  tip: "क + ष fused. Taught as a letter in its own right — it turns up in the alphabet song.", ex: { word: "क्षमा",  translit: "kshamaa", meaning: "forgiveness" } },
+  { char: "ज्ञ", translit: "gya",  cat: "conjunct", ipa: "ɡjə",  tip: "ज + ञ on paper, but pronounced 'gy' in Hindi — nothing like a j or an ñ.", ex: { word: "ज्ञान",  translit: "gyaan",   meaning: "knowledge" } },
+  { char: "द्ध", translit: "ddha", cat: "conjunct", ipa: "d̪d̪ʱə", tip: "द stacked on ध. The top half loses its vertical stem — the usual stacking trick.", ex: { word: "बुद्ध",   translit: "buddh",   meaning: "Buddha" } },
+  { char: "क्त", translit: "kta",  cat: "conjunct", ipa: "kt̪ə", tip: "क + त. The क is cut down to its left half and glued to त.", ex: { word: "शक्ति",  translit: "shakti",  meaning: "power, strength" } },
+  { char: "स्त", translit: "sta",  cat: "conjunct", ipa: "st̪ə", tip: "स loses its stem and leans on त. You read it every time you say नमस्ते.", ex: { word: "नमस्ते", translit: "namaste", meaning: "hello" } },
+  { char: "न्द", translit: "nda",  cat: "conjunct", ipa: "nd̪ə", tip: "न stacked before द — the conjunct in the word हिन्दी itself.", ex: { word: "हिन्दी",  translit: "hindii",  meaning: "Hindi" } },
+  { char: "द्व", translit: "dva",  cat: "conjunct", ipa: "d̪ʋə", tip: "द with व tucked under its tail.", ex: { word: "द्वार",  translit: "dvaar",   meaning: "door" } },
+  { char: "श्व", translit: "shva", cat: "conjunct", ipa: "ʃʋə", tip: "श with व hanging below.", ex: { word: "विश्व",   translit: "vishva",  meaning: "world" } },
+  { char: "ट्ट", translit: "TTa",  cat: "conjunct", ipa: "ʈʈə", tip: "A doubled retroflex — ट stacked on ट. Hold the stop a beat longer.", ex: { word: "छुट्टी",  translit: "chhuTTii", meaning: "holiday, day off" } },
+
+  // ---- Devanagari numerals ----
+  { char: "०", translit: "0", cat: "digit", ipa: null, tip: "Zero. Looks like a Latin 0 — and that is where the Latin 0 came from.", ex: { word: "शून्य", translit: "shuunya", meaning: "zero" } },
+  { char: "१", translit: "1", cat: "digit", ipa: null, tip: "One. A hook hanging off the headline.", ex: { word: "एक",   translit: "ek",   meaning: "one" } },
+  { char: "२", translit: "2", cat: "digit", ipa: null, tip: "Two. Reads like a Latin 2 that has been rotated.", ex: { word: "दो",   translit: "do",   meaning: "two" } },
+  { char: "३", translit: "3", cat: "digit", ipa: null, tip: "Three. Two stacked curves.", ex: { word: "तीन", translit: "tiin", meaning: "three" } },
+  { char: "४", translit: "4", cat: "digit", ipa: null, tip: "Four. Looks like a lowercase 'y' under a headline.", ex: { word: "चार", translit: "chaar", meaning: "four" } },
+  { char: "५", translit: "5", cat: "digit", ipa: null, tip: "Five. Beware — Western eyes read this one as a 4.", ex: { word: "पाँच", translit: "paa̐ch", meaning: "five" } },
+  { char: "६", translit: "6", cat: "digit", ipa: null, tip: "Six. A loop with a tail; easy to mix up with ३.", ex: { word: "छह",   translit: "chhah", meaning: "six" } },
+  { char: "७", translit: "7", cat: "digit", ipa: null, tip: "Seven. Like a Latin 9 mirrored.", ex: { word: "सात", translit: "saat", meaning: "seven" } },
+  { char: "८", translit: "8", cat: "digit", ipa: null, tip: "Eight. A curl closing on itself.", ex: { word: "आठ",   translit: "aaTh", meaning: "eight" } },
+  { char: "९", translit: "9", cat: "digit", ipa: null, tip: "Nine. Very close to १ — check the tail.", ex: { word: "नौ",   translit: "nau",  meaning: "nine" } },
 ];
 
 // IPA (International Phonetic Alphabet) for each character — the "real" phonetic
@@ -87,8 +121,16 @@ const IPA = {
 };
 // Attach .ipa to every character (adding the inherent 'a' schwa to consonants).
 CHARACTERS.forEach((c) => {
-  const base = IPA[c.translit] || "";
-  c.ipa = c.cat === "vowel" ? base : `${base}ə`;
+  // An entry may carry its own ipa (the nukta and conjunct letters do);
+  // digits have none at all, which renders as no badge rather than "//".
+  if (c.ipa === undefined) {
+    const base = IPA[c.translit];
+    c.ipa = base === undefined ? null : (c.cat === "vowel" ? base : `${base}ə`);
+  }
+  // Stable unique id. translit alone is NOT unique across kinds — ऋ and
+  // रि are both "ri" — and it is what correctness and per-character
+  // stats are keyed on, so every drillable item carries a prefixed id.
+  c.id = `c:${c.translit}`;
 });
 
 const CHAR_BY_TRANSLIT = Object.fromEntries(CHARACTERS.map((c) => [c.translit, c]));
@@ -104,6 +146,11 @@ const CAT_LABEL = {
   semivowel: "Semivowel",
   sibilant: "Sibilant / h",
   syllable: "Syllable (consonant + matra)",
+  rblend: "र-blend",
+  nukta: "Nukta (dotted, Perso-Arabic)",
+  conjunct: "Conjunct (stacked consonants)",
+  digit: "Devanagari numeral",
+  word: "Word",
 };
 
 // ======================================================
@@ -117,7 +164,11 @@ const CAT_LABEL = {
 // Every non-vowel CHARACTERS entry is eligible as a syllable base.
 // The matras-intro level filters this down to just k/m/n; the mega-level
 // uses the full set.
-const SYLLABLE_BASES = CHARACTERS.filter((c) => c.cat !== "vowel").map((c) => c.translit);
+// The seven varga-ish categories that can actually take a matra or an
+// r-blend. Deliberately explicit: it used to be "anything that isn't a
+// vowel", which would now sweep in digits, conjuncts and nukta letters.
+const CONSONANT_CATS = ["guttural", "palatal", "retroflex", "dental", "labial", "semivowel", "sibilant"];
+const SYLLABLE_BASES = CHARACTERS.filter((c) => CONSONANT_CATS.includes(c.cat)).map((c) => c.translit);
 
 const MATRA_DEFS = [
   { matra: "aa",  mark: "ा", pos: "After (vertical stick)" },
@@ -168,6 +219,7 @@ SYLLABLE_BASES.forEach((baseTranslit) => {
     const baseIpa = IPA[baseTranslit] || "";
     const vowelIpa = IPA[md.matra] || "";
     SYLLABLES.push({
+      id: `s:${translit}`,
       char: baseChar + md.mark,
       translit,
       base: baseTranslit,
@@ -255,6 +307,7 @@ R_BLEND_BASES.forEach((baseTranslit) => {
   // Rakar: <base>्र — pronounced "<base>ra"
   const rakarTranslit = baseConsonant + "ra";
   R_BLENDS.push({
+    id: `r:${rakarTranslit}`,
     char: baseChar + "्र",
     translit: rakarTranslit,
     type: "rakar",
@@ -271,6 +324,7 @@ R_BLEND_BASES.forEach((baseTranslit) => {
   // Reph: र्<base> — pronounced "r<base>a"
   const rephTranslit = "r" + baseTranslit;
   R_BLENDS.push({
+    id: `r:${rephTranslit}`,
     char: "र्" + baseChar,
     translit: rephTranslit,
     type: "reph",
@@ -285,10 +339,125 @@ R_BLEND_BASES.forEach((baseTranslit) => {
   });
 });
 
+// ======================================================
+//  Words — reading whole words is the point of the whole exercise, and
+//  every example word already carries a meaning and a pre-rendered MP3.
+//  Deduped by the word itself: एक is the example for both ए and १.
+// ======================================================
+
+const WORDS = [];
+(() => {
+  const seen = new Set();
+  CHARACTERS.forEach((c) => {
+    if (!c.ex || seen.has(c.ex.word)) return;
+    seen.add(c.ex.word);
+    WORDS.push({
+      id: `w:${c.ex.word}`,
+      char: c.ex.word,
+      translit: c.ex.translit,
+      cat: "word",
+      ipa: null,
+      meaning: c.ex.meaning,
+      tip: `"${c.ex.meaning}". Read it letter by letter — and remember the final inherent 'a' is silent.`,
+      ex: null,
+    });
+  });
+})();
+
 const R_BLEND_BY_CHAR     = Object.fromEntries(R_BLENDS.map((r) => [r.char, r]));
 const R_BLEND_BY_TRANSLIT = Object.fromEntries(R_BLENDS.map((r) => [r.translit, r]));
 
+// ======================================================
+//  Look-alikes — the pairs that actually cost you when reading.
+//  Every tip in CHARACTERS is about *sound*; the failure mode when you
+//  read is *shape*. घ and ध are in different categories and sound
+//  nothing alike, which is exactly why a category-based distractor never
+//  puts them next to each other.
+// ======================================================
+
+const CONFUSABLES = [
+  { translits: ["gha", "dha"],        note: "\u0918 closes into a loop on the left; \u0927 stays open with a hook." },
+  { translits: ["bha", "ma"],         note: "\u092d has a vertical stem inside the bowl; \u092e is closed and round." },
+  { translits: ["ba", "va"],          note: "\u092c carries one stroke inside the bowl; \u0935 has none." },
+  { translits: ["pa", "Sha"],         note: "\u092a is open at the bottom right; \u0937 closes into a loop." },
+  { translits: ["ta", "na"],          note: "\u0924 has a curl on the left arm; \u0928 is one smooth arc." },
+  { translits: ["tha", "ya"],         note: "\u0925 has a closed bulb in the middle; \u092f hooks down into a tail." },
+  { translits: ["Da", "Dha", "da"],   note: "\u0921 is one hook, \u0922 doubles it, \u0926 leans the other way." },
+  { translits: ["Ta", "Tha"],         note: "\u0920 is \u091f with a closed circle on top." },
+  { translits: ["ka", "pha"],         note: "Both hang off the crossbar; \u092b loops to the right, \u0915 splits." },
+  { translits: ["nga", "Da"],         note: "\u0919 is \u0921 with a dot above \u2014 and you will almost never meet \u0919 alone." },
+  { translits: ["sha", "Sha", "sa"],  note: "Three s-sounds: \u0936 palatal 'sh', \u0937 retroflex 'sh', \u0938 plain 's'." },
+  { translits: ["i", "ii"],           note: "Short vs long: the extra stroke doubles the length." },
+  { translits: ["u", "uu"],           note: "Short vs long: \u090a grows a tail." },
+  { translits: ["e", "ai"],           note: "One stroke vs two on the headline." },
+  { translits: ["o", "au"],           note: "One stroke vs two, on top of the \u093e stick." },
+];
+
+// translit -> the other members of every group it belongs to.
+const CONFUSABLE_SIBS = {};
+CONFUSABLES.forEach((g) => {
+  g.translits.forEach((t) => {
+    CONFUSABLE_SIBS[t] = (CONFUSABLE_SIBS[t] || []).concat(g.translits.filter((x) => x !== t));
+  });
+});
+
+const CONFUSABLE_TRANSLITS = [...new Set(CONFUSABLES.flatMap((g) => g.translits))];
+
 const $ = (id) => document.getElementById(id);
+
+// The first time you ever meet a character, you get to SEE it: multiple
+// choice with the glyph on screen. An audio-only or typed prompt for a
+// symbol you have never laid eyes on is unanswerable, not difficult.
+// Returns null once the item has any history, letting the normal rotation
+// take over.
+function firstEncounterDir(item) {
+  return accuracyOf(item.id) === null ? "letter-to-sound" : null;
+}
+
+// ======================================================
+//  Pairs the AUDIO cannot tell apart.
+//
+//  gTTS reading an isolated letter does not carry vowel length: measured on
+//  the generated files, अ is 0.624s and आ is 0.648s — a 4% difference for a
+//  contrast that is supposed to be about 2x. इ/ई and उ/ऊ are better (27-32%)
+//  but still not a reliable cue. श/ष are genuinely merged for most modern
+//  speakers — this app's own tip for ष says so.
+//
+//  These are excellent distractors when you can SEE the letter, and an
+//  unanswerable question when you can only hear it, so they are kept apart
+//  in listen mode only. If the letter audio is ever re-recorded with a real
+//  length contrast, delete this table.
+// ======================================================
+
+const AUDIO_AMBIGUOUS = [
+  ["a", "aa"],
+  ["i", "ii"],
+  ["u", "uu"],
+  ["sha", "Sha"],
+];
+
+const AUDIO_AMBIGUOUS_SIBS = {};
+AUDIO_AMBIGUOUS.forEach((g) => {
+  g.forEach((t) => {
+    AUDIO_AMBIGUOUS_SIBS[t] = (AUDIO_AMBIGUOUS_SIBS[t] || []).concat(g.filter((x) => x !== t));
+  });
+});
+
+// A candidate option is only allowed on a listen-only card when it is
+// actually separable from the answer by ear.
+function optionAllowed(candidate, answer, dir) {
+  if (dir !== "listen") return true;
+  const sibs = AUDIO_AMBIGUOUS_SIBS[answer.translit];
+  return !sibs || !sibs.includes(candidate.translit);
+}
+
+// Weighted pick from [[value, weight], ...].
+function pickWeighted(pairs) {
+  const total = pairs.reduce((a, [, w]) => a + w, 0);
+  let r = Math.random() * total;
+  for (const [v, w] of pairs) { if (r < w) return v; r -= w; }
+  return pairs[pairs.length - 1][0];
+}
 
 function shuffle(arr) {
   const a = arr.slice();
@@ -300,6 +469,111 @@ function shuffle(arr) {
 }
 
 // ======================================================
+//  Per-character stats — the memory that makes drilling adaptive.
+//
+//  One localStorage key holds {id: [seen, correct, lastTs]} for every item
+//  you have ever been asked. Everything else here reads off that: which
+//  letters get asked more often, what the "weak letters" deck contains,
+//  and the mastery heatmap on the Journey tab.
+// ======================================================
+
+const STATS_KEY = "hindlearn:stats";
+const MASTERY_ACC = 0.8;   // accuracy needed to count as "known"
+const MASTERY_SEEN = 3;    // ...over at least this many attempts
+
+function loadStats() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(STATS_KEY) || "{}");
+    return raw && typeof raw === "object" ? raw : {};
+  } catch { return {}; }
+}
+
+let STATS = loadStats();
+let _statsDirty = false;
+
+// Writes are batched — a fast flashcard run would otherwise serialize the
+// whole object on every single answer.
+function flushStats() {
+  if (!_statsDirty) return;
+  _statsDirty = false;
+  try { localStorage.setItem(STATS_KEY, JSON.stringify(STATS)); }
+  catch (e) { console.warn("[hindlearn] could not persist stats", e); }
+}
+
+function recordAttempt(item, ok) {
+  if (!item || !item.id) return;
+  const st = STATS[item.id] || (STATS[item.id] = [0, 0, 0]);
+  st[0] += 1;
+  if (ok) st[1] += 1;
+  st[2] = Date.now();
+  _statsDirty = true;
+  clearTimeout(flushStats._t);
+  flushStats._t = setTimeout(flushStats, 400);
+}
+
+// null = never seen. Otherwise 0..1.
+function accuracyOf(id) {
+  const st = STATS[id];
+  if (!st || st[0] === 0) return null;
+  return st[1] / st[0];
+}
+
+function isMastered(id) {
+  const st = STATS[id];
+  return !!st && st[0] >= MASTERY_SEEN && st[1] / st[0] >= MASTERY_ACC;
+}
+
+// Every drillable item, for the weak deck. Must list every pool that can
+// record an attempt, WORDS included — anything missing here silently never
+// shows up in "Weak letters".
+function allItems() {
+  return [...CHARACTERS, ...SYLLABLES, ...R_BLENDS, ...WORDS];
+}
+
+// How much this item deserves to be asked. Unseen ranks high (you have to
+// meet it at least once); perfect recall ranks low but never zero.
+function itemWeight(item) {
+  const acc = accuracyOf(item.id);
+  if (acc === null) return 2.5;
+  return 0.35 + 3 * (1 - acc);
+}
+
+// Weighted draw without replacement — the adaptive half of the app.
+function weightedSample(pool, n) {
+  const rest = pool.slice();
+  const out = [];
+  while (out.length < n && rest.length) {
+    const w = rest.map(itemWeight);
+    let r = Math.random() * w.reduce((a, b) => a + b, 0);
+    let k = 0;
+    while (k < rest.length - 1 && r > w[k]) { r -= w[k]; k += 1; }
+    out.push(rest.splice(k, 1)[0]);
+  }
+  return out;
+}
+
+// The items you actually keep getting wrong, worst first.
+function weakItems(limit = 25) {
+  return allItems()
+    .map((i) => ({ i, acc: accuracyOf(i.id), seen: (STATS[i.id] || [0])[0] }))
+    .filter((x) => x.acc !== null && x.seen >= 2 && x.acc < MASTERY_ACC)
+    .sort((a, b) => a.acc - b.acc || b.seen - a.seen)
+    .slice(0, limit)
+    .map((x) => x.i);
+}
+
+// Fraction of a level's pool that counts as mastered — shown per level so
+// "done" means something beyond one lucky 10-question run.
+function levelMastery(level) {
+  const pool = levelPool(level);
+  if (!pool.length) return { known: 0, total: 0, pct: 0 };
+  const known = pool.filter((c) => isMastered(c.id)).length;
+  return { known, total: pool.length, pct: Math.round((known / pool.length) * 100) };
+}
+
+window.addEventListener("beforeunload", flushStats);
+
+// ======================================================
 //  Audio — pre-generated MP3s in ./audio/
 //
 //  Files produced by scripts/gen_audio.py using the open-source gTTS
@@ -309,10 +583,13 @@ function shuffle(arr) {
 //  Retroflex slugs are prefixed "ret_" (case-insensitive filesystem safe).
 // ======================================================
 
-const RETROFLEX_TRANSLITS = new Set(["Ta","Tha","Da","Dha","Na","Ra","Rha","Sha"]);
-
+// Any capital in a translit means the lowercase spelling is a *different*
+// character (Ta/ta, Na/na, Ga/ga), so the file gets a ret_ prefix to survive
+// case-insensitive filesystems. Was a hardcoded retroflex set; the rule is
+// the same for the eight retroflex letters and generalises to the nukta and
+// conjunct letters added later. Mirrors safe_slug in gen_audio.py.
 function safeSlug(translit) {
-  return RETROFLEX_TRANSLITS.has(translit) ? `ret_${translit.toLowerCase()}` : translit;
+  return /[A-Z]/.test(translit) ? `ret_${translit.toLowerCase()}` : translit;
 }
 
 // Syllable filename slug. Retroflex bases produce mixed-case translits like
@@ -329,8 +606,10 @@ const AUDIO_BY_TEXT = {};
 function buildAudioMap() {
   CHARACTERS.forEach((c) => {
     const slug = safeSlug(c.translit);
-    AUDIO_BY_TEXT[c.char]    = `audio/char_${slug}.mp3`;
-    AUDIO_BY_TEXT[c.ex.word] = `audio/word_${slug}.mp3`;
+    AUDIO_BY_TEXT[c.char] = `audio/char_${slug}.mp3`;
+    // First writer wins: several characters share an example word (एक is
+    // both ए's and १'s), and the earlier entry's file already exists.
+    if (!AUDIO_BY_TEXT[c.ex.word]) AUDIO_BY_TEXT[c.ex.word] = `audio/word_${slug}.mp3`;
   });
   // Syllables get their own pre-rendered MP3s (gen_audio.py generates them
   // with gTTS — same pipeline as the chars). Falls through to the chain
@@ -341,6 +620,13 @@ function buildAudioMap() {
     if (s.ex && !AUDIO_BY_TEXT[s.ex.word]) {
       AUDIO_BY_TEXT[s.ex.word] = `audio/sylword_${slug}.mp3`;
     }
+  });
+  // Nasal-mark example words (हिंदी, माँ, ...). Their own prefix so the
+  // slugs cannot collide with a letter's example word.
+  NASALS.forEach((n) => {
+    n.examples.forEach((e) => {
+      if (!AUDIO_BY_TEXT[e.word]) AUDIO_BY_TEXT[e.word] = `audio/nasal_${e.slug}.mp3`;
+    });
   });
   // R-blends (rakar + reph). Same naming convention as syllables but with
   // an "rb_" prefix so the two namespaces never collide.
@@ -355,20 +641,50 @@ function buildAudioMap() {
 
 let currentAudio = null;
 
+// Bumped on every playback request. A clip whose generation is stale has
+// been superseded by a newer one, and must stay silent instead of running
+// callbacks — see the AbortError note below.
+let audioGen = 0;
+
 // Play a single MP3 file. Stops anything currently playing first. onEnd is
-// called when the clip finishes; onError is called separately if the file
-// can't be played (404, decode error, etc.) so callers can fall back.
+// called when the clip finishes; onError fires ONLY when the file itself is
+// unusable (404, decode failure), because onError is what makes callers
+// start a fallback chain.
 function _playOne(file, onEnd, onError) {
   if (!file) { (onError || onEnd) && (onError || onEnd)(); return; }
+  const gen = ++audioGen;
   if (currentAudio) { try { currentAudio.pause(); } catch {} }
   const audio = new Audio(file);
   currentAudio = audio;
   let fired = false;
-  const fireEnd = () => { if (!fired) { fired = true; onEnd && onEnd(); } };
-  const fireErr = () => { if (!fired) { fired = true; (onError || onEnd) && (onError || onEnd)(); } };
-  audio.addEventListener("ended", fireEnd, { once: true });
-  audio.addEventListener("error", fireErr, { once: true });
-  audio.play().catch((err) => { console.warn("audio playback failed:", err, file); fireErr(); });
+  const settle = (fn) => {
+    if (fired) return;
+    fired = true;
+    // Superseded: something newer is already playing, so this clip's
+    // outcome is irrelevant. Running its callbacks here is what used to
+    // stack a fallback chain on top of the clip that replaced it.
+    if (gen !== audioGen) return;
+    if (audio === currentAudio) currentAudio = null;
+    fn && fn();
+  };
+  audio.addEventListener("ended", () => settle(onEnd), { once: true });
+  audio.addEventListener("error", () => settle(onError || onEnd), { once: true });
+  audio.play().catch((err) => {
+    // Three very different things land here and only one is a broken file:
+    //   AbortError      — we paused it ourselves for a newer clip
+    //   NotAllowedError — autoplay policy, before the first user gesture
+    //   anything else   — genuinely unplayable, so let the caller fall back
+    const name = err && err.name;
+    if (name === "AbortError" || name === "NotAllowedError") {
+      if (name === "NotAllowedError") {
+        console.debug("[hindlearn] audio blocked until the first click on the page");
+      }
+      settle(null);
+      return;
+    }
+    console.warn("audio playback failed:", err, file);
+    settle(onError || onEnd);
+  });
 }
 
 // Speak the given Devanagari text and call onEnd when done. For everything
@@ -430,7 +746,11 @@ function playDiff(wrongText, rightText) {
 // Global toggle for automatic playback (study card on appearance, post-answer
 // audio in sessions/flashcards). Manual play buttons always work regardless.
 // Persisted as "1"/"0" in localStorage; default is OFF.
-let audioAutoplay = localStorage.getItem("hindlearn:audio:autoplay") === "1";
+// ON by default. This is a pronunciation app — hearing the letter is the
+// point, and a beginner should not have to discover a toggle to get it.
+// Chrome will still block the very first clip until the page has had a
+// real click; _playOne swallows that quietly.
+let audioAutoplay = localStorage.getItem("hindlearn:audio:autoplay") !== "0";
 function setAudioAutoplay(on) {
   audioAutoplay = !!on;
   localStorage.setItem("hindlearn:audio:autoplay", audioAutoplay ? "1" : "0");
@@ -508,7 +828,7 @@ function makeChartTile(c) {
   btn.innerHTML = `
     <div class="chart-char">${c.char}</div>
     <div class="chart-translit">${c.translit}</div>
-    <div class="chart-ipa">/${c.ipa}/</div>
+    <div class="chart-ipa">${c.ipa ? `/${c.ipa}/` : ""}</div>
   `;
   btn.addEventListener("click", () => openCharModal(c));
   return btn;
@@ -544,6 +864,72 @@ const MATRAS = [
   { mark: "्",      translit: "—",   vowelTranslit: null,  syllable: "क्",  syllableTranslit: "k",   pos: "Below (halant)",
     note: "Virama / halant — KILLS the inherent 'a'. Used to glue consonants together into conjuncts." },
 ];
+
+// ======================================================
+//  Nasal marks. Not letters and not matras — two marks that nasalise, and
+//  they are unavoidable: हिंदी, मैं, माँ, अंडा all carry one. Learn-tab
+//  gallery with real words, same shape as the matra gallery.
+// ======================================================
+
+const NASALS = [
+  {
+    mark: "ं",
+    name: "Anusvara (bindu)",
+    demo: "कं",
+    pos: "A single dot on the headline",
+    note: "Nasalises what follows. Before a consonant it becomes that consonant's own nasal — रंग is 'rang' (ङ), अंडा is 'anDaa' (ण), हिंदी is 'hindii' (न). One dot replaces a whole stacked conjunct, which is why modern spelling prefers it.",
+    examples: [
+      { word: "हिंदी", slug: "hindii",  translit: "hindii", meaning: "Hindi" },
+      { word: "अंडा",  slug: "anDaa",   translit: "anDaa",  meaning: "egg" },
+      { word: "रंग",   slug: "rang",    translit: "rang",   meaning: "colour" },
+    ],
+  },
+  {
+    mark: "ँ",
+    name: "Chandrabindu (moon dot)",
+    demo: "कँ",
+    pos: "A crescent with a dot above",
+    note: "Nasalises the vowel itself — the sound stays in the nose without adding a consonant. माँ is a nasal 'aa', not 'maan'. It is dropped when a matra already occupies the headline, which is why मैं uses the plain dot.",
+    examples: [
+      { word: "माँ",    slug: "maa",     translit: "maa̐",   meaning: "mother" },
+      { word: "आँख",   slug: "aankh",   translit: "aa̐kh",  meaning: "eye" },
+      { word: "हँसना", slug: "hansnaa", translit: "ha̐snaa", meaning: "to laugh" },
+    ],
+  },
+];
+
+function makeNasalTile(n) {
+  const div = document.createElement("div");
+  div.className = "matra-tile nasal-tile";
+  div.innerHTML = `
+    <div class="matra-mark-row">
+      <div class="matra-mark">◌${n.mark}</div>
+      <div class="matra-arrow">→</div>
+      <div class="matra-syllable">${n.demo}</div>
+    </div>
+    <div class="matra-translit"><code>${n.name}</code></div>
+    <div class="matra-pos">${n.pos}</div>
+    <div class="matra-note">${n.note}</div>
+    <div class="nasal-examples">
+      ${n.examples.map((e) => `
+        <button class="nasal-ex" data-word="${e.word}">
+          <span class="nasal-ex-word">${e.word}</span>
+          <span class="nasal-ex-translit">${e.translit}</span>
+          <span class="nasal-ex-meaning">${e.meaning}</span>
+        </button>`).join("")}
+    </div>
+  `;
+  div.querySelectorAll(".nasal-ex").forEach((b) => {
+    b.addEventListener("click", () => speak(b.dataset.word));
+  });
+  return div;
+}
+
+function renderNasals() {
+  const el = $("chart-nasals");
+  if (!el) return;
+  NASALS.forEach((n) => el.appendChild(makeNasalTile(n)));
+}
 
 function makeMatraTile(m) {
   const btn = document.createElement("button");
@@ -612,6 +998,34 @@ function renderRblends() {
   });
 }
 
+// The look-alike gallery on the Learn tab: each group side by side with the
+// one thing that actually tells them apart.
+function renderConfusables() {
+  const el = $("chart-confusables");
+  if (!el) return;
+  CONFUSABLES.forEach((g) => {
+    const row = document.createElement("div");
+    row.className = "confusable-row";
+    const chars = document.createElement("div");
+    chars.className = "confusable-chars";
+    g.translits.forEach((t) => {
+      const c = CHAR_BY_TRANSLIT[t];
+      if (!c) return;
+      const b = document.createElement("button");
+      b.className = "confusable-char";
+      b.innerHTML = `<span class="cc-char">${c.char}</span><span class="cc-translit">${c.translit}</span>`;
+      b.addEventListener("click", () => { speak(c.char); openCharModal(c); });
+      chars.appendChild(b);
+    });
+    const note = document.createElement("div");
+    note.className = "confusable-note";
+    note.innerHTML = g.note;
+    row.appendChild(chars);
+    row.appendChild(note);
+    el.appendChild(row);
+  });
+}
+
 function renderCharts() {
   // vowels
   const vEl = $("chart-vowels");
@@ -643,6 +1057,13 @@ function renderCharts() {
     vargaEl.appendChild(rowEl);
   });
 
+  // nukta / conjuncts / numerals get their own sections
+  [["chart-nukta", "nukta"], ["chart-conjuncts", "conjunct"], ["chart-digits", "digit"]].forEach(([id, cat]) => {
+    const host = $(id);
+    if (!host) return;
+    CHARACTERS.filter((c) => c.cat === cat).forEach((c) => host.appendChild(makeChartTile(c)));
+  });
+
   // other (semivowels + sibilants + flapped retroflex extras)
   const otherEl = $("chart-other");
   ["semivowel", "sibilant"].forEach((cat) => {
@@ -655,7 +1076,7 @@ function openCharModal(c) {
   $("modal-char").textContent = c.char;
   $("modal-translit").innerHTML = `
     <span class="big-translit">${c.translit}</span>
-    <span class="ipa-badge">IPA /${c.ipa}/</span>
+    ${c.ipa ? `<span class="ipa-badge">IPA /${c.ipa}/</span>` : ""}
     <span class="cat-badge">${CAT_LABEL[c.cat]}</span>
   `;
   $("modal-tip").textContent = c.tip;
@@ -689,6 +1110,185 @@ document.addEventListener("keydown", (e) => {
 renderCharts();
 renderMatras();
 renderRblends();
+renderConfusables();
+renderNasals();
+
+// ======================================================
+//  Answer feedback — shared by the challenge session and the flashcards,
+//  which previously carried two near-identical copies of this markup.
+//  `chosen` may be a synthetic {unknown:true} item when a typed answer
+//  matches no character at all.
+// ======================================================
+
+// The option-side key for a card direction. "listen" shows letters like
+// sound-to-letter does, so both dedupe on char.
+function optionKey(item, dir) {
+  return dir === "letter-to-sound" ? item.translit : item.char;
+}
+function optionLabel(item, dir) {
+  return dir === "letter-to-sound" ? item.translit : item.char;
+}
+
+// IPA badge, or nothing at all. Digits and words have no IPA, and "//" on
+// a card looks like a bug.
+function ipaSpan(item) {
+  if (!item || !item.ipa) return "";
+  return `<span class="ipa-inline">/${item.ipa}/</span>`;
+}
+
+function catLineFor(chosen, correct) {
+  if (chosen.unknown) return `Nothing in this set reads as <b>${chosen.translit}</b>.`;
+  return chosen.cat === correct.cat
+    ? `Both are in the <b>${CAT_LABEL[correct.cat]}</b> group \u2014 a classic trap.`
+    : `You picked a <b>${CAT_LABEL[chosen.cat]}</b>, but the answer is a <b>${CAT_LABEL[correct.cat]}</b>.`;
+}
+
+// When the two characters are a known look-alike pair, say what separates
+// them right at the moment the confusion happened.
+function shapeNoteFor(chosen, correct) {
+  if (chosen.unknown) return "";
+  const g = CONFUSABLES.find((x) =>
+    x.translits.includes(chosen.translit) && x.translits.includes(correct.translit));
+  return g ? `<div class="fb-shape">\u{1F440} ${g.note}</div>` : "";
+}
+
+function wrongFeedbackHTML(chosen, correct) {
+  const yours = chosen.unknown
+    ? `<div>\u2718 You answered <code class="ans-pill wrong">${chosen.translit}</code> \u2014 that isn't a character in this set.</div>`
+    : `<div>\u2718 You picked <b>${chosen.char}</b> = <code class="ans-pill wrong">${chosen.translit}</code> ${ipaSpan(chosen)} \u2014 <i>${chosen.tip}</i>
+        <button class="mini fb-speak-wrong" title="Hear what you picked">\u{1F50A} Yours</button>
+      </div>`;
+  // "Compare" is worse than useless for a pair this app's audio cannot
+  // distinguish — it plays two near-identical clips and implies you should
+  // be able to hear a difference. Say so instead.
+  const sibs = AUDIO_AMBIGUOUS_SIBS[correct.translit] || [];
+  const earCannotTell = !chosen.unknown && sibs.includes(chosen.translit);
+  const compare = (chosen.unknown || earCannotTell) ? "" :
+    `<button class="mini fb-speak-diff" title="Hear both back-to-back">\u{1F501} Compare</button>`;
+  const earNote = earCannotTell
+    ? `<div class="fb-ear">\u{1F442} These two sound almost identical in this app's audio \u2014 tell them apart by the <b>shape</b>, not the sound.</div>`
+    : "";
+  return `${yours}
+      <div class="correct-big">
+        Correct answer:
+        <span class="big-char">${correct.char}</span>
+        =
+        <code class="ans-pill right big">${correct.translit}</code>
+        ${ipaSpan(correct)}
+        <button class="mini fb-speak-right">\u{1F50A} Correct</button>
+        ${compare}
+      </div>
+      <div class="correct-tip"><i>${correct.tip}</i></div>
+      ${earNote}
+      ${shapeNoteFor(chosen, correct)}
+      <div class="fb-cat">${catLineFor(chosen, correct)}</div>`;
+}
+
+function wireFeedbackButtons(fb, chosen, correct) {
+  const wrong = fb.querySelector(".fb-speak-wrong");
+  if (wrong) wrong.addEventListener("click", () => speak(chosen.char));
+  const right = fb.querySelector(".fb-speak-right");
+  if (right) right.addEventListener("click", () => speak(correct.char));
+  const diff = fb.querySelector(".fb-speak-diff");
+  if (diff) diff.addEventListener("click", () => playDiff(chosen.char, correct.char));
+  if (!chosen.unknown) autoPlayDiff(chosen.char, correct.char);
+}
+
+// Resolve what the user typed into an item of the pool.
+//
+// Case is load-bearing here: "na" is न and "Na" is ण. So an exact
+// spelling of a DIFFERENT character is treated as that character (wrong),
+// and case is only forgiven when nothing else in the set shares the
+// spelling — "Kha" for ख is a typo, "Na" for न is a different letter.
+function unknownTyped(t) {
+  return { unknown: true, translit: t, char: "", ipa: "", tip: "", cat: null, id: `typed:${t}` };
+}
+
+function resolveTyped(text, pool, correct) {
+  const t = (text || "").trim();
+  if (!t) return null;
+  if (t === correct.translit) return { item: correct, exact: true };
+
+  const exactOther = pool.find((c) => c.translit === t);
+  if (exactOther) return { item: exactOther, exact: true };
+
+  const ci = pool.filter((c) => c.translit.toLowerCase() === t.toLowerCase());
+  if (ci.length === 1) {
+    // Unambiguous spelling: accept, and flag it when the only thing wrong
+    // was the capitalisation of the right answer.
+    return { item: ci[0], exact: ci[0].id !== correct.id };
+  }
+  if (correct.translit.toLowerCase() === t.toLowerCase() && ci.length === 0) {
+    // The answer isn't in `pool` (flashcards can mix a syllable into a
+    // letter category) but the spelling is unambiguously it.
+    return { item: correct, exact: false };
+  }
+  return { item: unknownTyped(t), exact: true };
+}
+
+// Show/hide the typed-answer row vs. the multiple-choice grid.
+function setAnswerMode(prefix, dir) {
+  const typed = $(`${prefix}-typed`);
+  const opts = $(`${prefix}-options`);
+  const isType = dir === "type";
+  typed.classList.toggle("hidden", !isType);
+  opts.classList.toggle("hidden", isType);
+  if (isType) {
+    const input = $(`${prefix}-typed-input`);
+    input.value = "";
+    input.disabled = false;
+    setTimeout(() => input.focus(), 0);
+  }
+}
+
+// What to call the thing on the card. The pools are no longer all letters:
+// asking "how do you pronounce this letter?" about पानी reads as a bug.
+const ITEM_NOUN = {
+  word: "word",
+  syllable: "syllable",
+  rblend: "blend",
+  conjunct: "conjunct",
+  digit: "numeral",
+};
+function itemNoun(item) {
+  return ITEM_NOUN[item.cat] || "letter";
+}
+
+// Question wording per direction. Words and numerals are read, not
+// "pronounced letter by letter", so they get their own phrasing.
+function promptQuestion(item, dir) {
+  const noun = itemNoun(item);
+  const isRead = item.cat === "word" || item.cat === "digit";
+  switch (dir) {
+    case "sound-to-letter":
+      return isRead ? `Which ${noun} is this?` : `Which ${noun} makes this sound?`;
+    case "listen":
+      return `Listen \u2014 which ${noun} is this?`;
+    case "type":
+      return isRead ? `Type how this ${noun} is read` : `Type how this ${noun} is pronounced`;
+    default:
+      return isRead ? `How do you read this ${noun}?` : `How do you pronounce this ${noun}?`;
+  }
+}
+
+// Render the prompt side of a card. Returns nothing; both modes share it.
+function renderPrompt(promptEl, kindEl, card) {
+  promptEl.classList.remove("text", "listen");
+  kindEl.textContent = promptQuestion(card.answer, card.dir);
+  if (card.dir === "sound-to-letter") {
+    promptEl.textContent = card.answer.translit;
+    promptEl.classList.add("text");
+  } else if (card.dir === "listen") {
+    promptEl.textContent = "\u{1F50A}";
+    promptEl.classList.add("listen");
+    promptEl.title = "Tap to replay";
+    // The audio IS the question, so it plays regardless of the autoplay
+    // toggle (that toggle governs *answer* playback).
+    speak(card.answer.char);
+  } else {
+    promptEl.textContent = card.answer.char;
+  }
+}
 
 // ======================================================
 //  CHALLENGES MODE — levels + timed sessions
@@ -701,6 +1301,7 @@ renderRblends();
 const LEVELS = [
   { id: 1,  name: "Short vowels",            emoji: "ए",  desc: "The core 6: अ आ इ ई उ ऊ",                     translits: ["a","aa","i","ii","u","uu"] },
   { id: 2,  name: "All vowels",              emoji: "औ",  desc: "11 independent vowels including ए ऐ ओ औ ऋ",    cats: ["vowel"] },
+  { id: 17, name: "Numbers ०–९",             emoji: "२",  desc: "Devanagari numerals. Quick win — you need them for prices, dates and page numbers.", cats: ["digit"] },
   { id: 11, name: "Matras — intro (क/म/न)",  emoji: "ा",  desc: "First taste of vowel marks: का कि की कु कू के कै को कौ — drilled on क, म, न.", syllables: true, syllableBases: ["ka","ma","na"] },
   { id: 3,  name: "Gutturals (क family)",    emoji: "क",  desc: "Throat sounds: क ख ग घ ङ",                      cats: ["guttural"] },
   { id: 4,  name: "Palatals (च family)",     emoji: "च",  desc: "Palate sounds: च छ ज झ ञ",                      cats: ["palatal"] },
@@ -711,10 +1312,34 @@ const LEVELS = [
   { id: 9,  name: "All consonants",          emoji: "भ",  desc: "Every consonant — no vowels",                   cats: ["guttural","palatal","retroflex","dental","labial","semivowel","sibilant"] },
   { id: 12, name: "Matras on every consonant", emoji: "✍", desc: "Every consonant × every matra. The bridge to reading actual words.", syllables: true },
   { id: 13, name: "र-blends (र्, ्र)",        emoji: "र्", desc: "When र meets another consonant: hook above (र्क = rka, like रिज़र्व) or stroke below (क्र = kra, प्र = pra). 66 blends.", rblends: true },
-  { id: 10, name: "Everything",              emoji: "🔥", desc: "Full alphabet. The final boss.",                cats: ["vowel","guttural","palatal","retroflex","dental","labial","semivowel","sibilant"] },
+  { id: 15, name: "Nukta letters (क़ ज़ फ़)",   emoji: "ज़", desc: "The dotted letters: q, x, ɣ, z, f. ज़ and फ़ are unavoidable in modern Hindi — ज़रूरी, फ़ोन, मेज़.", cats: ["nukta"] },
+  { id: 16, name: "Conjuncts",               emoji: "क्ष", desc: "Stacked consonants: क्ष ज्ञ द्ध क्त स्त न्द द्व श्व ट्ट. The top consonant loses its stem and the two fuse.", cats: ["conjunct"] },
+  { id: 14, name: "Look-alikes",             emoji: "\u{1F440}", desc: "\u0918/\u0927, \u092d/\u092e, \u092c/\u0935, \u0924/\u0928 \u2014 the pairs that cost you when you read. Distractors come only from the same look-alike group.", confusable: true },
+  { id: 18, name: "Read real words",         emoji: "📖", desc: "Whole words, not letters. Every word here has audio and a meaning — this is what all the drilling was for.", words: true },
+  { id: 10, name: "Everything",              emoji: "🔥", desc: "Full alphabet including nukta, conjuncts and numerals. The final boss.", cats: ["vowel","guttural","palatal","retroflex","dental","labial","semivowel","sibilant","nukta","conjunct","digit"] },
 ];
 
 const SESSION_LENGTHS = [10, 20, 25];
+
+// Not part of the journey: a deck built live from your own worst items,
+// across letters, syllables and r-blends alike. id 0 keeps it out of the
+// way of the real levels' storage keys.
+const WEAK_LEVEL = {
+  id: 0,
+  name: "Weak letters",
+  emoji: "\u{1FA79}",
+  desc: "The characters you keep missing, worst first. Rebuilt from your own history every time you open it.",
+  weak: true,
+};
+
+function findLevel(id) {
+  return id === WEAK_LEVEL.id ? WEAK_LEVEL : LEVELS.find((l) => l.id === id) || null;
+}
+
+// Display name. The weak deck has no position in the journey.
+function levelTitle(level) {
+  return level.weak ? level.name : `Lv ${levelPosition(level)} \u2014 ${level.name}`;
+}
 
 // Position (1-based) the level shows up as in the UI. This is decoupled
 // from `id` so re-ordering or inserting levels doesn't shift storage.
@@ -731,6 +1356,11 @@ function previousLevel(level) {
 }
 
 function levelPool(level) {
+  if (level.weak) return weakItems(25);
+  if (level.words) return WORDS;
+  if (level.confusable) {
+    return CONFUSABLE_TRANSLITS.map((t) => CHAR_BY_TRANSLIT[t]).filter(Boolean);
+  }
   if (level.translits) return CHARACTERS.filter((c) => level.translits.includes(c.translit));
   if (level.syllables) {
     // Matras level: bare base consonants + syllables built on them.
@@ -771,6 +1401,29 @@ function saveBest(levelId, length, rec) {
 function renderLevels() {
   const el = $("ch-levels");
   el.innerHTML = "";
+
+  // Weak deck first, but only once there is enough history to fill one.
+  const weak = weakItems(25);
+  if (weak.length >= 4) {
+    const card = document.createElement("div");
+    card.className = "level-card weak-card";
+    card.innerHTML = `
+      <div class="level-head">
+        <div class="level-emoji">${WEAK_LEVEL.emoji}</div>
+        <div>
+          <div class="level-name">${WEAK_LEVEL.name} <span class="weak-count">${weak.length}</span></div>
+          <div class="level-desc">${WEAK_LEVEL.desc}</div>
+        </div>
+      </div>
+      <div class="level-preview">${weak.slice(0, 12).map((c) => c.char).join(" ")}${weak.length > 12 ? ` +${weak.length - 12}` : ""}</div>
+      <div class="level-actions">
+        <button class="level-btn study" data-study-lvl="0">\u{1F4D6} Study</button>
+        ${SESSION_LENGTHS.map((n) => `<button class="level-btn" data-lvl="0" data-n="${n}">Drill \u00d7 ${n}</button>`).join("")}
+      </div>
+    `;
+    el.appendChild(card);
+  }
+
   LEVELS.forEach((lvl) => {
     const pool = levelPool(lvl);
     const card = document.createElement("div");
@@ -778,6 +1431,7 @@ function renderLevels() {
     const preview = pool.slice(0, 8).map((c) => c.char).join(" ");
     const more = pool.length > 8 ? ` +${pool.length - 8}` : "";
 
+    const mast = levelMastery(lvl);
     const bestLines = SESSION_LENGTHS.map((n) => {
       const best = loadBest(lvl.id, n);
       const txt = best ? `${best.score}/${best.total} · ${best.pct}% · ${best.time}s` : "—";
@@ -793,6 +1447,10 @@ function renderLevels() {
         </div>
       </div>
       <div class="level-preview">${preview}${more}</div>
+      <div class="level-mastery" title="Characters answered right \u2265${Math.round(MASTERY_ACC * 100)}% of the time over \u2265${MASTERY_SEEN} attempts">
+        <div class="level-mastery-bar"><div style="width:${mast.pct}%"></div></div>
+        <span>${mast.known}/${mast.total} mastered</span>
+      </div>
       <div class="level-bests">${bestLines}</div>
       <div class="level-actions">
         <button class="level-btn study" data-study-lvl="${lvl.id}">📖 Study</button>
@@ -821,14 +1479,14 @@ function renderLevels() {
 const studyState = { level: null, pool: [], idx: 0 };
 
 function startStudy(levelId) {
-  const level = LEVELS.find((l) => l.id === levelId);
+  const level = findLevel(levelId);
   if (!level) return;
   studyState.level = level;
   studyState.pool = levelPool(level);
   studyState.idx = 0;
 
   showSession("study");
-  $("study-level-name").textContent = `Lv ${levelPosition(level)} — ${level.name}`;
+  $("study-level-name").textContent = levelTitle(level);
   $("study-total").textContent = studyState.pool.length;
 
   renderStudyCard();
@@ -844,7 +1502,7 @@ function renderStudyCard() {
 
   $("study-char").textContent = c.char;
   $("study-translit").textContent = c.translit;
-  $("study-ipa").textContent = `/${c.ipa}/`;
+  $("study-ipa").textContent = c.ipa ? `/${c.ipa}/` : "";
   $("study-cat").textContent = CAT_LABEL[c.cat] || "";
   $("study-tip").textContent = c.tip;
   const exSection = $("study-ex-section");
@@ -948,6 +1606,37 @@ function isLevelUnlocked(id) {
   return isLevelDone(prev.id);
 }
 
+// Colour for a mastery tile. Grey when never seen, then red → amber →
+// green across the accuracy range so weak spots pop out of the grid.
+function heatColor(acc) {
+  if (acc === null) return "#cfc6bb";
+  if (acc >= MASTERY_ACC) return "#27ae60";
+  if (acc >= 0.5) return "#e6a020";
+  return "#c0392b";
+}
+
+// The whole alphabet, tinted by how well you actually read it. This is the
+// diagnostic the app was missing: it answers "what do I still not know?"
+// rather than "what did I score last Tuesday?".
+function renderHeatmap() {
+  const el = $("journey-heatmap");
+  if (!el) return;
+  el.innerHTML = "";
+  CHARACTERS.forEach((c) => {
+    const acc = accuracyOf(c.id);
+    const seen = (STATS[c.id] || [0])[0];
+    const tile = document.createElement("button");
+    tile.className = "heat-tile";
+    tile.style.background = heatColor(acc);
+    tile.title = acc === null
+      ? `${c.translit} — not drilled yet`
+      : `${c.translit} — ${Math.round(acc * 100)}% over ${seen} attempt${seen === 1 ? "" : "s"}`;
+    tile.innerHTML = `<span class="heat-char">${c.char}</span><span class="heat-pct">${acc === null ? "–" : Math.round(acc * 100) + "%"}</span>`;
+    tile.addEventListener("click", () => openCharModal(c));
+    el.appendChild(tile);
+  });
+}
+
 function renderJourney() {
   const list = $("journey-list");
   list.innerHTML = "";
@@ -962,6 +1651,9 @@ function renderJourney() {
   $("recap-lifetime").textContent = localStorage.getItem("hindlearn:lifetime") || "0";
   $("recap-best-streak").textContent = localStorage.getItem("hindlearn:best") || "0";
   $("recap-perfects").textContent = localStorage.getItem("hindlearn:perfects") || "0";
+  const masteredChars = CHARACTERS.filter((c) => isMastered(c.id)).length;
+  $("recap-mastered").textContent = `${masteredChars}/${CHARACTERS.length}`;
+  renderHeatmap();
 
   LEVELS.forEach((lvl) => {
     const unlocked = isLevelUnlocked(lvl.id);
@@ -1029,9 +1721,20 @@ function renderJourney() {
   });
 }
 
-$("journey-reset-all").addEventListener("click", () => {
-  LEVELS.forEach((l) => setLevelDone(l.id, false));
-  renderJourney();
+$("journey-weak").addEventListener("click", () => {
+  if (weakItems(25).length < 4) {
+    showToast("🌱", "Not enough history yet — drill a level first.");
+    return;
+  }
+  startSession(WEAK_LEVEL.id, 10);
+});
+
+$("journey-reset-all").addEventListener("click", (e) => {
+  // Journey-scoped: only the per-level done flags, not bests or stats.
+  armConfirm(e.currentTarget, "Click again to reset the journey", () => {
+    LEVELS.forEach((l) => setLevelDone(l.id, false));
+    renderJourney();
+  });
 });
 
 // ---- session state ----
@@ -1050,16 +1753,50 @@ const sessionState = {
   locked: false,
 };
 
+// At most this share of a session may be characters you have never met, so
+// a session stays mostly consolidation with a few introductions. Without
+// the cap, "unseen ranks highest" turns every session into a wall of
+// strangers as soon as the pool grows.
+const MAX_NEW_PER_SESSION = 0.3;
+
 function buildSessionQueue(pool, n) {
-  // If pool >= n, pick N distinct. Otherwise, repeat to fill.
-  if (pool.length >= n) return shuffle(pool).slice(0, n);
-  const q = [];
-  while (q.length < n) q.push(...shuffle(pool));
-  return q.slice(0, n);
+  // Weighted by your own history: letters you miss come up more often than
+  // ones you already own. Falls back to repeating the pool when it is
+  // smaller than the session length.
+  if (pool.length < n) {
+    const q = [];
+    while (q.length < n) q.push(...shuffle(pool));
+    return q.slice(0, n);
+  }
+
+  const seen = pool.filter((c) => accuracyOf(c.id) !== null);
+  const fresh = pool.filter((c) => accuracyOf(c.id) === null);
+
+  // Nothing drilled yet: everything is new by definition, so no cap applies.
+  if (!seen.length) return shuffle(weightedSample(pool, n));
+
+  const newQuota = Math.min(fresh.length, Math.max(2, Math.ceil(n * MAX_NEW_PER_SESSION)));
+  const picked = [
+    ...weightedSample(fresh, newQuota),
+    ...weightedSample(seen, n - newQuota),
+  ];
+  // If `seen` could not fill its share (small pool), top up from whatever is left.
+  if (picked.length < n) {
+    const rest = pool.filter((c) => !picked.includes(c));
+    picked.push(...weightedSample(rest, n - picked.length));
+  }
+  return shuffle(picked).slice(0, n);
 }
 
-function pickSessionCard(answer, pool) {
-  const dir = Math.random() < 0.5 ? "sound-to-letter" : "letter-to-sound";
+function pickSessionCard(answer, pool, opts = {}) {
+  // Typing is NOT in the rotation: being asked to type the sound of a glyph
+  // you have never seen is not recall, it is a guess. It stays available as
+  // an opt-in drill in the flashcards.
+  const dir = firstEncounterDir(answer) || pickWeighted([
+    ["sound-to-letter", 35],
+    ["letter-to-sound", 35],
+    ["listen", 30],
+  ]);
 
   // Distractor selection. The dumb version is "pick any 4 from the pool"
   // which produces trivially wrong options (e.g. को vs uu/na/pha). For
@@ -1068,10 +1805,10 @@ function pickSessionCard(answer, pool) {
   // recognition), so passing requires *reading* the syllable.
   let distractorSource;
   if (answer.cat === "syllable") {
-    const sameBase   = pool.filter((c) => c.cat === "syllable" && c.base === answer.base && c.translit !== answer.translit);
+    const sameBase   = pool.filter((c) => c.cat === "syllable" && c.base === answer.base && c.id !== answer.id);
     const sameMatra  = pool.filter((c) => c.cat === "syllable" && c.matra === answer.matra && c.base !== answer.base);
     const otherSyl   = pool.filter((c) => c.cat === "syllable" && c.base !== answer.base && c.matra !== answer.matra);
-    const bareBases  = pool.filter((c) => c.cat !== "syllable" && c.translit !== answer.translit);
+    const bareBases  = pool.filter((c) => c.cat !== "syllable" && c.id !== answer.id);
     distractorSource = [
       ...shuffle(sameBase).slice(0, 3),   // top priority: same base
       ...shuffle(sameMatra).slice(0, 2),  // also tricky: same matra
@@ -1082,37 +1819,47 @@ function pickSessionCard(answer, pool) {
     // R-blend distractors: same base (= the opposite-type partner of this
     // blend) tests direction-reading; same type with a different base tests
     // base recognition. A handful of opposite-type and bare bases for variety.
-    const sameBase     = pool.filter((c) => c.cat === "rblend" && c.base === answer.base && c.translit !== answer.translit);
+    const sameBase     = pool.filter((c) => c.cat === "rblend" && c.base === answer.base && c.id !== answer.id);
     const sameType     = pool.filter((c) => c.cat === "rblend" && c.type === answer.type && c.base !== answer.base);
     const oppositeType = pool.filter((c) => c.cat === "rblend" && c.type !== answer.type && c.base !== answer.base);
-    const bareBases    = pool.filter((c) => c.cat !== "rblend" && c.translit !== answer.translit);
+    const bareBases    = pool.filter((c) => c.cat !== "rblend" && c.id !== answer.id);
     distractorSource = [
       ...shuffle(sameBase).slice(0, 1),
       ...shuffle(sameType).slice(0, 3),
       ...shuffle(oppositeType).slice(0, 2),
       ...shuffle(bareBases).slice(0, 1),
     ];
+  } else if (opts.confusable && CONFUSABLE_SIBS[answer.translit]) {
+    // Look-alikes level: the whole point is to force a shape decision, so
+    // siblings come first and the rest of the pool only tops up.
+    const sibs = CONFUSABLE_SIBS[answer.translit]
+      .map((t) => CHAR_BY_TRANSLIT[t])
+      .filter((c) => c && c.id !== answer.id);
+    const rest = pool.filter((c) => c.id !== answer.id && !sibs.includes(c));
+    distractorSource = [...shuffle(sibs), ...shuffle(rest)];
   } else {
-    const localPool = pool.filter((c) => c.translit !== answer.translit);
-    const fallback = CHARACTERS.filter((c) => c.translit !== answer.translit);
+    const localPool = pool.filter((c) => c.id !== answer.id);
+    const fallback = CHARACTERS.filter((c) => c.id !== answer.id);
     distractorSource = shuffle(localPool.length >= 4 ? localPool : fallback);
   }
 
   const seen = new Set();
   const distinct = [];
   for (const c of distractorSource) {
-    const key = dir === "sound-to-letter" ? c.char : c.translit;
+    const key = optionKey(c, dir);
     if (seen.has(key)) continue;
+    if (!optionAllowed(c, answer, dir)) continue;
     seen.add(key);
     distinct.push(c);
     if (distinct.length >= 4) break;
   }
   // Top up from the wider pool if we somehow got fewer than 4 distractors.
   if (distinct.length < 4) {
-    const more = shuffle(pool.filter((c) => c.translit !== answer.translit && !distinct.includes(c)));
+    const more = shuffle(pool.filter((c) => c.id !== answer.id && !distinct.includes(c)));
     for (const c of more) {
-      const key = dir === "sound-to-letter" ? c.char : c.translit;
+      const key = optionKey(c, dir);
       if (seen.has(key)) continue;
+      if (!optionAllowed(c, answer, dir)) continue;
       seen.add(key);
       distinct.push(c);
       if (distinct.length >= 4) break;
@@ -1123,7 +1870,7 @@ function pickSessionCard(answer, pool) {
 }
 
 function startSession(levelId, length) {
-  const level = LEVELS.find((l) => l.id === levelId);
+  const level = findLevel(levelId);
   if (!level) return;
   sessionState.active = true;
   sessionState.level = level;
@@ -1132,7 +1879,8 @@ function startSession(levelId, length) {
   // the character back into the queue so they have to face it again.
   sessionState.selectedLength = length;
   sessionState.length = length;
-  sessionState.queue = buildSessionQueue(levelPool(level), length);
+  sessionState.pool = levelPool(level);
+  sessionState.queue = buildSessionQueue(sessionState.pool, length);
   sessionState.idx = 0;
   sessionState.correct = 0;
   sessionState.wrong = 0;
@@ -1140,16 +1888,18 @@ function startSession(levelId, length) {
   sessionState.startTime = Date.now();
 
   showSession("quiz");
-  $("ch-level-name").textContent = `Lv ${levelPosition(level)} — ${level.name}`;
+  $("ch-level-name").textContent = levelTitle(level);
   $("ch-total").textContent = length;
 
   renderSessionCard();
 }
 
 function renderSessionCard() {
-  const pool = levelPool(sessionState.level);
+  // Pool is computed once per session in startSession — it used to be
+  // rebuilt (and re-filtered) for every question.
+  const pool = sessionState.pool;
   const answer = sessionState.queue[sessionState.idx];
-  const card = pickSessionCard(answer, pool);
+  const card = pickSessionCard(answer, pool, { confusable: !!sessionState.level.confusable });
   sessionState.currentCard = card;
   sessionState.locked = false;
 
@@ -1164,64 +1914,64 @@ function renderSessionCard() {
   $("ch-feedback").className = "feedback";
   $("ch-next").classList.add("hidden");
 
-  const promptEl = $("ch-prompt");
-  const kindEl = $("ch-prompt-kind");
-  if (card.dir === "sound-to-letter") {
-    kindEl.textContent = "Which letter makes this sound?";
-    promptEl.textContent = card.answer.translit;
-    promptEl.classList.add("text");
-  } else {
-    kindEl.textContent = "How do you pronounce this letter?";
-    promptEl.textContent = card.answer.char;
-    promptEl.classList.remove("text");
-  }
-
+  renderPrompt($("ch-prompt"), $("ch-prompt-kind"), card);
+  $("ch-prompt").onclick = card.dir === "listen" ? () => speak(card.answer.char) : null;
   $("ch-speak").onclick = () => speak(card.answer.char);
+  setAnswerMode("ch", card.dir);
 
   const optsEl = $("ch-options");
   optsEl.innerHTML = "";
   optsEl.dataset.n = card.options.length;
-  card.options.forEach((opt) => {
+  card.options.forEach((opt, i) => {
     const btn = document.createElement("button");
-    if (card.dir === "sound-to-letter") {
-      btn.textContent = opt.char;
-    } else {
-      btn.textContent = opt.translit;
-      btn.classList.add("text");
-    }
+    btn.textContent = optionLabel(opt, card.dir);
+    if (card.dir === "letter-to-sound") btn.classList.add("text");
     btn.dataset.translit = opt.translit;
+    btn.dataset.id = opt.id;
+    btn.dataset.key = String(i + 1);
     btn.addEventListener("click", () => answerSession(opt, btn));
     optsEl.appendChild(btn);
   });
 }
 
-function answerSession(chosen, btn) {
+function answerSession(chosen, btn, opts = {}) {
   if (sessionState.locked) return;
   sessionState.locked = true;
 
   const correctChar = sessionState.currentCard.answer;
-  const isCorrect = chosen.translit === correctChar.translit;
+  const isCorrect = chosen.id === correctChar.id;
+  recordAttempt(correctChar, isCorrect);
   const buttons = $("ch-options").querySelectorAll("button");
   const fb = $("ch-feedback");
+  const typedInput = $("ch-typed-input");
+  typedInput.disabled = true;
 
   if (isCorrect) {
-    btn.classList.add("ok");
+    if (btn) btn.classList.add("ok");
     sessionState.correct += 1;
     // bump lifetime counter from challenge wins too (but skip the per-session
     // toast — the end-of-session summary is the celebration here)
     flashState.lifetime += 1;
     localStorage.setItem("hindlearn:lifetime", String(flashState.lifetime));
     if (LIFETIME_MILESTONES.has(flashState.lifetime)) {
-      showToast("🎉", `Lifetime milestone: ${flashState.lifetime} correct!`);
+      showToast("\u{1F389}", `Lifetime milestone: ${flashState.lifetime} correct!`);
     }
     fb.className = "feedback ok";
-    fb.innerHTML = `✔ <b>${correctChar.char}</b> = <b>${correctChar.translit}</b> <span class="ipa-inline">/${correctChar.ipa}/</span>`;
+    // A case-only slip still counts, but say which one it was: capitals are
+    // the retroflex/dental distinction, and silently accepting them would
+    // teach the wrong thing.
+    const caseNote = opts.caseSlip
+      ? ` <span class="case-note">\u2014 careful: <b>${correctChar.translit}</b>, capitals mark retroflex</span>`
+      : "";
+    fb.innerHTML = `\u2714 <b>${correctChar.char}</b> = <b>${correctChar.translit}</b> ${ipaSpan(correctChar)}${caseNote}`;
     autoSpeak(correctChar.char);
     buttons.forEach((b) => (b.disabled = true));
-    // auto advance on correct
-    setTimeout(advanceSession, 700);
+    // auto advance on correct (a beat longer when there is a note to read)
+    // A letter clip is ~0.6-0.7s, so advancing at 700ms used to clip the
+    // tail of the answer audio (and start the next card's over it).
+    setTimeout(advanceSession, opts.caseSlip ? 1600 : (audioAutoplay ? 1300 : 700));
   } else {
-    btn.classList.add("bad");
+    if (btn) btn.classList.add("bad");
     sessionState.wrong += 1;
     sessionState.mistakes.push({ answer: correctChar, chosen });
     // Re-insert the missed character 3-5 slots ahead so the user has to
@@ -1233,42 +1983,30 @@ function answerSession(chosen, btn) {
     sessionState.length = sessionState.queue.length;
     $("ch-total").textContent = sessionState.length;
     buttons.forEach((b) => {
-      if (b.dataset.translit === correctChar.translit) b.classList.add("reveal");
+      if (b.dataset.id === correctChar.id) b.classList.add("reveal");
       b.disabled = true;
     });
-    const sameCat = chosen.cat === correctChar.cat;
-    const catLine = sameCat
-      ? `Both are in the <b>${CAT_LABEL[correctChar.cat]}</b> group.`
-      : `You picked a <b>${CAT_LABEL[chosen.cat]}</b>, but the answer is a <b>${CAT_LABEL[correctChar.cat]}</b>.`;
     fb.className = "feedback bad";
-    fb.innerHTML = `
-      <div>✘ You picked <b>${chosen.char}</b> = <code class="ans-pill wrong">${chosen.translit}</code> <span class="ipa-inline">/${chosen.ipa}/</span> — <i>${chosen.tip}</i>
-        <button class="mini fb-speak-wrong" title="Hear what you picked">🔊 Yours</button>
-      </div>
-      <div class="correct-big">
-        Correct answer:
-        <span class="big-char">${correctChar.char}</span>
-        =
-        <code class="ans-pill right big">${correctChar.translit}</code>
-        <span class="ipa-inline">/${correctChar.ipa}/</span>
-        <button class="mini fb-speak-right">🔊 Correct</button>
-        <button class="mini fb-speak-diff" title="Hear both back-to-back">🔁 Compare</button>
-      </div>
-      <div class="correct-tip"><i>${correctChar.tip}</i></div>
-      <div style="margin-top:0.4rem;color:var(--muted);font-weight:normal">${catLine}</div>
-    `;
-    fb.querySelector(".fb-speak-wrong").addEventListener("click", () => speak(chosen.char));
-    fb.querySelector(".fb-speak-right").addEventListener("click", () => speak(correctChar.char));
-    fb.querySelector(".fb-speak-diff").addEventListener("click", () => playDiff(chosen.char, correctChar.char));
-    // Auto-play the diff: wrong first, then correct, so you hear the contrast.
-    autoPlayDiff(chosen.char, correctChar.char);
+    fb.innerHTML = wrongFeedbackHTML(chosen, correctChar);
+    wireFeedbackButtons(fb, chosen, correctChar);
     // wait for Next click
     $("ch-next").classList.remove("hidden");
+    $("ch-next").focus();
   }
 
   $("ch-correct").textContent = sessionState.correct;
   $("ch-wrong").textContent = sessionState.wrong;
 }
+
+// Typed answers funnel into the same path as a clicked option.
+$("ch-typed").addEventListener("submit", (e) => {
+  e.preventDefault();
+  if (sessionState.locked || !sessionState.currentCard) return;
+  const correct = sessionState.currentCard.answer;
+  const res = resolveTyped($("ch-typed-input").value, sessionState.pool || [], correct);
+  if (!res) return;   // empty input: do nothing rather than burn the card
+  answerSession(res.item, null, { caseSlip: res.item.id === correct.id && !res.exact });
+});
 
 function advanceSession() {
   sessionState.idx += 1;
@@ -1288,10 +2026,12 @@ function finishSession() {
 
   // Best is keyed off the selected length so 10/20/25 stay as separate
   // buckets regardless of how many re-asks happened.
-  const prev = loadBest(sessionState.level.id, selected);
-  const isNewBest = !prev || pct > prev.pct || (pct === prev.pct && time < prev.time);
+  // The weak deck is a moving target, so a "best" for it would be noise.
+  const scored = !sessionState.level.weak;
+  const prev = scored ? loadBest(sessionState.level.id, selected) : null;
+  const isNewBest = scored && (!prev || pct > prev.pct || (pct === prev.pct && time < prev.time));
   if (isNewBest) saveBest(sessionState.level.id, selected, { score, total, pct, time, ts: Date.now() });
-  const best = loadBest(sessionState.level.id, selected);
+  const best = scored ? loadBest(sessionState.level.id, selected) : null;
 
   showSession("summary");
 
@@ -1302,17 +2042,17 @@ function finishSession() {
   }
 
   const title = pct === 100 ? "🏆 Perfect!" : pct >= 80 ? "👏 Solid!" : pct >= 60 ? "🙂 Getting there" : "💪 Keep grinding";
-  $("ch-summary-title").textContent = `${title} — Lv ${levelPosition(sessionState.level)} ${sessionState.level.name}`;
+  $("ch-summary-title").textContent = `${title} — ${levelTitle(sessionState.level)}`;
 
   // Journey auto-complete: crossing the pass threshold marks the level done.
-  if (pct >= JOURNEY_PASS_PCT && !isLevelDone(sessionState.level.id)) {
+  if (!sessionState.level.weak && pct >= JOURNEY_PASS_PCT && !isLevelDone(sessionState.level.id)) {
     setLevelDone(sessionState.level.id, true);
     showToast("🎓", `Level ${levelPosition(sessionState.level)} unlocked the next one!`);
   }
 
   // "Next level →" button — only when the user actually passed and
   // there is in fact a next level to progress to.
-  const nextLvl = nextLevel(sessionState.level);
+  const nextLvl = sessionState.level.weak ? null : nextLevel(sessionState.level);
   const nextBtn = $("sum-next");
   if (pct >= JOURNEY_PASS_PCT && nextLvl) {
     nextBtn.textContent = `Next: Lv ${levelPosition(nextLvl)} ${nextLvl.name} →`;
@@ -1347,7 +2087,7 @@ function finishSession() {
         <div class="miss">
           <div class="miss-char">${e.answer.char}</div>
           <div class="miss-info">
-            <div><b>${e.answer.translit}</b> <span class="ipa-inline">/${e.answer.ipa}/</span> · ${CAT_LABEL[e.answer.cat]}</div>
+            <div><b>${e.answer.translit}</b> ${ipaSpan(e.answer)} · ${CAT_LABEL[e.answer.cat]}</div>
             <div class="miss-tip">${e.answer.tip}</div>
             <div class="miss-confused">Confused with: ${[...e.confused].join(", ")}</div>
           </div>
@@ -1359,7 +2099,8 @@ function finishSession() {
     });
   }
 
-  // refresh level-list bests
+  // refresh level-list bests + mastery
+  flushStats();
   renderLevels();
 }
 
@@ -1378,9 +2119,9 @@ $("ch-hint").addEventListener("click", () => {
   box.classList.remove("hidden");
   if (sessionState.currentCard.dir === "sound-to-letter") {
     const exPart = c.ex ? `<br><span class="muted">Example: <b>${c.ex.word}</b> (${c.ex.translit}) "${c.ex.meaning}"</span>` : "";
-    box.innerHTML = `💡 <b>${c.translit}</b> <span class="ipa-inline">/${c.ipa}/</span>: ${c.tip}${exPart}`;
+    box.innerHTML = `💡 <b>${c.translit}</b> ${ipaSpan(c)}: ${c.tip}${exPart}`;
   } else {
-    box.innerHTML = `💡 ${c.tip}<br><span class="muted">IPA <span class="ipa-inline">/${c.ipa}/</span> · ${CAT_LABEL[c.cat]}.</span>`;
+    box.innerHTML = `💡 ${c.tip}<br><span class="muted">IPA ${ipaSpan(c)} · ${CAT_LABEL[c.cat]}.</span>`;
   }
 });
 $("sum-retry").addEventListener("click", () => startSession(sessionState.level.id, sessionState.selectedLength || sessionState.length));
@@ -1408,7 +2149,9 @@ const flashState = {
   // sometimes swap it for one of its matra-bearing syllables. Lets you
   // train matra reading inside *any* category instead of having to switch
   // to the dedicated "Matras" chip.
-  mixMatras: localStorage.getItem("hindlearn:flash:mixmatras") !== "0",
+  // OFF by default. Mixing consonant+matra syllables into every category
+  // from card one is a lot for someone who has not done the matras yet.
+  mixMatras: localStorage.getItem("hindlearn:flash:mixmatras") === "1",
   correct: 0,
   wrong: 0,
   streak: 0,
@@ -1419,9 +2162,15 @@ const flashState = {
 };
 
 function getPool() {
-  if (flashState.category === "all") return CHARACTERS;
+  // "All letters" means the script you read words with: vowels, consonants
+  // and the nukta letters. Conjuncts, numerals and whole words are their
+  // own chips — a beginner should not meet क्ष on their third card.
+  if (flashState.category === "all") {
+    return CHARACTERS.filter((c) => c.cat !== "conjunct" && c.cat !== "digit");
+  }
   if (flashState.category === "syllable") return SYLLABLES;
   if (flashState.category === "rblend") return R_BLENDS;
+  if (flashState.category === "word") return WORDS;
   return CHARACTERS.filter((c) => c.cat === flashState.category);
 }
 
@@ -1432,7 +2181,7 @@ function numOptions() {
 function pickCard() {
   const pool = getPool();
   if (pool.length < 2) return null;
-  let answer = pool[Math.floor(Math.random() * pool.length)];
+  let answer = weightedSample(pool, 1)[0];
 
   // Mix-matras: when enabled (default), randomly swap a non-vowel base for
   // one of its matra-bearing syllables OR one of its r-blends. Only active
@@ -1455,7 +2204,13 @@ function pickCard() {
   }
 
   let dir = flashState.direction;
-  if (dir === "both") dir = Math.random() < 0.5 ? "sound-to-letter" : "letter-to-sound";
+  if (dir === "both") {
+    dir = firstEncounterDir(answer) || pickWeighted([
+      ["sound-to-letter", 35],
+      ["letter-to-sound", 35],
+      ["listen", 30],
+    ]);
+  }
 
   const n = numOptions();
   let distractorPool;
@@ -1469,9 +2224,9 @@ function pickCard() {
     const inCategory = (s) => !inCategoryBases || inCategoryBases.has(s.base);
 
     if (flashState.difficulty === "hard") {
-      distractorPool = SYLLABLES.filter((s) => s.base === answer.base && s.translit !== answer.translit);
+      distractorPool = SYLLABLES.filter((s) => s.base === answer.base && s.id !== answer.id);
     } else {
-      const sameBase  = SYLLABLES.filter((s) => s.base === answer.base && s.translit !== answer.translit);
+      const sameBase  = SYLLABLES.filter((s) => s.base === answer.base && s.id !== answer.id);
       const sameMatra = SYLLABLES.filter((s) => s.matra === answer.matra && s.base !== answer.base && inCategory(s));
       const others    = SYLLABLES.filter((s) => s.base !== answer.base && s.matra !== answer.matra && inCategory(s));
       distractorPool = [...shuffle(sameBase), ...shuffle(sameMatra), ...shuffle(others)];
@@ -1487,25 +2242,26 @@ function pickCard() {
     if (flashState.difficulty === "hard") {
       // Hard: distractors are the same TYPE (all rakars or all rephs) so the
       // base consonant is the only differentiator.
-      distractorPool = R_BLENDS.filter((r) => r.type === answer.type && r.translit !== answer.translit);
+      distractorPool = R_BLENDS.filter((r) => r.type === answer.type && r.id !== answer.id);
     } else {
-      const sameBase     = R_BLENDS.filter((r) => r.base === answer.base && r.translit !== answer.translit);
+      const sameBase     = R_BLENDS.filter((r) => r.base === answer.base && r.id !== answer.id);
       const sameType     = R_BLENDS.filter((r) => r.type === answer.type && r.base !== answer.base && inCategory(r));
       const oppositeType = R_BLENDS.filter((r) => r.type !== answer.type && r.base !== answer.base && inCategory(r));
       distractorPool = [...shuffle(sameBase), ...shuffle(sameType), ...shuffle(oppositeType)];
     }
   } else if (flashState.difficulty === "hard") {
-    distractorPool = shuffle(CHARACTERS.filter((c) => c.cat === answer.cat && c.translit !== answer.translit));
+    distractorPool = shuffle(CHARACTERS.filter((c) => c.cat === answer.cat && c.id !== answer.id));
   } else {
-    distractorPool = shuffle(CHARACTERS.filter((c) => c.translit !== answer.translit));
+    distractorPool = shuffle(CHARACTERS.filter((c) => c.id !== answer.id));
   }
   // distractorPool is already ordered (syllable branch wants priority preserved;
   // the non-syllable branches shuffle in-place above), so iterate as-is.
   const seen = new Set();
   const distinct = [];
   for (const c of distractorPool) {
-    const key = dir === "sound-to-letter" ? c.char : c.translit;
+    const key = optionKey(c, dir);
     if (seen.has(key)) continue;
+    if (!optionAllowed(c, answer, dir)) continue;
     seen.add(key);
     distinct.push(c);
     if (distinct.length >= n - 1) break;
@@ -1522,61 +2278,52 @@ function renderCard() {
   $("fc-hint-box").textContent = "";
   $("fc-next").classList.add("hidden");
   if (!card) {
-    $("fc-prompt").textContent = "No characters in this set 🤷";
+    $("fc-prompt").textContent = "No characters in this set \u{1F937}";
     $("fc-options").innerHTML = "";
+    $("fc-typed").classList.add("hidden");
     return;
   }
 
-  const promptEl = $("fc-prompt");
-  const kindEl = $("fc-prompt-kind");
   const fb = $("fc-feedback");
   fb.textContent = "";
   fb.className = "feedback";
   fb.innerHTML = "";
 
-  if (card.dir === "sound-to-letter") {
-    kindEl.textContent = "Which letter makes this sound?";
-    promptEl.textContent = card.answer.translit;
-    promptEl.classList.add("text");
-  } else {
-    kindEl.textContent = "How do you pronounce this letter?";
-    promptEl.textContent = card.answer.char;
-    promptEl.classList.remove("text");
-  }
-
+  renderPrompt($("fc-prompt"), $("fc-prompt-kind"), card);
+  $("fc-prompt").onclick = card.dir === "listen" ? () => speak(card.answer.char) : null;
   // Speak button acts on the char side (so it doesn't just replay the answer
   // when you're being asked for the letter from the sound).
   $("fc-speak").onclick = () => speak(card.answer.char);
+  setAnswerMode("fc", card.dir);
 
   const optsEl = $("fc-options");
   optsEl.innerHTML = "";
   optsEl.dataset.n = card.options.length;
-  card.options.forEach((opt) => {
+  card.options.forEach((opt, i) => {
     const btn = document.createElement("button");
-    if (card.dir === "sound-to-letter") {
-      btn.textContent = opt.char;
-      btn.dataset.translit = opt.translit;
-    } else {
-      btn.textContent = opt.translit;
-      btn.classList.add("text");
-      btn.dataset.translit = opt.translit;
-    }
+    btn.dataset.translit = opt.translit;
+    btn.dataset.id = opt.id;
+    btn.dataset.key = String(i + 1);
+    btn.textContent = optionLabel(opt, card.dir);
+    if (card.dir === "letter-to-sound") btn.classList.add("text");
     btn.addEventListener("click", () => answerCard(opt, btn));
     optsEl.appendChild(btn);
   });
 }
 
-function answerCard(chosen, btn) {
+function answerCard(chosen, btn, opts = {}) {
   if (flashState.locked) return;
   flashState.locked = true;
 
   const correctChar = flashState.current.answer;
-  const isCorrect = chosen.translit === correctChar.translit;
+  const isCorrect = chosen.id === correctChar.id;
+  recordAttempt(correctChar, isCorrect);
   const buttons = $("fc-options").querySelectorAll("button");
   const fb = $("fc-feedback");
+  $("fc-typed-input").disabled = true;
 
   if (isCorrect) {
-    btn.classList.add("ok");
+    if (btn) btn.classList.add("ok");
     flashState.correct += 1;
     flashState.streak += 1;
     if (flashState.streak > flashState.best) {
@@ -1584,54 +2331,33 @@ function answerCard(chosen, btn) {
       localStorage.setItem("hindlearn:best", String(flashState.best));
     }
     fb.className = "feedback ok";
-    fb.innerHTML = `✔ <b>${correctChar.char}</b> = <b>${correctChar.translit}</b> <span class="ipa-inline">/${correctChar.ipa}/</span> — ${correctChar.tip}`;
+    const caseNote = opts.caseSlip
+      ? ` <span class="case-note">\u2014 careful: <b>${correctChar.translit}</b>, capitals mark retroflex</span>`
+      : "";
+    fb.innerHTML = `\u2714 <b>${correctChar.char}</b> = <b>${correctChar.translit}</b> ${ipaSpan(correctChar)}${caseNote} \u2014 ${correctChar.tip}`;
     autoSpeak(correctChar.char);
     recordCorrect();
   } else {
-    btn.classList.add("bad");
+    if (btn) btn.classList.add("bad");
     flashState.wrong += 1;
     flashState.streak = 0;
-    // reveal correct
     buttons.forEach((b) => {
-      if (b.dataset.translit === correctChar.translit) b.classList.add("reveal");
+      if (b.dataset.id === correctChar.id) b.classList.add("reveal");
     });
-    // detailed explanation of the mistake
     fb.className = "feedback bad";
-    const sameCat = chosen.cat === correctChar.cat;
-    const catLine = sameCat
-      ? `Both are in the <b>${CAT_LABEL[correctChar.cat]}</b> group — a classic trap.`
-      : `You picked a <b>${CAT_LABEL[chosen.cat]}</b>, but the answer is a <b>${CAT_LABEL[correctChar.cat]}</b>.`;
-    fb.innerHTML = `
-      <div>✘ You picked <b>${chosen.char}</b> = <code class="ans-pill wrong">${chosen.translit}</code> <span class="ipa-inline">/${chosen.ipa}/</span> — <i>${chosen.tip}</i>
-        <button class="mini fb-speak-wrong" title="Hear what you picked">🔊 Yours</button>
-      </div>
-      <div class="correct-big">
-        Correct answer:
-        <span class="big-char">${correctChar.char}</span>
-        =
-        <code class="ans-pill right big">${correctChar.translit}</code>
-        <span class="ipa-inline">/${correctChar.ipa}/</span>
-        <button class="mini fb-speak-right">🔊 Correct</button>
-        <button class="mini fb-speak-diff" title="Hear both back-to-back">🔁 Compare</button>
-      </div>
-      <div class="correct-tip"><i>${correctChar.tip}</i></div>
-      <div style="margin-top:0.4rem;color:var(--muted);font-weight:normal">${catLine}</div>
-    `;
-    fb.querySelector(".fb-speak-wrong").addEventListener("click", () => speak(chosen.char));
-    fb.querySelector(".fb-speak-right").addEventListener("click", () => speak(correctChar.char));
-    fb.querySelector(".fb-speak-diff").addEventListener("click", () => playDiff(chosen.char, correctChar.char));
-    // Auto-play both so the user immediately hears the contrast.
-    autoPlayDiff(chosen.char, correctChar.char);
+    fb.innerHTML = wrongFeedbackHTML(chosen, correctChar);
+    wireFeedbackButtons(fb, chosen, correctChar);
   }
   buttons.forEach((b) => (b.disabled = true));
   updateFlashStats();
 
   if (isCorrect) {
     // auto advance on correct
-    setTimeout(renderCard, 900);
+    setTimeout(renderCard, opts.caseSlip ? 1700 : (audioAutoplay ? 1400 : 900));
   } else {
     // wait for user to click Next — they need time to read the explanation
     $("fc-next").classList.remove("hidden");
+    $("fc-next").focus();
   }
 }
 
@@ -1645,9 +2371,9 @@ function showHint() {
   // letter-to-sound: they see the letter already; hint gives the mouth tip but not the answer
   if (flashState.current.dir === "sound-to-letter") {
     const exPart = c.ex ? `<br><span class="muted">Example word: <b>${c.ex.word}</b> (${c.ex.translit}) "${c.ex.meaning}"</span>` : "";
-    box.innerHTML = `💡 <b>${c.translit}</b> <span class="ipa-inline">/${c.ipa}/</span>: ${c.tip}${exPart}`;
+    box.innerHTML = `💡 <b>${c.translit}</b> ${ipaSpan(c)}: ${c.tip}${exPart}`;
   } else {
-    box.innerHTML = `💡 ${c.tip}<br><span class="muted">IPA <span class="ipa-inline">/${c.ipa}/</span> · Category: ${CAT_LABEL[c.cat]}.</span>`;
+    box.innerHTML = `💡 ${c.tip}<br><span class="muted">IPA ${ipaSpan(c)} · Category: ${CAT_LABEL[c.cat]}.</span>`;
   }
 }
 
@@ -1751,23 +2477,80 @@ function startFlashcards() {
     });
   });
   $("fc-reset").addEventListener("click", () => {
-    // Full reset including Best and Lifetime — matches user expectation
-    // of "start from scratch".
+    // Session-scoped: zeroes this sitting's counters only. Best streak and
+    // lifetime are long-run stats the Journey recap reads — wiping them
+    // from a button labelled "Reset" was a foot-gun. Use the footer's
+    // "Reset all progress" for the nuclear option.
     flashState.correct = 0;
     flashState.wrong = 0;
     flashState.streak = 0;
-    flashState.best = 0;
-    flashState.lifetime = 0;
-    localStorage.removeItem("hindlearn:best");
-    localStorage.removeItem("hindlearn:lifetime");
     updateFlashStats();
     renderCard();
+  });
+  $("fc-typed").addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (flashState.locked || !flashState.current) return;
+    const correct = flashState.current.answer;
+    const res = resolveTyped($("fc-typed-input").value, getPool(), correct);
+    if (!res) return;
+    answerCard(res.item, null, { caseSlip: res.item.id === correct.id && !res.exact });
   });
   $("fc-hint").addEventListener("click", showHint);
   $("fc-next").addEventListener("click", renderCard);
   updateFlashStats();
   renderCard();
 }
+
+// ======================================================
+//  Keyboard — a rapid-fire drill you have to click through isn't rapid.
+//    1-9   pick that option        Enter / Space  next card
+//    h     hint                    r              replay the audio
+//    ← →   prev / next in study mode
+// ======================================================
+
+document.addEventListener("keydown", (e) => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const inField = e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement;
+  const shellOpen = !$("session-shell").classList.contains("hidden");
+  const inQuiz = shellOpen && !$("ch-session").classList.contains("hidden");
+  const inStudy = shellOpen && !$("ch-study").classList.contains("hidden");
+  const inFlash = !shellOpen && currentTab === "flashcards";
+
+  if (inStudy && !inField) {
+    if (e.key === "ArrowRight") { e.preventDefault(); studyNext(); }
+    else if (e.key === "ArrowLeft") { e.preventDefault(); studyPrev(); }
+    else if (e.key === " ") {
+      e.preventDefault();
+      const c = studyState.pool[studyState.idx];
+      if (c) speak(c.char);
+    }
+    return;
+  }
+
+  if (!inQuiz && !inFlash) return;
+  const nextBtn = inQuiz ? $("ch-next") : $("fc-next");
+  if ((e.key === "Enter" || e.key === " ") && !nextBtn.classList.contains("hidden")) {
+    e.preventDefault();
+    nextBtn.click();
+    return;
+  }
+  if (inField) return;   // the typed-answer box owns every other key
+
+  if (/^[1-9]$/.test(e.key)) {
+    const opts = inQuiz ? $("ch-options") : $("fc-options");
+    if (opts.classList.contains("hidden")) return;
+    const btn = opts.querySelector(`button[data-key="${e.key}"]`);
+    if (btn && !btn.disabled) { e.preventDefault(); btn.click(); }
+    return;
+  }
+  const k = e.key.toLowerCase();
+  if (k === "h") { e.preventDefault(); (inQuiz ? $("ch-hint") : $("fc-hint")).click(); }
+  else if (k === "r") {
+    e.preventDefault();
+    const card = inQuiz ? sessionState.currentCard : flashState.current;
+    if (card) speak(card.answer.char);
+  }
+});
 
 // ======================================================
 //  Reset all progress
@@ -1794,14 +2577,57 @@ function wipeAndReload() {
   window.location.replace(u.toString());
 }
 
+// Destructive buttons arm on the first click and fire on the second, so a
+// stray tap can't wipe weeks of progress. Re-disarms after 4s.
+function armConfirm(btn, confirmLabel, fn) {
+  if (btn.dataset.armed === "1") {
+    clearTimeout(btn._disarm);
+    btn.dataset.armed = "0";
+    btn.textContent = btn.dataset.idleLabel;
+    fn();
+    return;
+  }
+  btn.dataset.idleLabel = btn.dataset.idleLabel || btn.textContent;
+  btn.dataset.armed = "1";
+  btn.textContent = confirmLabel;
+  btn._disarm = setTimeout(() => {
+    btn.dataset.armed = "0";
+    btn.textContent = btn.dataset.idleLabel;
+  }, 4000);
+}
+
+// Remove every localStorage key matching a prefix. Returns how many went.
+function clearKeysMatching(test) {
+  const doomed = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && test(k)) doomed.push(k);
+  }
+  doomed.forEach((k) => localStorage.removeItem(k));
+  return doomed.length;
+}
+
 // Delegated listener. Fires even if a prior top-level statement threw.
+// Each button has its OWN scope — "Reset best scores" used to wipe the
+// journey, lifetime counter and streak too, which is not what it says.
 document.addEventListener("click", (e) => {
   const t = e.target;
   if (!(t instanceof Element)) return;
   const btn = t.closest("#reset-all,#reset-bests");
   if (!btn) return;
-  console.log("[hindlearn] reset clicked — wiping");
-  wipeAndReload();
+  if (btn.id === "reset-bests") {
+    armConfirm(btn, "Click again to clear best scores", () => {
+      const n = clearKeysMatching((k) => k.startsWith("hindlearn:lvl"));
+      console.log(`[hindlearn] cleared ${n} best-score keys`);
+      renderLevels();
+      showToast("🗑", "Best scores cleared.");
+    });
+  } else {
+    armConfirm(btn, "Click again to wipe EVERYTHING", () => {
+      console.log("[hindlearn] full reset — wiping");
+      wipeAndReload();
+    });
+  }
 });
 
 // Show confirmation toast on the reloaded page.

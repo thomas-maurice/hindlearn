@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hindlearn — Read Devanagari</title>
-  <link rel="stylesheet" href="style.css?v=24" />
+  <link rel="stylesheet" href="style.css?v=32" />
 </head>
 <body>
   <header>
@@ -15,10 +15,10 @@
       <button class="tab" data-tab="challenges">Challenges</button>
       <button class="tab" data-tab="flashcards">Flashcards</button>
     </nav>
-    <button id="audio-autoplay-toggle" class="audio-toggle" type="button"
+    <button id="audio-autoplay-toggle" class="audio-toggle on" type="button"
       title="Toggle automatic audio playback (manual 🔊 buttons always work)">
-      <span class="audio-toggle-icon">🔇</span>
-      <span class="audio-toggle-label">Auto-audio off</span>
+      <span class="audio-toggle-icon">🔊</span>
+      <span class="audio-toggle-label">Auto-audio on</span>
     </button>
   </header>
 
@@ -28,10 +28,10 @@
       <p class="tagline">Start here. Read the primer, then tap any character for a tip, an example word, and audio.</p>
 
       <details class="primer" open>
-        <summary><b>Primer — five things English speakers need to know</b></summary>
+        <summary><b>Primer — eight things English speakers need to know</b></summary>
         <div class="primer-body">
           <h4>1. Aspirated vs plain</h4>
-          <p>Many consonants come in pairs: a plain one and an <i>aspirated</i> one with a little puff of air. In English, the <code>p</code> in "pat" is aspirated, the one in "spat" is not — but English doesn't care about the difference. Hindi does: <code>पल</code> (pal, "moment") and <code>फल</code> (phal, "fruit") are completely different words. Aspirated letters are written with an extra <code>h</code>: <code>kha, gha, cha, chha, jha, Tha, Dha, tha, dha, pha, bha</code>.</p>
+          <p>Many consonants come in pairs: a plain one and an <i>aspirated</i> one with a little puff of air. In English, the <code>p</code> in "pat" is aspirated, the one in "spat" is not — but English doesn't care about the difference. Hindi does: <code>पल</code> (pal, "moment") and <code>फल</code> (phal, "fruit") are completely different words. Aspirated letters are written with an extra <code>h</code>: <code>kha, gha, chha, jha, Tha, Dha, tha, dha, pha, bha</code>.</p>
 
           <h4>2. Voiced vs unvoiced</h4>
           <p>Unvoiced = vocal cords silent (k, t, p). Voiced = vocal cords humming (g, d, b). Every consonant row pairs them up.</p>
@@ -47,14 +47,19 @@
           <h4>4. Long vs short vowels</h4>
           <p>Vowel length <i>changes the word</i>. <code>इ</code> (i) is short like "sit", <code>ई</code> (ii) is long like "see". Hold the long ones about twice as long.</p>
 
-          <h4>5. The varga (the consonant table)</h4>
+          <h4>5. The silent 'a' — schwa deletion</h4>
+          <p>Every consonant carries a built-in <code>a</code>: क is <i>ka</i>, ल is <i>la</i>. But Hindi <b>drops that vowel at the end of a word</b>, and often in the middle too. So क + ल is written "ka-la" but pronounced <b>kal</b>. राम is <i>raam</i>, not "raama". घर is <i>ghar</i>. नमस्ते is <i>namaste</i>, not "namasté".</p>
+          <p>This is the single biggest gap between how the letters are <i>named</i> and how words are <i>read</i>. Rule of thumb: <b>a word never ends in the inherent <code>a</code></b> (unless it's written with ा). Mid-word it drops too when the result is still pronounceable — समझ is <i>samajh</i>, not "samajha".</p>
+          <p>Sanskrit loanwords and names sometimes keep it (राम is <i>Raam</i>, but in Sanskrit <i>Raama</i>). When in doubt: drop the final one.</p>
+
+          <h4>6. The varga (the consonant table)</h4>
           <p>Consonants are organized by where they're made in the mouth: <b>back → front</b>. Five rows of five, each row: <i>unvoiced / unvoiced+aspirated / voiced / voiced+aspirated / nasal</i>. Once you see the pattern you don't need to memorize 25 random letters — you memorize one table.</p>
 
-          <h4>6. Matras — vowel signs (the lines above & below)</h4>
+          <h4>7. Matras — vowel signs (the lines above & below)</h4>
           <p>Vowels have <i>two</i> forms. The big standalone letters (<code>अ आ इ ई …</code>) are only used at the <b>start</b> of a word. Everywhere else, the vowel becomes a <i>matra</i> — a little mark that attaches to a consonant: above, below, before, or after.</p>
           <p>So <code>का</code> (kaa) is not क + आ. It's क + the <code>ा</code> matra. <code>के</code> (ke) is क + a single stroke above. <code>कै</code> (kai) is k + <i>two</i> strokes above. Once you spot the pattern you can read most vowel combinations on sight — see the chart below.</p>
 
-          <h4>7. र-blends — the disappearing र</h4>
+          <h4>8. र-blends — the disappearing र</h4>
           <p>When र combines with another consonant it doesn't write itself out as a full र. It shrinks into one of two marks: a tiny <b>hook above</b> the next letter (called <i>reph</i>) or a small <b>diagonal stroke below</b> the previous letter (called <i>rakar</i>).</p>
           <p>The hook above means र comes <b>first</b>: <code>र्क</code> = <i>rka</i>, <code>र्व</code> = <i>rva</i> — you've seen it on every Indian banknote (रिज़र्व बैंक). The stroke below means र comes <b>after</b>: <code>क्र</code> = <i>kra</i>, <code>प्र</code> = <i>pra</i>. Same idea as the matras: a full letter gets compressed into a small attached mark.</p>
         </div>
@@ -79,6 +84,10 @@
 
       <div class="matra-grid" id="chart-matras"></div>
 
+      <h2 class="section-heading">Nasal marks — ं and ँ</h2>
+      <p class="hint">Neither a letter nor a matra, and both unavoidable: <b>हिंदी</b>, <b>मैं</b>, <b>माँ</b>, <b>अंडा</b> all carry one. Tap an example word to hear it.</p>
+      <div class="matra-grid" id="chart-nasals"></div>
+
       <h2 class="section-heading">र-blends — when र attaches to another consonant</h2>
       <p class="hint">When र combines with another consonant it shrinks into a small mark. Hook on top → र comes <b>first</b> (<i>reph</i>). Stroke below → र comes <b>after</b> (<i>rakar</i>). Tap a tile to hear it.</p>
 
@@ -101,6 +110,22 @@
 
       <h2 class="section-heading">Outside the varga</h2>
       <div class="chart" id="chart-other"></div>
+
+      <h2 class="section-heading">Look-alikes — the pairs that trip everyone up</h2>
+      <p class="hint">Reading breaks on <b>shape</b>, not sound. These are the pairs that differ by one stroke. Tap either letter to hear it — and drill them with the <b>Look-alikes</b> level.</p>
+      <div id="chart-confusables" class="confusable-list"></div>
+
+      <h2 class="section-heading">Nukta letters — the dotted ones</h2>
+      <p class="hint">A dot below turns a Devanagari letter into a Perso-Arabic sound. <b>ज़</b> and <b>फ़</b> are everywhere in modern Hindi — ज़रूरी, फ़ोन, मेज़ — and plenty of writing drops the dot, so you also have to read them without it.</p>
+      <div class="chart" id="chart-nukta"></div>
+
+      <h2 class="section-heading">Conjuncts — stacked consonants</h2>
+      <p class="hint">When a consonant has no vowel it fuses with the next one. Usually the first loses its vertical stem (क् + त → क्त); sometimes the pair becomes a shape you just learn (क्ष, ज्ञ).</p>
+      <div class="chart" id="chart-conjuncts"></div>
+
+      <h2 class="section-heading">Numerals ०–९ and the danda</h2>
+      <p class="hint">Prices, dates, page numbers, bus routes. The full stop is <b>।</b> (danda), not a dot.</p>
+      <div class="chart" id="chart-digits"></div>
 
       <!-- Character detail popover -->
       <div id="char-modal" class="modal hidden" aria-hidden="true">
@@ -127,6 +152,21 @@
         <div class="recap-tile"><div class="recap-label">Lifetime correct</div><div class="recap-value" id="recap-lifetime">0</div></div>
         <div class="recap-tile"><div class="recap-label">Best streak</div><div class="recap-value" id="recap-best-streak">0</div></div>
         <div class="recap-tile"><div class="recap-label">Perfect runs</div><div class="recap-value" id="recap-perfects">0</div></div>
+        <div class="recap-tile"><div class="recap-label">Letters mastered</div><div class="recap-value" id="recap-mastered">0/0</div></div>
+      </div>
+
+      <div class="heatmap-block">
+        <div class="heatmap-head">
+          <b>Your alphabet at a glance</b>
+          <span class="heatmap-legend">
+            <i class="sw" style="background:#cfc6bb"></i> unseen
+            <i class="sw" style="background:#c0392b"></i> missing it
+            <i class="sw" style="background:#e6a020"></i> shaky
+            <i class="sw" style="background:#27ae60"></i> mastered
+          </span>
+        </div>
+        <div id="journey-heatmap" class="heatmap"></div>
+        <button id="journey-weak" class="level-btn weak-drill">🩹 Drill my weak letters</button>
       </div>
 
       <div class="journey-header">
@@ -134,7 +174,7 @@
           <span><b id="journey-done">0</b> / <b id="journey-total">0</b> levels complete</span>
           <div class="journey-bar"><div id="journey-bar-fill"></div></div>
         </div>
-        <button id="journey-reset-all" class="reset-btn">🗑 Reset everything</button>
+        <button id="journey-reset-all" class="reset-btn">🗑 Reset journey</button>
       </div>
 
       <div id="journey-list"></div>
@@ -146,7 +186,7 @@
       <div id="ch-home">
         <div class="ch-home-header">
           <p class="tagline">Pick a level, pick a session length, track your progress.</p>
-          <button id="reset-bests" class="reset-btn">🗑 Reset progress</button>
+          <button id="reset-bests" class="reset-btn">🗑 Reset best scores</button>
         </div>
         <div id="ch-levels"></div>
       </div>
@@ -221,7 +261,12 @@
           </div>
           <div id="ch-hint-box" class="fc-hint-box hidden"></div>
           <div id="ch-options" class="fc-options"></div>
-          <div id="ch-feedback" class="feedback"></div>
+          <form id="ch-typed" class="typed-row hidden" autocomplete="off">
+            <input id="ch-typed-input" type="text" spellcheck="false" autocapitalize="off"
+              autocomplete="off" placeholder="type the sound, e.g. kha" aria-label="Type the transliteration" />
+            <button type="submit" class="level-btn">Check</button>
+          </form>
+          <div id="ch-feedback" class="feedback" aria-live="polite"></div>
           <button id="ch-next" class="hidden">Next →</button>
         </div>
       </div>
@@ -247,7 +292,7 @@
 
     <!-- ================== FLASHCARDS ================== -->
     <section id="tab-flashcards" class="hidden">
-      <p class="tagline">Rapid-fire matching. Stuck? Hit the hint button.</p>
+      <p class="tagline">Rapid-fire matching. Stuck? Hit the hint button — and if a character is new to you, read it up in <b>Learn</b> first.</p>
 
       <div class="fc-settings">
         <div class="fc-group">
@@ -256,12 +301,14 @@
             <button class="chip active" data-dir="both">Both ways</button>
             <button class="chip" data-dir="sound-to-letter">Sound → Letter</button>
             <button class="chip" data-dir="letter-to-sound">Letter → Sound</button>
+            <button class="chip" data-dir="listen">🔊 Listen only</button>
+            <button class="chip" data-dir="type">⌨️ Type it (once you know them)</button>
           </div>
         </div>
         <div class="fc-group">
           <label>Categories</label>
           <div class="chips" id="fc-categories">
-            <button class="chip active" data-cat="all">All</button>
+            <button class="chip active" data-cat="all">All letters</button>
             <button class="chip" data-cat="vowel">Vowels</button>
             <button class="chip" data-cat="syllable">Matras (मात्रा)</button>
             <button class="chip" data-cat="rblend">र-blends (र्, ्र)</button>
@@ -272,6 +319,10 @@
             <button class="chip" data-cat="labial">Labials (p/b/m)</button>
             <button class="chip" data-cat="semivowel">Semivowels</button>
             <button class="chip" data-cat="sibilant">Sibilants + h</button>
+            <button class="chip" data-cat="nukta">Nukta (क़ ज़ फ़)</button>
+            <button class="chip" data-cat="conjunct">Conjuncts (क्ष ज्ञ)</button>
+            <button class="chip" data-cat="digit">Numbers ०–९</button>
+            <button class="chip" data-cat="word">Whole words</button>
           </div>
         </div>
         <div class="fc-group">
@@ -309,14 +360,19 @@
         </div>
         <div id="fc-hint-box" class="fc-hint-box hidden"></div>
         <div id="fc-options" class="fc-options"></div>
-        <div id="fc-feedback" class="feedback"></div>
+        <form id="fc-typed" class="typed-row hidden" autocomplete="off">
+          <input id="fc-typed-input" type="text" spellcheck="false" autocapitalize="off"
+            autocomplete="off" placeholder="type the sound, e.g. kha" aria-label="Type the transliteration" />
+          <button type="submit" class="level-btn">Check</button>
+        </form>
+        <div id="fc-feedback" class="feedback" aria-live="polite"></div>
         <button id="fc-next" class="hidden">Next →</button>
       </div>
     </section>
   </main>
 
   <footer>
-    <p>Transliterations use a light IAST-ish style. <code>T/D/N</code> = retroflex, <code>Sh</code> = ष, <code>aa/ii/uu</code> = long vowels. Audio pre-generated with <a href="https://github.com/pndurette/gTTS" target="_blank" rel="noopener">gTTS</a> (open source), served as static MP3s.</p>
+    <p>Transliterations use a light IAST-ish style. <code>T/D/N</code> = retroflex, <code>Sh</code> = ष, <code>aa/ii/uu</code> = long vowels, <code>q/x/G/z/f</code> = the nukta letters (<code>G</code> = throaty ग़, not retroflex). Audio pre-generated with <a href="https://github.com/pndurette/gTTS" target="_blank" rel="noopener">gTTS</a> (open source), served as static MP3s.</p>
     <button id="reset-all" class="reset-btn">🗑 Reset all progress</button>
   </footer>
 
@@ -326,6 +382,6 @@
     <div class="toast-text"></div>
   </div>
 
-  <script src="app.js?v=24"></script>
+  <script src="app.js?v=32"></script>
 </body>
 </html>

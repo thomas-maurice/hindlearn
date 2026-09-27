@@ -32,3 +32,6 @@ audio/*.part
 *.log
 .env
 .env.local
+
+# Claude Code session state
+.claude/
