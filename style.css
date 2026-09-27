@@ -1863,3 +1863,66 @@ footer a:hover { text-decoration: underline; }
   border-radius: 8px;
   font-weight: normal;
 }
+
+/* -------- Review queue (spaced repetition) -------- */
+
+.review-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: linear-gradient(135deg, #fff3e0, var(--card));
+  border: 1px solid var(--accent-2);
+  border-radius: 12px;
+  padding: 0.9rem 1.1rem;
+  margin: 0 0 1rem;
+}
+
+.review-panel.empty {
+  background: var(--card);
+  border-color: var(--border);
+}
+
+.review-main {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-width: 0;
+}
+
+.review-count {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--accent-2);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.review-panel.empty .review-count { color: var(--muted); }
+
+.review-label {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.review-sub {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-top: 0.15rem;
+}
+
+#review-start:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.due-card {
+  border-color: var(--accent-2);
+  box-shadow: 0 0 0 2px rgba(230, 126, 34, 0.18);
+}
+
+@media (max-width: 600px) {
+  .review-panel { flex-direction: column; align-items: stretch; }
+  .review-panel #review-start { width: 100%; }
+}

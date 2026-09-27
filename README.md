@@ -6,10 +6,17 @@ Four tabs: **Learn** (primer + tappable charts), **Journey** (guided levels + a 
 heatmap of your own alphabet), **Challenges** (drill any level at 10/20/25 questions) and
 **Flashcards** (rapid-fire, filterable).
 
-Every answer is recorded per character in `localStorage`, and that history drives the rest:
-questions are weighted toward what you keep missing, each level shows how much of it you
-have actually mastered, and the **Weak letters** deck is rebuilt from your worst items
-every time you open it.
+Every answer is recorded per character in `localStorage`, and that history drives the rest.
+
+**Spaced repetition.** Each character carries a Leitner box and a due date. Answer it right
+and it is promoted — the next review moves out to 1, 3, 7, 16, 35 then 90 days. Miss it and
+it drops two boxes and comes back within ten minutes. The Journey tab opens with the review
+queue ("16 items due for review"), overdue material fills a session before anything new, and
+a missed day breaks the streak counter but never the schedule.
+
+The same history also weights questions toward what you keep missing, shows how much of each
+level you have actually mastered, and fills a **Weak letters** deck (accuracy-based) beside
+the **Due for review** deck (time-based).
 
 Three question types rotate: sound → letter, letter → sound and **listen only** (audio with
 no text). **The first time you ever meet a character you always get to see it** — multiple

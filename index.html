@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hindlearn — Read Devanagari</title>
-  <link rel="stylesheet" href="style.css?v=32" />
+  <link rel="stylesheet" href="style.css?v=33" />
 </head>
 <body>
   <header>
@@ -147,12 +147,24 @@
     <section id="tab-journey" class="hidden">
       <p class="tagline">Your guided path and personal recap. Study a level, pass the check, unlock the next one.</p>
 
+      <div class="review-panel" id="review-panel">
+        <div class="review-main">
+          <div class="review-count" id="review-count">0</div>
+          <div class="review-copy">
+            <div class="review-label" id="review-label">due for review</div>
+            <div class="review-sub" id="review-sub">Spaced repetition: each letter comes back just before you would forget it.</div>
+          </div>
+        </div>
+        <button id="review-start" class="level-btn">⏰ Review now</button>
+      </div>
+
       <div class="recap-grid">
         <div class="recap-tile"><div class="recap-label">Levels done</div><div class="recap-value" id="recap-levels">0/0</div></div>
         <div class="recap-tile"><div class="recap-label">Lifetime correct</div><div class="recap-value" id="recap-lifetime">0</div></div>
         <div class="recap-tile"><div class="recap-label">Best streak</div><div class="recap-value" id="recap-best-streak">0</div></div>
         <div class="recap-tile"><div class="recap-label">Perfect runs</div><div class="recap-value" id="recap-perfects">0</div></div>
         <div class="recap-tile"><div class="recap-label">Letters mastered</div><div class="recap-value" id="recap-mastered">0/0</div></div>
+        <div class="recap-tile"><div class="recap-label">Day streak</div><div class="recap-value" id="recap-streak">0</div></div>
       </div>
 
       <div class="heatmap-block">
@@ -382,6 +394,6 @@
     <div class="toast-text"></div>
   </div>
 
-  <script src="app.js?v=32"></script>
+  <script src="app.js?v=33"></script>
 </body>
 </html>

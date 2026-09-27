@@ -481,6 +481,28 @@ const STATS_KEY = "hindlearn:stats";
 const MASTERY_ACC = 0.8;   // accuracy needed to count as "known"
 const MASTERY_SEEN = 3;    // ...over at least this many attempts
 
+// ---- review scheduling (Leitner) ----------------------------------------
+// Accuracy alone has no sense of time: a letter you nailed yesterday and one
+// you nailed a month ago score identically, so the one you are about to
+// forget never gets prioritised. Each item carries a box and a due date.
+// Getting it right promotes it and pushes the next review further out;
+// getting it wrong drops it two boxes and brings it back within the hour.
+const BOX_DAYS = [0, 1, 3, 7, 16, 35, 90];
+const RELEARN_MS = 10 * 60 * 1000;   // a miss comes back later in the session
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+// A stats entry is [seen, correct, lastTs, box, due]. Entries written before
+// scheduling existed have length 3; they are read as "box 0, due now", which
+// puts them in the review queue without inventing a history for them.
+function boxOf(id)  { const st = STATS[id]; return st && st.length > 3 ? st[3] : 0; }
+function dueAt(id)  { const st = STATS[id]; return st && st.length > 4 ? st[4] : (st ? 0 : Infinity); }
+function isDue(id)  { const st = STATS[id]; return !!st && dueAt(id) <= Date.now(); }
+
+function nextDue(box) {
+  const days = BOX_DAYS[Math.min(box, BOX_DAYS.length - 1)];
+  return Date.now() + days * DAY_MS;
+}
+
 function loadStats() {
   try {
     const raw = JSON.parse(localStorage.getItem(STATS_KEY) || "{}");
@@ -502,10 +524,20 @@ function flushStats() {
 
 function recordAttempt(item, ok) {
   if (!item || !item.id) return;
-  const st = STATS[item.id] || (STATS[item.id] = [0, 0, 0]);
+  const st = STATS[item.id] || (STATS[item.id] = [0, 0, 0, 0, 0]);
+  while (st.length < 5) st.push(0);   // migrate a pre-scheduling entry
   st[0] += 1;
   if (ok) st[1] += 1;
   st[2] = Date.now();
+  if (ok) {
+    st[3] = Math.min(st[3] + 1, BOX_DAYS.length - 1);
+    st[4] = nextDue(st[3]);
+  } else {
+    // Two boxes back rather than all the way to zero: one slip on a letter
+    // you have known for weeks should not cost you the whole ladder.
+    st[3] = Math.max(0, st[3] - 2);
+    st[4] = Date.now() + RELEARN_MS;
+  }
   _statsDirty = true;
   clearTimeout(flushStats._t);
   flushStats._t = setTimeout(flushStats, 400);
@@ -531,11 +563,15 @@ function allItems() {
 }
 
 // How much this item deserves to be asked. Unseen ranks high (you have to
-// meet it at least once); perfect recall ranks low but never zero.
+// meet it at least once); perfect recall ranks low but never zero; and an
+// item that is overdue climbs the longer it has been waiting.
 function itemWeight(item) {
   const acc = accuracyOf(item.id);
   if (acc === null) return 2.5;
-  return 0.35 + 3 * (1 - acc);
+  const base = 0.35 + 3 * (1 - acc);
+  const overdueDays = (Date.now() - dueAt(item.id)) / DAY_MS;
+  if (overdueDays <= 0) return base;
+  return base * (1 + Math.min(overdueDays, 14) / 7);
 }
 
 // Weighted draw without replacement — the adaptive half of the app.
@@ -560,6 +596,68 @@ function weakItems(limit = 25) {
     .sort((a, b) => a.acc - b.acc || b.seen - a.seen)
     .slice(0, limit)
     .map((x) => x.i);
+}
+
+// Everything whose review date has arrived, most overdue first. This is the
+// queue the app should push you through before anything else.
+function dueItems(limit = 25) {
+  return allItems()
+    .filter((i) => isDue(i.id))
+    .sort((a, b) => dueAt(a.id) - dueAt(b.id))
+    .slice(0, limit);
+}
+
+function dueCount() {
+  return allItems().filter((i) => isDue(i.id)).length;
+}
+
+// When the queue is empty, when does it refill?
+function nextReviewAt() {
+  const times = allItems().map((i) => dueAt(i.id)).filter((t) => t > Date.now() && t < Infinity);
+  return times.length ? Math.min(...times) : null;
+}
+
+function formatWhen(ts) {
+  const mins = Math.round((ts - Date.now()) / 60000);
+  if (mins < 60) return `in ${Math.max(1, mins)} min`;
+  const hours = Math.round(mins / 60);
+  if (hours < 24) return `in ${hours} hour${hours === 1 ? "" : "s"}`;
+  const days = Math.round(hours / 24);
+  return `in ${days} day${days === 1 ? "" : "s"}`;
+}
+
+// ---- daily streak -------------------------------------------------------
+// Counts consecutive calendar days on which a session was finished.
+const STREAK_KEY = "hindlearn:streak";
+
+function loadStreak() {
+  try {
+    const v = JSON.parse(localStorage.getItem(STREAK_KEY) || "null");
+    return v && typeof v === "object" ? v : { count: 0, last: null };
+  } catch { return { count: 0, last: null }; }
+}
+
+function todayKey(d = new Date()) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+// Current streak, treating a missed day as a break. Read-only.
+function currentStreak() {
+  const s = loadStreak();
+  if (!s.last) return 0;
+  const yesterday = todayKey(new Date(Date.now() - DAY_MS));
+  return (s.last === todayKey() || s.last === yesterday) ? s.count : 0;
+}
+
+// Called when a session finishes. Returns true if today was a new day.
+function bumpStreak() {
+  const s = loadStreak();
+  const today = todayKey();
+  if (s.last === today) return false;
+  const yesterday = todayKey(new Date(Date.now() - DAY_MS));
+  const next = { count: s.last === yesterday ? s.count + 1 : 1, last: today };
+  localStorage.setItem(STREAK_KEY, JSON.stringify(next));
+  return true;
 }
 
 // Fraction of a level's pool that counts as mastered — shown per level so
@@ -1332,13 +1430,31 @@ const WEAK_LEVEL = {
   weak: true,
 };
 
-function findLevel(id) {
-  return id === WEAK_LEVEL.id ? WEAK_LEVEL : LEVELS.find((l) => l.id === id) || null;
+// Time-based companion to the weak deck: everything whose review date has
+// come round, across letters, syllables, blends and words alike.
+const DUE_LEVEL = {
+  id: -1,
+  name: "Due for review",
+  emoji: "\u23F0",
+  desc: "Everything the schedule says you are about to forget, most overdue first.",
+  due: true,
+};
+
+// Neither the weak deck nor the due deck is part of the journey: no best
+// score, no unlock, no position.
+function isPracticeDeck(level) {
+  return !!level && (level.weak || level.due);
 }
 
-// Display name. The weak deck has no position in the journey.
+function findLevel(id) {
+  if (id === WEAK_LEVEL.id) return WEAK_LEVEL;
+  if (id === DUE_LEVEL.id) return DUE_LEVEL;
+  return LEVELS.find((l) => l.id === id) || null;
+}
+
+// Display name. The practice decks have no position in the journey.
 function levelTitle(level) {
-  return level.weak ? level.name : `Lv ${levelPosition(level)} \u2014 ${level.name}`;
+  return isPracticeDeck(level) ? level.name : `Lv ${levelPosition(level)} \u2014 ${level.name}`;
 }
 
 // Position (1-based) the level shows up as in the UI. This is decoupled
@@ -1356,6 +1472,7 @@ function previousLevel(level) {
 }
 
 function levelPool(level) {
+  if (level.due) return dueItems(25);
   if (level.weak) return weakItems(25);
   if (level.words) return WORDS;
   if (level.confusable) {
@@ -1402,7 +1519,28 @@ function renderLevels() {
   const el = $("ch-levels");
   el.innerHTML = "";
 
-  // Weak deck first, but only once there is enough history to fill one.
+  // Review queue first: it is the thing most worth doing at any moment.
+  const due = dueItems(25);
+  if (due.length) {
+    const card = document.createElement("div");
+    card.className = "level-card due-card";
+    card.innerHTML = `
+      <div class="level-head">
+        <div class="level-emoji">${DUE_LEVEL.emoji}</div>
+        <div>
+          <div class="level-name">${DUE_LEVEL.name} <span class="weak-count">${dueCount()}</span></div>
+          <div class="level-desc">${DUE_LEVEL.desc}</div>
+        </div>
+      </div>
+      <div class="level-preview">${due.slice(0, 12).map((c) => c.char).join(" ")}${due.length > 12 ? ` +${due.length - 12}` : ""}</div>
+      <div class="level-actions">
+        ${SESSION_LENGTHS.map((n) => `<button class="level-btn" data-lvl="${DUE_LEVEL.id}" data-n="${n}">Review × ${n}</button>`).join("")}
+      </div>
+    `;
+    el.appendChild(card);
+  }
+
+  // Weak deck next, but only once there is enough history to fill one.
   const weak = weakItems(25);
   if (weak.length >= 4) {
     const card = document.createElement("div");
@@ -1618,6 +1756,31 @@ function heatColor(acc) {
 // The whole alphabet, tinted by how well you actually read it. This is the
 // diagnostic the app was missing: it answers "what do I still not know?"
 // rather than "what did I score last Tuesday?".
+// The review queue is the first thing on the Journey tab: how much is due
+// right now, or when the next item comes round if nothing is.
+function renderReviewPanel() {
+  const panel = $("review-panel");
+  if (!panel) return;
+  const n = dueCount();
+  const btn = $("review-start");
+  panel.classList.toggle("empty", n === 0);
+  $("review-count").textContent = n;
+  if (n > 0) {
+    $("review-label").textContent = n === 1 ? "item due for review" : "items due for review";
+    $("review-sub").textContent = "Most overdue first. This is the queue that keeps the script from fading.";
+    btn.disabled = false;
+    btn.textContent = `⏰ Review ${Math.min(n, 25)} now`;
+  } else {
+    const next = nextReviewAt();
+    $("review-label").textContent = "nothing due";
+    $("review-sub").textContent = next
+      ? `All caught up. Next review ${formatWhen(next)}.`
+      : "Drill a level and your reviews will start scheduling themselves.";
+    btn.disabled = true;
+    btn.textContent = "⏰ Review now";
+  }
+}
+
 function renderHeatmap() {
   const el = $("journey-heatmap");
   if (!el) return;
@@ -1628,9 +1791,12 @@ function renderHeatmap() {
     const tile = document.createElement("button");
     tile.className = "heat-tile";
     tile.style.background = heatColor(acc);
-    tile.title = acc === null
-      ? `${c.translit} — not drilled yet`
-      : `${c.translit} — ${Math.round(acc * 100)}% over ${seen} attempt${seen === 1 ? "" : "s"}`;
+    if (acc === null) {
+      tile.title = `${c.translit} — not drilled yet`;
+    } else {
+      const sched = isDue(c.id) ? "due now" : `next review ${formatWhen(dueAt(c.id))}`;
+      tile.title = `${c.translit} — ${Math.round(acc * 100)}% over ${seen} attempt${seen === 1 ? "" : "s"}, box ${boxOf(c.id)}, ${sched}`;
+    }
     tile.innerHTML = `<span class="heat-char">${c.char}</span><span class="heat-pct">${acc === null ? "–" : Math.round(acc * 100) + "%"}</span>`;
     tile.addEventListener("click", () => openCharModal(c));
     el.appendChild(tile);
@@ -1653,6 +1819,8 @@ function renderJourney() {
   $("recap-perfects").textContent = localStorage.getItem("hindlearn:perfects") || "0";
   const masteredChars = CHARACTERS.filter((c) => isMastered(c.id)).length;
   $("recap-mastered").textContent = `${masteredChars}/${CHARACTERS.length}`;
+  $("recap-streak").textContent = currentStreak();
+  renderReviewPanel();
   renderHeatmap();
 
   LEVELS.forEach((lvl) => {
@@ -1721,6 +1889,11 @@ function renderJourney() {
   });
 }
 
+$("review-start").addEventListener("click", () => {
+  if (dueCount() === 0) return;
+  startSession(DUE_LEVEL.id, 10);
+});
+
 $("journey-weak").addEventListener("click", () => {
   if (weakItems(25).length < 4) {
     showToast("🌱", "Not enough history yet — drill a level first.");
@@ -1775,10 +1948,18 @@ function buildSessionQueue(pool, n) {
   // Nothing drilled yet: everything is new by definition, so no cap applies.
   if (!seen.length) return shuffle(weightedSample(pool, n));
 
+  // Review before novelty: anything whose due date has passed is the
+  // material you are closest to losing, so it fills the non-new slots first.
+  const due = seen.filter((c) => isDue(c.id));
+  const notDue = seen.filter((c) => !isDue(c.id));
+
   const newQuota = Math.min(fresh.length, Math.max(2, Math.ceil(n * MAX_NEW_PER_SESSION)));
+  const reviewQuota = n - newQuota;
+  const fromDue = weightedSample(due, Math.min(due.length, reviewQuota));
   const picked = [
     ...weightedSample(fresh, newQuota),
-    ...weightedSample(seen, n - newQuota),
+    ...fromDue,
+    ...weightedSample(notDue, reviewQuota - fromDue.length),
   ];
   // If `seen` could not fill its share (small pool), top up from whatever is left.
   if (picked.length < n) {
@@ -2027,7 +2208,7 @@ function finishSession() {
   // Best is keyed off the selected length so 10/20/25 stay as separate
   // buckets regardless of how many re-asks happened.
   // The weak deck is a moving target, so a "best" for it would be noise.
-  const scored = !sessionState.level.weak;
+  const scored = !isPracticeDeck(sessionState.level);
   const prev = scored ? loadBest(sessionState.level.id, selected) : null;
   const isNewBest = scored && (!prev || pct > prev.pct || (pct === prev.pct && time < prev.time));
   if (isNewBest) saveBest(sessionState.level.id, selected, { score, total, pct, time, ts: Date.now() });
@@ -2045,14 +2226,14 @@ function finishSession() {
   $("ch-summary-title").textContent = `${title} — ${levelTitle(sessionState.level)}`;
 
   // Journey auto-complete: crossing the pass threshold marks the level done.
-  if (!sessionState.level.weak && pct >= JOURNEY_PASS_PCT && !isLevelDone(sessionState.level.id)) {
+  if (!isPracticeDeck(sessionState.level) && pct >= JOURNEY_PASS_PCT && !isLevelDone(sessionState.level.id)) {
     setLevelDone(sessionState.level.id, true);
     showToast("🎓", `Level ${levelPosition(sessionState.level)} unlocked the next one!`);
   }
 
   // "Next level →" button — only when the user actually passed and
   // there is in fact a next level to progress to.
-  const nextLvl = sessionState.level.weak ? null : nextLevel(sessionState.level);
+  const nextLvl = isPracticeDeck(sessionState.level) ? null : nextLevel(sessionState.level);
   const nextBtn = $("sum-next");
   if (pct >= JOURNEY_PASS_PCT && nextLvl) {
     nextBtn.textContent = `Next: Lv ${levelPosition(nextLvl)} ${nextLvl.name} →`;
@@ -2097,6 +2278,12 @@ function finishSession() {
     mEl.querySelectorAll(".miss-speak").forEach((b) => {
       b.addEventListener("click", () => speak(b.dataset.char));
     });
+  }
+
+  // A finished session counts towards the daily streak.
+  if (bumpStreak()) {
+    const st = currentStreak();
+    if (st > 1) showToast("\u{1F525}", `${st}-day streak!`);
   }
 
   // refresh level-list bests + mastery
