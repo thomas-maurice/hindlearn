@@ -138,6 +138,7 @@ const CHAR_BY_CHAR = Object.fromEntries(CHARACTERS.map((c) => [c.char, c]));
 
 const CAT_LABEL = {
   vowel: "Vowel",
+  pair: "Minimal pair (vowel length)",
   guttural: "Guttural (back of mouth)",
   palatal: "Palatal (tongue on palate)",
   retroflex: "Retroflex (tongue curled back)",
@@ -364,6 +365,63 @@ const WORDS = [];
   });
 })();
 
+// ======================================================
+//  Minimal pairs — vowel length, taught the only way it can be.
+//
+//  gTTS cannot render length on an isolated letter (अ 0.624s vs आ 0.648s),
+//  which is why AUDIO_AMBIGUOUS keeps those two apart in listen mode. But
+//  the contrast is perfectly audible inside a WORD, because there the
+//  engine is doing ordinary Hindi speech. So the ear training happens here:
+//  real words that differ by exactly one vowel length, where hearing the
+//  difference is the whole question.
+//
+//  The pair-mate is ALWAYS among the options — the inverse of the
+//  AUDIO_AMBIGUOUS rule, and deliberate: these are words, not letters.
+// ======================================================
+
+const MINIMAL_PAIRS = [
+  { contrast: "a / aa", a: { word: "दल",  translit: "dal",  meaning: "group, party" },
+                        b: { word: "दाल", translit: "daal", meaning: "lentils" } },
+  { contrast: "a / aa", a: { word: "बल",  translit: "bal",  meaning: "strength" },
+                        b: { word: "बाल", translit: "baal", meaning: "hair" } },
+  { contrast: "a / aa", a: { word: "कल",  translit: "kal",  meaning: "yesterday / tomorrow" },
+                        b: { word: "काल", translit: "kaal", meaning: "time, era" } },
+  { contrast: "a / aa", a: { word: "मन",  translit: "man",  meaning: "mind, heart" },
+                        b: { word: "मान", translit: "maan", meaning: "respect, honour" } },
+  { contrast: "a / aa", a: { word: "पल",  translit: "pal",  meaning: "a moment" },
+                        b: { word: "पाल", translit: "paal", meaning: "to raise, rear" } },
+  { contrast: "i / ii", a: { word: "दिन", translit: "din",  meaning: "day" },
+                        b: { word: "दीन", translit: "diin", meaning: "poor, humble" } },
+  { contrast: "i / ii", a: { word: "मिल", translit: "mil",  meaning: "to meet" },
+                        b: { word: "मील", translit: "miil", meaning: "mile" } },
+  { contrast: "u / uu", a: { word: "कुल", translit: "kul",  meaning: "total, clan" },
+                        b: { word: "कूल", translit: "kuul", meaning: "bank, shore" } },
+];
+
+// Flattened into drillable items, each knowing its partner.
+const PAIR_WORDS = [];
+MINIMAL_PAIRS.forEach((pair, i) => {
+  ["a", "b"].forEach((side) => {
+    const w = pair[side];
+    const other = pair[side === "a" ? "b" : "a"];
+    PAIR_WORDS.push({
+      id: `p:${w.translit}`,
+      char: w.word,
+      translit: w.translit,
+      cat: "pair",
+      ipa: null,
+      meaning: w.meaning,
+      pairIndex: i,
+      mateId: `p:${other.translit}`,
+      contrast: pair.contrast,
+      tip: `"${w.meaning}". Its partner ${other.word} (${other.translit}) means "${other.meaning}" — the only difference is the length of the vowel.`,
+      ex: null,
+    });
+  });
+});
+
+const PAIR_BY_ID = Object.fromEntries(PAIR_WORDS.map((w) => [w.id, w]));
+
 const R_BLEND_BY_CHAR     = Object.fromEntries(R_BLENDS.map((r) => [r.char, r]));
 const R_BLEND_BY_TRANSLIT = Object.fromEntries(R_BLENDS.map((r) => [r.translit, r]));
 
@@ -410,6 +468,20 @@ const $ = (id) => document.getElementById(id);
 // symbol you have never laid eyes on is unanswerable, not difficult.
 // Returns null once the item has any history, letting the normal rotation
 // take over.
+// Vowel-length pairs are a READING drill, not a listening one — for now.
+// Measured on the generated files, the long member of each pair is only
+// about 8% longer as a whole word (दल 0.768s vs दाल 0.840s), which is
+// barely more than the 4% on the bare letter that AUDIO_AMBIGUOUS exists
+// to protect against. The vowels also differ in QUALITY (ə vs aː, ɪ vs iː),
+// which may well carry the contrast where duration does not — but that is
+// a claim about what a human can hear, and it has not been checked. Until
+// it is, these never become listen-only cards. Flipping this back on is a
+// one-line deletion.
+function dirFor(answer, chosen) {
+  if (answer.cat === "pair" && chosen === "listen") return "sound-to-letter";
+  return chosen;
+}
+
 function firstEncounterDir(item) {
   return accuracyOf(item.id) === null ? "letter-to-sound" : null;
 }
@@ -718,6 +790,10 @@ function buildAudioMap() {
     if (s.ex && !AUDIO_BY_TEXT[s.ex.word]) {
       AUDIO_BY_TEXT[s.ex.word] = `audio/sylword_${slug}.mp3`;
     }
+  });
+  // Minimal-pair words.
+  PAIR_WORDS.forEach((w) => {
+    if (!AUDIO_BY_TEXT[w.char]) AUDIO_BY_TEXT[w.char] = `audio/pair_${w.translit}.mp3`;
   });
   // Nasal-mark example words (हिंदी, माँ, ...). Their own prefix so the
   // slugs cannot collide with a letter's example word.
@@ -1098,6 +1174,36 @@ function renderRblends() {
 
 // The look-alike gallery on the Learn tab: each group side by side with the
 // one thing that actually tells them apart.
+// Side-by-side minimal pairs with an A/B player. This is also the place to
+// judge whether the audio carries the length contrast at all — play the two
+// back to back and listen.
+function renderPairs() {
+  const el = $("chart-pairs");
+  if (!el) return;
+  MINIMAL_PAIRS.forEach((pair) => {
+    const row = document.createElement("div");
+    row.className = "pair-row";
+    row.innerHTML = `
+      <div class="pair-contrast">${pair.contrast}</div>
+      <div class="pair-words">
+        ${["a", "b"].map((side) => {
+          const w = pair[side];
+          return `<button class="pair-word" data-word="${w.word}">
+            <span class="pw-word">${w.word}</span>
+            <span class="pw-translit">${w.translit}</span>
+            <span class="pw-meaning">${w.meaning}</span>
+            <span class="pw-play">\u{1F50A}</span>
+          </button>`;
+        }).join('<span class="pair-vs">vs</span>')}
+      </div>
+    `;
+    row.querySelectorAll(".pair-word").forEach((b) => {
+      b.addEventListener("click", () => speak(b.dataset.word));
+    });
+    el.appendChild(row);
+  });
+}
+
 function renderConfusables() {
   const el = $("chart-confusables");
   if (!el) return;
@@ -1209,6 +1315,7 @@ renderCharts();
 renderMatras();
 renderRblends();
 renderConfusables();
+renderPairs();
 renderNasals();
 
 // ======================================================
@@ -1224,6 +1331,9 @@ function optionKey(item, dir) {
   return dir === "letter-to-sound" ? item.translit : item.char;
 }
 function optionLabel(item, dir) {
+  if (item.cat === "pair" && dir === "letter-to-sound") {
+    return `${item.translit} — ${item.meaning}`;
+  }
   return dir === "letter-to-sound" ? item.translit : item.char;
 }
 
@@ -1355,6 +1465,11 @@ function itemNoun(item) {
 // Question wording per direction. Words and numerals are read, not
 // "pronounced letter by letter", so they get their own phrasing.
 function promptQuestion(item, dir) {
+  if (item.cat === "pair") {
+    return dir === "sound-to-letter"
+      ? "Which spelling is this? Watch the vowel length."
+      : "What does this word mean?";
+  }
   const noun = itemNoun(item);
   const isRead = item.cat === "word" || item.cat === "digit";
   switch (dir) {
@@ -1399,6 +1514,7 @@ function renderPrompt(promptEl, kindEl, card) {
 const LEVELS = [
   { id: 1,  name: "Short vowels",            emoji: "ए",  desc: "The core 6: अ आ इ ई उ ऊ",                     translits: ["a","aa","i","ii","u","uu"] },
   { id: 2,  name: "All vowels",              emoji: "औ",  desc: "11 independent vowels including ए ऐ ओ औ ऋ",    cats: ["vowel"] },
+  { id: 19, name: "Long vs short",           emoji: "⚖️", desc: "दल or दाल? बल or बाल? Real words that differ by exactly one vowel length — and mean completely different things. Reading drill: the partner word is always one of the options.", pairs: true },
   { id: 17, name: "Numbers ०–९",             emoji: "२",  desc: "Devanagari numerals. Quick win — you need them for prices, dates and page numbers.", cats: ["digit"] },
   { id: 11, name: "Matras — intro (क/म/न)",  emoji: "ा",  desc: "First taste of vowel marks: का कि की कु कू के कै को कौ — drilled on क, म, न.", syllables: true, syllableBases: ["ka","ma","na"] },
   { id: 3,  name: "Gutturals (क family)",    emoji: "क",  desc: "Throat sounds: क ख ग घ ङ",                      cats: ["guttural"] },
@@ -1472,6 +1588,7 @@ function previousLevel(level) {
 }
 
 function levelPool(level) {
+  if (level.pairs) return PAIR_WORDS;
   if (level.due) return dueItems(25);
   if (level.weak) return weakItems(25);
   if (level.words) return WORDS;
@@ -1973,11 +2090,11 @@ function pickSessionCard(answer, pool, opts = {}) {
   // Typing is NOT in the rotation: being asked to type the sound of a glyph
   // you have never seen is not recall, it is a guess. It stays available as
   // an opt-in drill in the flashcards.
-  const dir = firstEncounterDir(answer) || pickWeighted([
+  const dir = dirFor(answer, firstEncounterDir(answer) || pickWeighted([
     ["sound-to-letter", 35],
     ["letter-to-sound", 35],
     ["listen", 30],
-  ]);
+  ]));
 
   // Distractor selection. The dumb version is "pick any 4 from the pool"
   // which produces trivially wrong options (e.g. को vs uu/na/pha). For
@@ -2010,6 +2127,12 @@ function pickSessionCard(answer, pool, opts = {}) {
       ...shuffle(oppositeType).slice(0, 2),
       ...shuffle(bareBases).slice(0, 1),
     ];
+  } else if (answer.cat === "pair") {
+    // The partner is the question. Everything else is padding, drawn from
+    // other pairs so the options stay length-contrast shaped.
+    const mate = PAIR_BY_ID[answer.mateId];
+    const others = pool.filter((c) => c.id !== answer.id && c.id !== answer.mateId);
+    distractorSource = [...(mate ? [mate] : []), ...shuffle(others)];
   } else if (opts.confusable && CONFUSABLE_SIBS[answer.translit]) {
     // Look-alikes level: the whole point is to force a shape decision, so
     // siblings come first and the rest of the pool only tops up.
@@ -2358,6 +2481,7 @@ function getPool() {
   if (flashState.category === "syllable") return SYLLABLES;
   if (flashState.category === "rblend") return R_BLENDS;
   if (flashState.category === "word") return WORDS;
+  if (flashState.category === "pair") return PAIR_WORDS;
   return CHARACTERS.filter((c) => c.cat === flashState.category);
 }
 
@@ -2398,6 +2522,7 @@ function pickCard() {
       ["listen", 30],
     ]);
   }
+  dir = dirFor(answer, dir);
 
   const n = numOptions();
   let distractorPool;

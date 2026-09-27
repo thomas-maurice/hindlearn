@@ -76,7 +76,23 @@ Vowels, the full varga, semivowels and sibilants, vowel signs (matras), र-blen
 (rakar + reph), the **nukta** letters (क़ ख़ ग़ ज़ फ़), nine common **conjuncts**
 (क्ष ज्ञ द्ध क्त स्त न्द द्व श्व ट्ट), the **nasal marks** (ं ँ), the **numerals** ०–९,
 a **look-alikes** level for the pairs that differ by one stroke (घ/ध, भ/म, ब/व, त/न…),
-and a **whole-words** level built from every example word in the data.
+a **minimal pairs** level for vowel length (दल/दाल, बल/बाल, दिन/दीन — same consonants,
+different word), and a **whole-words** level built from every example word in the data.
+
+### A known limit: vowel length and the audio
+
+gTTS does not render vowel length on an isolated letter. Measured on the generated files,
+अ is 0.624s and आ is 0.648s — a 4% difference for a contrast that should be roughly 2×.
+So those pairs (a/aa, i/ii, u/uu, plus श/ष which is genuinely merged in modern Hindi) are
+never offered against each other on a **listen-only** card; they remain visual distractors,
+where the difference is real and learnable.
+
+Putting the vowel inside a word helps less than hoped: across the eight minimal pairs the
+long member is only about **8% longer** as a whole word. The vowels do also differ in
+*quality* (ə vs aː, ɪ vs iː), which may carry the contrast where duration does not — but
+that is a claim about what a human can hear and it has not been tested. Until it is, the
+minimal-pairs level is a **reading** drill, not a listening one. `dirFor()` in `app.js` is
+the one-line switch if the audio turns out to be good enough.
 
 ## Transliteration key
 

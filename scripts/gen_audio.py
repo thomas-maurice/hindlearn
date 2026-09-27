@@ -121,6 +121,22 @@ EXTRA_DATA = [
     ("९", "9", "नौ"),
 ]
 
+# ---- Minimal pairs (vowel length) — mirrors MINIMAL_PAIRS in app.js ----
+# Real words differing by exactly one vowel length. gTTS renders the
+# contrast correctly inside a word even though it cannot on a bare letter,
+# which is the entire reason this list exists.
+# (word, translit) -> audio/pair_<translit>.mp3
+PAIR_WORDS = [
+    ("दल", "dal"),   ("दाल", "daal"),
+    ("बल", "bal"),   ("बाल", "baal"),
+    ("कल", "kal"),   ("काल", "kaal"),
+    ("मन", "man"),   ("मान", "maan"),
+    ("पल", "pal"),   ("पाल", "paal"),
+    ("दिन", "din"),  ("दीन", "diin"),
+    ("मिल", "mil"),  ("मील", "miil"),
+    ("कुल", "kul"),  ("कूल", "kuul"),
+]
+
 # ---- Nasal-mark example words (ं / ँ) — mirrors NASALS in app.js ----
 # (word, slug) -> audio/nasal_<slug>.mp3
 NASAL_WORDS = [
@@ -257,6 +273,22 @@ def main() -> int:
                     skipped += 1
             except Exception as e:
                 print(f"  ! failed {name} ({text}): {e}", file=sys.stderr)
+
+    # Minimal-pair words (vowel length).
+    print(f"\n-- Minimal pairs ({len(PAIR_WORDS)}) --")
+    for word, translit in PAIR_WORDS:
+        name = f"pair_{translit}.mp3"
+        manifest.setdefault(word, name)
+        out = OUT / name
+        try:
+            if synth(word, out, args.force):
+                print(f"  + {name}  (pair: {word})")
+                made += 1
+                time.sleep(args.sleep)
+            else:
+                skipped += 1
+        except Exception as e:
+            print(f"  ! failed {name} ({word}): {e}", file=sys.stderr)
 
     # Nasal-mark example words.
     print(f"\n-- Nasal examples ({len(NASAL_WORDS)}) --")
