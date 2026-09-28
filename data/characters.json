@@ -1,0 +1,1609 @@
+{
+  "$comment": "Single source of truth for hindlearn's character data. Read by app.js at startup AND by scripts/gen_audio.py. Edit here only — nothing else hand-mirrors it.",
+  "consonantCats": [
+    "guttural",
+    "palatal",
+    "retroflex",
+    "dental",
+    "labial",
+    "semivowel",
+    "sibilant"
+  ],
+  "ipa": {
+    "a": "ə",
+    "aa": "aː",
+    "i": "ɪ",
+    "ii": "iː",
+    "u": "ʊ",
+    "uu": "uː",
+    "e": "eː",
+    "ai": "ɛː",
+    "o": "oː",
+    "au": "ɔː",
+    "ri": "ɾɪ",
+    "ka": "k",
+    "kha": "kʰ",
+    "ga": "ɡ",
+    "gha": "ɡʱ",
+    "nga": "ŋ",
+    "cha": "t͡ʃ",
+    "chha": "t͡ʃʰ",
+    "ja": "d͡ʒ",
+    "jha": "d͡ʒʱ",
+    "nya": "ɲ",
+    "Ta": "ʈ",
+    "Tha": "ʈʰ",
+    "Da": "ɖ",
+    "Dha": "ɖʱ",
+    "Na": "ɳ",
+    "Ra": "ɽ",
+    "Rha": "ɽʱ",
+    "ta": "t̪",
+    "tha": "t̪ʰ",
+    "da": "d̪",
+    "dha": "d̪ʱ",
+    "na": "n",
+    "pa": "p",
+    "pha": "pʰ",
+    "ba": "b",
+    "bha": "bʱ",
+    "ma": "m",
+    "ya": "j",
+    "ra": "ɾ",
+    "la": "l",
+    "va": "ʋ",
+    "sha": "ʃ",
+    "Sha": "ʂ",
+    "sa": "s",
+    "ha": "ɦ"
+  },
+  "characters": [
+    {
+      "char": "अ",
+      "translit": "a",
+      "cat": "vowel",
+      "tip": "Short 'a' like in 'about' or 'sofa'. This is the built-in vowel that's assumed after every consonant.",
+      "ipa": "ə",
+      "ex": {
+        "word": "अब",
+        "translit": "ab",
+        "meaning": "now"
+      }
+    },
+    {
+      "char": "आ",
+      "translit": "aa",
+      "cat": "vowel",
+      "tip": "Long 'aa' as in 'father'. Hold it about twice as long as अ.",
+      "ipa": "aː",
+      "ex": {
+        "word": "आम",
+        "translit": "aam",
+        "meaning": "mango"
+      }
+    },
+    {
+      "char": "इ",
+      "translit": "i",
+      "cat": "vowel",
+      "tip": "Short 'i' like in 'sit'.",
+      "ipa": "ɪ",
+      "ex": {
+        "word": "इस",
+        "translit": "is",
+        "meaning": "this"
+      }
+    },
+    {
+      "char": "ई",
+      "translit": "ii",
+      "cat": "vowel",
+      "tip": "Long 'ee' like in 'see'. Twice the length of इ.",
+      "ipa": "iː",
+      "ex": {
+        "word": "ईख",
+        "translit": "iikh",
+        "meaning": "sugarcane"
+      }
+    },
+    {
+      "char": "उ",
+      "translit": "u",
+      "cat": "vowel",
+      "tip": "Short 'u' like in 'put' or 'foot'.",
+      "ipa": "ʊ",
+      "ex": {
+        "word": "उन",
+        "translit": "un",
+        "meaning": "them"
+      }
+    },
+    {
+      "char": "ऊ",
+      "translit": "uu",
+      "cat": "vowel",
+      "tip": "Long 'oo' like in 'pool'.",
+      "ipa": "uː",
+      "ex": {
+        "word": "ऊन",
+        "translit": "uun",
+        "meaning": "wool"
+      }
+    },
+    {
+      "char": "ए",
+      "translit": "e",
+      "cat": "vowel",
+      "tip": "Long 'e' like 'prey' — no y-glide at the end.",
+      "ipa": "eː",
+      "ex": {
+        "word": "एक",
+        "translit": "ek",
+        "meaning": "one"
+      }
+    },
+    {
+      "char": "ऐ",
+      "translit": "ai",
+      "cat": "vowel",
+      "tip": "Open 'ai' — between 'a' in 'cat' and 'ai' in 'air'.",
+      "ipa": "ɛː",
+      "ex": {
+        "word": "ऐनक",
+        "translit": "ainak",
+        "meaning": "glasses"
+      }
+    },
+    {
+      "char": "ओ",
+      "translit": "o",
+      "cat": "vowel",
+      "tip": "Long 'o' like 'go' — no w-glide.",
+      "ipa": "oː",
+      "ex": {
+        "word": "ओर",
+        "translit": "or",
+        "meaning": "side"
+      }
+    },
+    {
+      "char": "औ",
+      "translit": "au",
+      "cat": "vowel",
+      "tip": "Open 'au' like 'aw' in 'saw'.",
+      "ipa": "ɔː",
+      "ex": {
+        "word": "और",
+        "translit": "aur",
+        "meaning": "and"
+      }
+    },
+    {
+      "char": "ऋ",
+      "translit": "ri",
+      "cat": "vowel",
+      "tip": "Vocalic r — say a short 'ri' with a flap.",
+      "ipa": "ɾɪ",
+      "ex": {
+        "word": "ऋषि",
+        "translit": "rishi",
+        "meaning": "sage"
+      }
+    },
+    {
+      "char": "क",
+      "translit": "ka",
+      "cat": "guttural",
+      "tip": "Plain 'k' like in 'skip' — no puff of air.",
+      "ipa": "kə",
+      "ex": {
+        "word": "कल",
+        "translit": "kal",
+        "meaning": "yesterday/tomorrow"
+      }
+    },
+    {
+      "char": "ख",
+      "translit": "kha",
+      "cat": "guttural",
+      "tip": "'k' + strong puff. Hold your hand near your mouth and feel the air.",
+      "ipa": "kʰə",
+      "ex": {
+        "word": "खाना",
+        "translit": "khaana",
+        "meaning": "food"
+      }
+    },
+    {
+      "char": "ग",
+      "translit": "ga",
+      "cat": "guttural",
+      "tip": "Plain 'g' like in 'go' — no puff.",
+      "ipa": "ɡə",
+      "ex": {
+        "word": "गाना",
+        "translit": "gaana",
+        "meaning": "song"
+      }
+    },
+    {
+      "char": "घ",
+      "translit": "gha",
+      "cat": "guttural",
+      "tip": "Voiced 'g' with a puff of air. Rare in English — think of 'doghouse' fast.",
+      "ipa": "ɡʱə",
+      "ex": {
+        "word": "घर",
+        "translit": "ghar",
+        "meaning": "house"
+      }
+    },
+    {
+      "char": "ङ",
+      "translit": "nga",
+      "cat": "guttural",
+      "tip": "The 'ng' in 'sing'. Almost never stands alone.",
+      "ipa": "ŋə",
+      "ex": {
+        "word": "वाङ्मय",
+        "translit": "vaaNGmay",
+        "meaning": "literature (lit.)"
+      }
+    },
+    {
+      "char": "च",
+      "translit": "cha",
+      "cat": "palatal",
+      "tip": "'ch' like in 'church', but softer — no puff.",
+      "ipa": "t͡ʃə",
+      "ex": {
+        "word": "चाय",
+        "translit": "chaay",
+        "meaning": "tea"
+      }
+    },
+    {
+      "char": "छ",
+      "translit": "chha",
+      "cat": "palatal",
+      "tip": "'ch' with a strong puff of air.",
+      "ipa": "t͡ʃʰə",
+      "ex": {
+        "word": "छह",
+        "translit": "chhah",
+        "meaning": "six"
+      }
+    },
+    {
+      "char": "ज",
+      "translit": "ja",
+      "cat": "palatal",
+      "tip": "'j' like in 'jam'.",
+      "ipa": "d͡ʒə",
+      "ex": {
+        "word": "जल",
+        "translit": "jal",
+        "meaning": "water"
+      }
+    },
+    {
+      "char": "झ",
+      "translit": "jha",
+      "cat": "palatal",
+      "tip": "'j' with a puff — voiced aspirated.",
+      "ipa": "d͡ʒʱə",
+      "ex": {
+        "word": "झील",
+        "translit": "jhiil",
+        "meaning": "lake"
+      }
+    },
+    {
+      "char": "ञ",
+      "translit": "nya",
+      "cat": "palatal",
+      "tip": "'ny' like Spanish ñ (señor). Mostly appears in conjuncts.",
+      "ipa": "ɲə",
+      "ex": {
+        "word": "ज्ञान",
+        "translit": "gyaan",
+        "meaning": "knowledge (in ज्ञ)"
+      }
+    },
+    {
+      "char": "ट",
+      "translit": "Ta",
+      "cat": "retroflex",
+      "tip": "Retroflex 'T' — tongue curled BACK, tip touching the roof of your mouth. Harder than English 't'.",
+      "ipa": "ʈə",
+      "ex": {
+        "word": "टमाटर",
+        "translit": "Tamaatar",
+        "meaning": "tomato"
+      }
+    },
+    {
+      "char": "ठ",
+      "translit": "Tha",
+      "cat": "retroflex",
+      "tip": "Retroflex T with a puff.",
+      "ipa": "ʈʰə",
+      "ex": {
+        "word": "ठंडा",
+        "translit": "ThanDaa",
+        "meaning": "cold"
+      }
+    },
+    {
+      "char": "ड",
+      "translit": "Da",
+      "cat": "retroflex",
+      "tip": "Retroflex 'D' — tongue curled back. English 'd' in 'dog' is close.",
+      "ipa": "ɖə",
+      "ex": {
+        "word": "डर",
+        "translit": "Dar",
+        "meaning": "fear"
+      }
+    },
+    {
+      "char": "ढ",
+      "translit": "Dha",
+      "cat": "retroflex",
+      "tip": "Retroflex D with a puff.",
+      "ipa": "ɖʱə",
+      "ex": {
+        "word": "ढक्कन",
+        "translit": "Dhakkan",
+        "meaning": "lid"
+      }
+    },
+    {
+      "char": "ण",
+      "translit": "Na",
+      "cat": "retroflex",
+      "tip": "Retroflex 'n' — tongue curled back. Subtle contrast with न.",
+      "ipa": "ɳə",
+      "ex": {
+        "word": "कोण",
+        "translit": "koN",
+        "meaning": "angle"
+      }
+    },
+    {
+      "char": "ड़",
+      "translit": "Ra",
+      "cat": "retroflex",
+      "tip": "Flapped retroflex — a quick tap, almost like a rolled R bounce. The dot below changes the sound.",
+      "ipa": "ɽə",
+      "ex": {
+        "word": "लड़का",
+        "translit": "laRkaa",
+        "meaning": "boy"
+      }
+    },
+    {
+      "char": "ढ़",
+      "translit": "Rha",
+      "cat": "retroflex",
+      "tip": "Flapped retroflex + puff. The aspirated cousin of ड़.",
+      "ipa": "ɽʱə",
+      "ex": {
+        "word": "पढ़ना",
+        "translit": "paRhnaa",
+        "meaning": "to read"
+      }
+    },
+    {
+      "char": "त",
+      "translit": "ta",
+      "cat": "dental",
+      "tip": "Soft 't' — tongue against the BACK of your upper teeth. Like Spanish 'tú', softer than English.",
+      "ipa": "t̪ə",
+      "ex": {
+        "word": "तुम",
+        "translit": "tum",
+        "meaning": "you"
+      }
+    },
+    {
+      "char": "थ",
+      "translit": "tha",
+      "cat": "dental",
+      "tip": "Dental t with a puff. NOT the English 'th' — it's still a T, just breathier.",
+      "ipa": "t̪ʰə",
+      "ex": {
+        "word": "थाली",
+        "translit": "thaalii",
+        "meaning": "plate"
+      }
+    },
+    {
+      "char": "द",
+      "translit": "da",
+      "cat": "dental",
+      "tip": "Soft 'd' — tongue on the teeth. Like Spanish 'dos', softer than English.",
+      "ipa": "d̪ə",
+      "ex": {
+        "word": "दस",
+        "translit": "das",
+        "meaning": "ten"
+      }
+    },
+    {
+      "char": "ध",
+      "translit": "dha",
+      "cat": "dental",
+      "tip": "Dental d with a puff.",
+      "ipa": "d̪ʱə",
+      "ex": {
+        "word": "धन",
+        "translit": "dhan",
+        "meaning": "wealth"
+      }
+    },
+    {
+      "char": "न",
+      "translit": "na",
+      "cat": "dental",
+      "tip": "Plain 'n' like English.",
+      "ipa": "nə",
+      "ex": {
+        "word": "नया",
+        "translit": "nayaa",
+        "meaning": "new"
+      }
+    },
+    {
+      "char": "प",
+      "translit": "pa",
+      "cat": "labial",
+      "tip": "Plain 'p' like in 'spin' — no puff.",
+      "ipa": "pə",
+      "ex": {
+        "word": "पानी",
+        "translit": "paanii",
+        "meaning": "water"
+      }
+    },
+    {
+      "char": "फ",
+      "translit": "pha",
+      "cat": "labial",
+      "tip": "'p' with a puff. Often pronounced 'f' in modern Hindi loanwords.",
+      "ipa": "pʰə",
+      "ex": {
+        "word": "फल",
+        "translit": "phal",
+        "meaning": "fruit"
+      }
+    },
+    {
+      "char": "ब",
+      "translit": "ba",
+      "cat": "labial",
+      "tip": "Plain 'b' like 'boy'.",
+      "ipa": "bə",
+      "ex": {
+        "word": "बस",
+        "translit": "bas",
+        "meaning": "bus / enough"
+      }
+    },
+    {
+      "char": "भ",
+      "translit": "bha",
+      "cat": "labial",
+      "tip": "Voiced 'b' with a puff. Like 'abhor' said fast.",
+      "ipa": "bʱə",
+      "ex": {
+        "word": "भाई",
+        "translit": "bhaaii",
+        "meaning": "brother"
+      }
+    },
+    {
+      "char": "म",
+      "translit": "ma",
+      "cat": "labial",
+      "tip": "Plain 'm' like 'moon'.",
+      "ipa": "mə",
+      "ex": {
+        "word": "माँ",
+        "translit": "maa̐",
+        "meaning": "mother"
+      }
+    },
+    {
+      "char": "य",
+      "translit": "ya",
+      "cat": "semivowel",
+      "tip": "'y' like in 'yes'.",
+      "ipa": "jə",
+      "ex": {
+        "word": "यह",
+        "translit": "yah",
+        "meaning": "this"
+      }
+    },
+    {
+      "char": "र",
+      "translit": "ra",
+      "cat": "semivowel",
+      "tip": "Flapped 'r' — a single quick tongue tap. Like Spanish or Italian 'r', not the English one.",
+      "ipa": "ɾə",
+      "ex": {
+        "word": "राम",
+        "translit": "raam",
+        "meaning": "Ram (name)"
+      }
+    },
+    {
+      "char": "ल",
+      "translit": "la",
+      "cat": "semivowel",
+      "tip": "'l' like in 'leap'.",
+      "ipa": "lə",
+      "ex": {
+        "word": "लाल",
+        "translit": "laal",
+        "meaning": "red"
+      }
+    },
+    {
+      "char": "व",
+      "translit": "va",
+      "cat": "semivowel",
+      "tip": "Between 'v' and 'w' — lips barely touching.",
+      "ipa": "ʋə",
+      "ex": {
+        "word": "वह",
+        "translit": "vah",
+        "meaning": "that"
+      }
+    },
+    {
+      "char": "श",
+      "translit": "sha",
+      "cat": "sibilant",
+      "tip": "'sh' like in 'she' — palatal.",
+      "ipa": "ʃə",
+      "ex": {
+        "word": "शहर",
+        "translit": "shahar",
+        "meaning": "city"
+      }
+    },
+    {
+      "char": "ष",
+      "translit": "Sha",
+      "cat": "sibilant",
+      "tip": "Retroflex 'sh' — tongue curled back. In modern Hindi often sounds like श.",
+      "ipa": "ʂə",
+      "ex": {
+        "word": "भाषा",
+        "translit": "bhaashaa",
+        "meaning": "language"
+      }
+    },
+    {
+      "char": "स",
+      "translit": "sa",
+      "cat": "sibilant",
+      "tip": "Plain 's' like 'see'.",
+      "ipa": "sə",
+      "ex": {
+        "word": "साल",
+        "translit": "saal",
+        "meaning": "year"
+      }
+    },
+    {
+      "char": "ह",
+      "translit": "ha",
+      "cat": "sibilant",
+      "tip": "Soft 'h' like 'hello'.",
+      "ipa": "ɦə",
+      "ex": {
+        "word": "हम",
+        "translit": "ham",
+        "meaning": "we"
+      }
+    },
+    {
+      "char": "क़",
+      "translit": "qa",
+      "cat": "nukta",
+      "tip": "A 'k' made further back, at the uvula. Many speakers just say क. The dot below is the only difference.",
+      "ipa": "qə",
+      "ex": {
+        "word": "क़लम",
+        "translit": "qalam",
+        "meaning": "pen"
+      }
+    },
+    {
+      "char": "ख़",
+      "translit": "xa",
+      "cat": "nukta",
+      "tip": "The rasping 'ch' of Scottish 'loch' or German 'Bach'. ख with a dot.",
+      "ipa": "xə",
+      "ex": {
+        "word": "ख़बर",
+        "translit": "xabar",
+        "meaning": "news"
+      }
+    },
+    {
+      "char": "ग़",
+      "translit": "Ga",
+      "cat": "nukta",
+      "tip": "The voiced twin of ख़ — like a French 'r' gargled at the back. Capital G here means throaty, not retroflex.",
+      "ipa": "ɣə",
+      "ex": {
+        "word": "ग़लत",
+        "translit": "Galat",
+        "meaning": "wrong"
+      }
+    },
+    {
+      "char": "ज़",
+      "translit": "za",
+      "cat": "nukta",
+      "tip": "Plain 'z' as in 'zoo'. Extremely common — ज़रूरी, मेज़, रिज़र्व.",
+      "ipa": "zə",
+      "ex": {
+        "word": "ज़रूरी",
+        "translit": "zaruurii",
+        "meaning": "necessary"
+      }
+    },
+    {
+      "char": "फ़",
+      "translit": "fa",
+      "cat": "nukta",
+      "tip": "'f' as in 'food'. This — not फ — is the letter in loanwords like फ़ोन and फ़िल्म.",
+      "ipa": "fə",
+      "ex": {
+        "word": "फ़ोन",
+        "translit": "fon",
+        "meaning": "phone"
+      }
+    },
+    {
+      "char": "क्ष",
+      "translit": "ksha",
+      "cat": "conjunct",
+      "tip": "क + ष fused. Taught as a letter in its own right — it turns up in the alphabet song.",
+      "ipa": "kʃə",
+      "ex": {
+        "word": "क्षमा",
+        "translit": "kshamaa",
+        "meaning": "forgiveness"
+      }
+    },
+    {
+      "char": "ज्ञ",
+      "translit": "gya",
+      "cat": "conjunct",
+      "tip": "ज + ञ on paper, but pronounced 'gy' in Hindi — nothing like a j or an ñ.",
+      "ipa": "ɡjə",
+      "ex": {
+        "word": "ज्ञान",
+        "translit": "gyaan",
+        "meaning": "knowledge"
+      }
+    },
+    {
+      "char": "द्ध",
+      "translit": "ddha",
+      "cat": "conjunct",
+      "tip": "द stacked on ध. The top half loses its vertical stem — the usual stacking trick.",
+      "ipa": "d̪d̪ʱə",
+      "ex": {
+        "word": "बुद्ध",
+        "translit": "buddh",
+        "meaning": "Buddha"
+      }
+    },
+    {
+      "char": "क्त",
+      "translit": "kta",
+      "cat": "conjunct",
+      "tip": "क + त. The क is cut down to its left half and glued to त.",
+      "ipa": "kt̪ə",
+      "ex": {
+        "word": "शक्ति",
+        "translit": "shakti",
+        "meaning": "power, strength"
+      }
+    },
+    {
+      "char": "स्त",
+      "translit": "sta",
+      "cat": "conjunct",
+      "tip": "स loses its stem and leans on त. You read it every time you say नमस्ते.",
+      "ipa": "st̪ə",
+      "ex": {
+        "word": "नमस्ते",
+        "translit": "namaste",
+        "meaning": "hello"
+      }
+    },
+    {
+      "char": "न्द",
+      "translit": "nda",
+      "cat": "conjunct",
+      "tip": "न stacked before द — the conjunct in the word हिन्दी itself.",
+      "ipa": "nd̪ə",
+      "ex": {
+        "word": "हिन्दी",
+        "translit": "hindii",
+        "meaning": "Hindi"
+      }
+    },
+    {
+      "char": "द्व",
+      "translit": "dva",
+      "cat": "conjunct",
+      "tip": "द with व tucked under its tail.",
+      "ipa": "d̪ʋə",
+      "ex": {
+        "word": "द्वार",
+        "translit": "dvaar",
+        "meaning": "door"
+      }
+    },
+    {
+      "char": "श्व",
+      "translit": "shva",
+      "cat": "conjunct",
+      "tip": "श with व hanging below.",
+      "ipa": "ʃʋə",
+      "ex": {
+        "word": "विश्व",
+        "translit": "vishva",
+        "meaning": "world"
+      }
+    },
+    {
+      "char": "ट्ट",
+      "translit": "TTa",
+      "cat": "conjunct",
+      "tip": "A doubled retroflex — ट stacked on ट. Hold the stop a beat longer.",
+      "ipa": "ʈʈə",
+      "ex": {
+        "word": "छुट्टी",
+        "translit": "chhuTTii",
+        "meaning": "holiday, day off"
+      }
+    },
+    {
+      "char": "०",
+      "translit": "0",
+      "cat": "digit",
+      "tip": "Zero. Looks like a Latin 0 — and that is where the Latin 0 came from.",
+      "ipa": null,
+      "ex": {
+        "word": "शून्य",
+        "translit": "shuunya",
+        "meaning": "zero"
+      }
+    },
+    {
+      "char": "१",
+      "translit": "1",
+      "cat": "digit",
+      "tip": "One. A hook hanging off the headline.",
+      "ipa": null,
+      "ex": {
+        "word": "एक",
+        "translit": "ek",
+        "meaning": "one"
+      }
+    },
+    {
+      "char": "२",
+      "translit": "2",
+      "cat": "digit",
+      "tip": "Two. Reads like a Latin 2 that has been rotated.",
+      "ipa": null,
+      "ex": {
+        "word": "दो",
+        "translit": "do",
+        "meaning": "two"
+      }
+    },
+    {
+      "char": "३",
+      "translit": "3",
+      "cat": "digit",
+      "tip": "Three. Two stacked curves.",
+      "ipa": null,
+      "ex": {
+        "word": "तीन",
+        "translit": "tiin",
+        "meaning": "three"
+      }
+    },
+    {
+      "char": "४",
+      "translit": "4",
+      "cat": "digit",
+      "tip": "Four. Looks like a lowercase 'y' under a headline.",
+      "ipa": null,
+      "ex": {
+        "word": "चार",
+        "translit": "chaar",
+        "meaning": "four"
+      }
+    },
+    {
+      "char": "५",
+      "translit": "5",
+      "cat": "digit",
+      "tip": "Five. Beware — Western eyes read this one as a 4.",
+      "ipa": null,
+      "ex": {
+        "word": "पाँच",
+        "translit": "paa̐ch",
+        "meaning": "five"
+      }
+    },
+    {
+      "char": "६",
+      "translit": "6",
+      "cat": "digit",
+      "tip": "Six. A loop with a tail; easy to mix up with ३.",
+      "ipa": null,
+      "ex": {
+        "word": "छह",
+        "translit": "chhah",
+        "meaning": "six"
+      }
+    },
+    {
+      "char": "७",
+      "translit": "7",
+      "cat": "digit",
+      "tip": "Seven. Like a Latin 9 mirrored.",
+      "ipa": null,
+      "ex": {
+        "word": "सात",
+        "translit": "saat",
+        "meaning": "seven"
+      }
+    },
+    {
+      "char": "८",
+      "translit": "8",
+      "cat": "digit",
+      "tip": "Eight. A curl closing on itself.",
+      "ipa": null,
+      "ex": {
+        "word": "आठ",
+        "translit": "aaTh",
+        "meaning": "eight"
+      }
+    },
+    {
+      "char": "९",
+      "translit": "9",
+      "cat": "digit",
+      "tip": "Nine. Very close to १ — check the tail.",
+      "ipa": null,
+      "ex": {
+        "word": "नौ",
+        "translit": "nau",
+        "meaning": "nine"
+      }
+    }
+  ],
+  "matraDefs": [
+    {
+      "matra": "aa",
+      "mark": "ा",
+      "pos": "After (vertical stick)"
+    },
+    {
+      "matra": "i",
+      "mark": "ि",
+      "pos": "Before (looks like — pronounced after)"
+    },
+    {
+      "matra": "ii",
+      "mark": "ी",
+      "pos": "After (stick + curl)"
+    },
+    {
+      "matra": "u",
+      "mark": "ु",
+      "pos": "Below"
+    },
+    {
+      "matra": "uu",
+      "mark": "ू",
+      "pos": "Below (long)"
+    },
+    {
+      "matra": "e",
+      "mark": "े",
+      "pos": "Above (1 stroke)"
+    },
+    {
+      "matra": "ai",
+      "mark": "ै",
+      "pos": "Above (2 strokes)"
+    },
+    {
+      "matra": "o",
+      "mark": "ो",
+      "pos": "Above (1 stroke) + ा after"
+    },
+    {
+      "matra": "au",
+      "mark": "ौ",
+      "pos": "Above (2 strokes) + ा after"
+    }
+  ],
+  "matraVowelChar": {
+    "a": "अ",
+    "aa": "आ",
+    "i": "इ",
+    "ii": "ई",
+    "u": "उ",
+    "uu": "ऊ",
+    "e": "ए",
+    "ai": "ऐ",
+    "o": "ओ",
+    "au": "औ"
+  },
+  "matras": [
+    {
+      "mark": "(none)",
+      "translit": "a",
+      "vowelTranslit": "a",
+      "syllable": "क",
+      "syllableTranslit": "ka",
+      "pos": "Inherent",
+      "note": "Every consonant has a built-in 'a'. क alone reads 'ka' — nothing extra needed."
+    },
+    {
+      "mark": "ा",
+      "translit": "aa",
+      "vowelTranslit": "aa",
+      "syllable": "का",
+      "syllableTranslit": "kaa",
+      "pos": "After",
+      "note": "A vertical stick to the RIGHT of the letter. Doubles the vowel length."
+    },
+    {
+      "mark": "ि",
+      "translit": "i",
+      "vowelTranslit": "i",
+      "syllable": "कि",
+      "syllableTranslit": "ki",
+      "pos": "Before (looks like)",
+      "note": "It LOOKS like it sits before the letter, but it's pronounced AFTER. क + ि → ki, not 'ik'."
+    },
+    {
+      "mark": "ी",
+      "translit": "ii",
+      "vowelTranslit": "ii",
+      "syllable": "की",
+      "syllableTranslit": "kii",
+      "pos": "After",
+      "note": "Like ा but with a curl at the top. Long 'ee'."
+    },
+    {
+      "mark": "ु",
+      "translit": "u",
+      "vowelTranslit": "u",
+      "syllable": "कु",
+      "syllableTranslit": "ku",
+      "pos": "Below",
+      "note": "Tiny hook tucked UNDER the letter."
+    },
+    {
+      "mark": "ू",
+      "translit": "uu",
+      "vowelTranslit": "uu",
+      "syllable": "कू",
+      "syllableTranslit": "kuu",
+      "pos": "Below",
+      "note": "Like ु but with an extra tail — long 'oo'."
+    },
+    {
+      "mark": "ृ",
+      "translit": "ri",
+      "vowelTranslit": "ri",
+      "syllable": "कृ",
+      "syllableTranslit": "kri",
+      "pos": "Below",
+      "note": "Vocalic R. Hooks down off the letter. Rare — mostly Sanskrit loanwords."
+    },
+    {
+      "mark": "े",
+      "translit": "e",
+      "vowelTranslit": "e",
+      "syllable": "के",
+      "syllableTranslit": "ke",
+      "pos": "Above (1 stroke)",
+      "note": "ONE small stroke on the headline. Long 'e' like 'prey'."
+    },
+    {
+      "mark": "ै",
+      "translit": "ai",
+      "vowelTranslit": "ai",
+      "syllable": "कै",
+      "syllableTranslit": "kai",
+      "pos": "Above (2 strokes)",
+      "note": "TWO strokes on top. Open 'ai' — between 'cat' and 'air'."
+    },
+    {
+      "mark": "ो",
+      "translit": "o",
+      "vowelTranslit": "o",
+      "syllable": "को",
+      "syllableTranslit": "ko",
+      "pos": "Above + after",
+      "note": "ा stick after + ONE stroke above. (Visually: ‘e-mark’ on top of ‘aa’.) Long 'o' like 'go'."
+    },
+    {
+      "mark": "ौ",
+      "translit": "au",
+      "vowelTranslit": "au",
+      "syllable": "कौ",
+      "syllableTranslit": "kau",
+      "pos": "Above + after",
+      "note": "ा stick after + TWO strokes above. (Visually: ‘ai-mark’ on top of ‘aa’.) Open 'au' like 'saw'."
+    },
+    {
+      "mark": "्",
+      "translit": "—",
+      "vowelTranslit": null,
+      "syllable": "क्",
+      "syllableTranslit": "k",
+      "pos": "Below (halant)",
+      "note": "Virama / halant — KILLS the inherent 'a'. Used to glue consonants together into conjuncts."
+    }
+  ],
+  "syllableExamples": {
+    "kaa": {
+      "word": "काम",
+      "translit": "kaam",
+      "meaning": "work"
+    },
+    "ki": {
+      "word": "किसी",
+      "translit": "kisii",
+      "meaning": "someone"
+    },
+    "kii": {
+      "word": "की",
+      "translit": "kii",
+      "meaning": "of (postposition)"
+    },
+    "ku": {
+      "word": "कुछ",
+      "translit": "kuchh",
+      "meaning": "something"
+    },
+    "ke": {
+      "word": "के",
+      "translit": "ke",
+      "meaning": "of (postposition)"
+    },
+    "kai": {
+      "word": "कैसे",
+      "translit": "kaise",
+      "meaning": "how"
+    },
+    "ko": {
+      "word": "को",
+      "translit": "ko",
+      "meaning": "to (postposition)"
+    },
+    "kau": {
+      "word": "कौन",
+      "translit": "kaun",
+      "meaning": "who"
+    },
+    "maa": {
+      "word": "माँ",
+      "translit": "maa̐",
+      "meaning": "mother"
+    },
+    "mii": {
+      "word": "मीन",
+      "translit": "miin",
+      "meaning": "fish"
+    },
+    "mu": {
+      "word": "मुख",
+      "translit": "mukh",
+      "meaning": "face"
+    },
+    "muu": {
+      "word": "मूल",
+      "translit": "muul",
+      "meaning": "root, origin"
+    },
+    "me": {
+      "word": "मेज़",
+      "translit": "mez",
+      "meaning": "table"
+    },
+    "mai": {
+      "word": "मैं",
+      "translit": "mai̐",
+      "meaning": "I, me"
+    },
+    "mo": {
+      "word": "मोर",
+      "translit": "mor",
+      "meaning": "peacock"
+    },
+    "mau": {
+      "word": "मौसम",
+      "translit": "mausam",
+      "meaning": "weather, season"
+    },
+    "naa": {
+      "word": "नाम",
+      "translit": "naam",
+      "meaning": "name"
+    },
+    "nii": {
+      "word": "नीला",
+      "translit": "niilaa",
+      "meaning": "blue"
+    },
+    "ne": {
+      "word": "ने",
+      "translit": "ne",
+      "meaning": "ergative marker"
+    },
+    "no": {
+      "word": "नोट",
+      "translit": "noT",
+      "meaning": "note (loanword)"
+    },
+    "nau": {
+      "word": "नौ",
+      "translit": "nau",
+      "meaning": "nine"
+    }
+  },
+  "rBlendExamples": {
+    "kra": {
+      "word": "क्रम",
+      "translit": "kram",
+      "meaning": "order, sequence"
+    },
+    "gra": {
+      "word": "ग्राम",
+      "translit": "graam",
+      "meaning": "village"
+    },
+    "ghra": {
+      "word": "घ्राण",
+      "translit": "ghraaN",
+      "meaning": "smell, scent"
+    },
+    "pra": {
+      "word": "प्रेम",
+      "translit": "prem",
+      "meaning": "love"
+    },
+    "phra": {
+      "word": "फ्रांस",
+      "translit": "phraans",
+      "meaning": "France"
+    },
+    "bra": {
+      "word": "ब्रज",
+      "translit": "braj",
+      "meaning": "Braj (region)"
+    },
+    "bhra": {
+      "word": "भ्रम",
+      "translit": "bhram",
+      "meaning": "illusion"
+    },
+    "tra": {
+      "word": "त्रिवेणी",
+      "translit": "triveNii",
+      "meaning": "confluence"
+    },
+    "dra": {
+      "word": "द्रव",
+      "translit": "drav",
+      "meaning": "liquid"
+    },
+    "dhra": {
+      "word": "ध्रुव",
+      "translit": "dhruv",
+      "meaning": "pole, fixed"
+    },
+    "sra": {
+      "word": "स्रोत",
+      "translit": "srot",
+      "meaning": "source"
+    },
+    "shra": {
+      "word": "श्रम",
+      "translit": "shram",
+      "meaning": "labor"
+    },
+    "hra": {
+      "word": "ह्रास",
+      "translit": "hraas",
+      "meaning": "decline"
+    },
+    "rka": {
+      "word": "अर्क",
+      "translit": "ark",
+      "meaning": "essence, extract"
+    },
+    "rga": {
+      "word": "मार्ग",
+      "translit": "maarg",
+      "meaning": "path, way"
+    },
+    "rja": {
+      "word": "ऊर्जा",
+      "translit": "uurjaa",
+      "meaning": "energy"
+    },
+    "rta": {
+      "word": "वर्तमान",
+      "translit": "vartmaan",
+      "meaning": "present, current"
+    },
+    "rtha": {
+      "word": "अर्थ",
+      "translit": "arth",
+      "meaning": "meaning"
+    },
+    "rda": {
+      "word": "दर्द",
+      "translit": "dard",
+      "meaning": "pain"
+    },
+    "rdha": {
+      "word": "वर्धन",
+      "translit": "vardhan",
+      "meaning": "growth"
+    },
+    "rNa": {
+      "word": "वर्ण",
+      "translit": "varN",
+      "meaning": "letter, color"
+    },
+    "rpa": {
+      "word": "दर्पण",
+      "translit": "darpaN",
+      "meaning": "mirror"
+    },
+    "rbha": {
+      "word": "गर्भ",
+      "translit": "garbh",
+      "meaning": "womb"
+    },
+    "rma": {
+      "word": "कर्म",
+      "translit": "karm",
+      "meaning": "deed, work"
+    },
+    "rya": {
+      "word": "कार्य",
+      "translit": "kaary",
+      "meaning": "work, action"
+    },
+    "rva": {
+      "word": "रिज़र्व",
+      "translit": "rizarv",
+      "meaning": "reserve (as on banknotes)"
+    },
+    "rla": {
+      "word": "दुर्लभ",
+      "translit": "durlabh",
+      "meaning": "rare"
+    },
+    "rSha": {
+      "word": "वर्ष",
+      "translit": "varSh",
+      "meaning": "year"
+    }
+  },
+  "nasals": [
+    {
+      "mark": "ं",
+      "name": "Anusvara (bindu)",
+      "demo": "कं",
+      "pos": "A single dot on the headline",
+      "note": "Nasalises what follows. Before a consonant it becomes that consonant's own nasal — रंग is 'rang' (ङ), अंडा is 'anDaa' (ण), हिंदी is 'hindii' (न). One dot replaces a whole stacked conjunct, which is why modern spelling prefers it.",
+      "examples": [
+        {
+          "word": "हिंदी",
+          "slug": "hindii",
+          "translit": "hindii",
+          "meaning": "Hindi"
+        },
+        {
+          "word": "अंडा",
+          "slug": "anDaa",
+          "translit": "anDaa",
+          "meaning": "egg"
+        },
+        {
+          "word": "रंग",
+          "slug": "rang",
+          "translit": "rang",
+          "meaning": "colour"
+        }
+      ]
+    },
+    {
+      "mark": "ँ",
+      "name": "Chandrabindu (moon dot)",
+      "demo": "कँ",
+      "pos": "A crescent with a dot above",
+      "note": "Nasalises the vowel itself — the sound stays in the nose without adding a consonant. माँ is a nasal 'aa', not 'maan'. It is dropped when a matra already occupies the headline, which is why मैं uses the plain dot.",
+      "examples": [
+        {
+          "word": "माँ",
+          "slug": "maa",
+          "translit": "maa̐",
+          "meaning": "mother"
+        },
+        {
+          "word": "आँख",
+          "slug": "aankh",
+          "translit": "aa̐kh",
+          "meaning": "eye"
+        },
+        {
+          "word": "हँसना",
+          "slug": "hansnaa",
+          "translit": "ha̐snaa",
+          "meaning": "to laugh"
+        }
+      ]
+    }
+  ],
+  "confusables": [
+    {
+      "translits": [
+        "gha",
+        "dha"
+      ],
+      "note": "घ closes into a loop on the left; ध stays open with a hook."
+    },
+    {
+      "translits": [
+        "bha",
+        "ma"
+      ],
+      "note": "भ has a vertical stem inside the bowl; म is closed and round."
+    },
+    {
+      "translits": [
+        "ba",
+        "va"
+      ],
+      "note": "ब carries one stroke inside the bowl; व has none."
+    },
+    {
+      "translits": [
+        "pa",
+        "Sha"
+      ],
+      "note": "प is open at the bottom right; ष closes into a loop."
+    },
+    {
+      "translits": [
+        "ta",
+        "na"
+      ],
+      "note": "त has a curl on the left arm; न is one smooth arc."
+    },
+    {
+      "translits": [
+        "tha",
+        "ya"
+      ],
+      "note": "थ has a closed bulb in the middle; य hooks down into a tail."
+    },
+    {
+      "translits": [
+        "Da",
+        "Dha",
+        "da"
+      ],
+      "note": "ड is one hook, ढ doubles it, द leans the other way."
+    },
+    {
+      "translits": [
+        "Ta",
+        "Tha"
+      ],
+      "note": "ठ is ट with a closed circle on top."
+    },
+    {
+      "translits": [
+        "ka",
+        "pha"
+      ],
+      "note": "Both hang off the crossbar; फ loops to the right, क splits."
+    },
+    {
+      "translits": [
+        "nga",
+        "Da"
+      ],
+      "note": "ङ is ड with a dot above — and you will almost never meet ङ alone."
+    },
+    {
+      "translits": [
+        "sha",
+        "Sha",
+        "sa"
+      ],
+      "note": "Three s-sounds: श palatal 'sh', ष retroflex 'sh', स plain 's'."
+    },
+    {
+      "translits": [
+        "i",
+        "ii"
+      ],
+      "note": "Short vs long: the extra stroke doubles the length."
+    },
+    {
+      "translits": [
+        "u",
+        "uu"
+      ],
+      "note": "Short vs long: ऊ grows a tail."
+    },
+    {
+      "translits": [
+        "e",
+        "ai"
+      ],
+      "note": "One stroke vs two on the headline."
+    },
+    {
+      "translits": [
+        "o",
+        "au"
+      ],
+      "note": "One stroke vs two, on top of the ा stick."
+    }
+  ],
+  "minimalPairs": [
+    {
+      "contrast": "a / aa",
+      "a": {
+        "word": "दल",
+        "translit": "dal",
+        "meaning": "group, party"
+      },
+      "b": {
+        "word": "दाल",
+        "translit": "daal",
+        "meaning": "lentils"
+      }
+    },
+    {
+      "contrast": "a / aa",
+      "a": {
+        "word": "बल",
+        "translit": "bal",
+        "meaning": "strength"
+      },
+      "b": {
+        "word": "बाल",
+        "translit": "baal",
+        "meaning": "hair"
+      }
+    },
+    {
+      "contrast": "a / aa",
+      "a": {
+        "word": "कल",
+        "translit": "kal",
+        "meaning": "yesterday / tomorrow"
+      },
+      "b": {
+        "word": "काल",
+        "translit": "kaal",
+        "meaning": "time, era"
+      }
+    },
+    {
+      "contrast": "a / aa",
+      "a": {
+        "word": "मन",
+        "translit": "man",
+        "meaning": "mind, heart"
+      },
+      "b": {
+        "word": "मान",
+        "translit": "maan",
+        "meaning": "respect, honour"
+      }
+    },
+    {
+      "contrast": "a / aa",
+      "a": {
+        "word": "पल",
+        "translit": "pal",
+        "meaning": "a moment"
+      },
+      "b": {
+        "word": "पाल",
+        "translit": "paal",
+        "meaning": "to raise, rear"
+      }
+    },
+    {
+      "contrast": "i / ii",
+      "a": {
+        "word": "दिन",
+        "translit": "din",
+        "meaning": "day"
+      },
+      "b": {
+        "word": "दीन",
+        "translit": "diin",
+        "meaning": "poor, humble"
+      }
+    },
+    {
+      "contrast": "i / ii",
+      "a": {
+        "word": "मिल",
+        "translit": "mil",
+        "meaning": "to meet"
+      },
+      "b": {
+        "word": "मील",
+        "translit": "miil",
+        "meaning": "mile"
+      }
+    },
+    {
+      "contrast": "u / uu",
+      "a": {
+        "word": "कुल",
+        "translit": "kul",
+        "meaning": "total, clan"
+      },
+      "b": {
+        "word": "कूल",
+        "translit": "kuul",
+        "meaning": "bank, shore"
+      }
+    }
+  ],
+  "audioAmbiguous": [
+    [
+      "a",
+      "aa"
+    ],
+    [
+      "i",
+      "ii"
+    ],
+    [
+      "u",
+      "uu"
+    ],
+    [
+      "sha",
+      "Sha"
+    ]
+  ]
+}

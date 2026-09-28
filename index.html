@@ -4,7 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hindlearn — Read Devanagari</title>
-  <link rel="stylesheet" href="style.css?v=35" />
+  <meta name="description" content="Learn to read the Devanagari script: letters, matras, conjuncts and words, with spaced repetition and audio." />
+  <meta name="theme-color" content="#c0392b" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="style.css?v=6960442b4d" />
 </head>
 <body>
   <header>
@@ -389,6 +394,12 @@
 
   <footer>
     <p>Transliterations use a light IAST-ish style. <code>T/D/N</code> = retroflex, <code>Sh</code> = ष, <code>aa/ii/uu</code> = long vowels, <code>q/x/G/z/f</code> = the nukta letters (<code>G</code> = throaty ग़, not retroflex). Audio pre-generated with <a href="https://github.com/pndurette/gTTS" target="_blank" rel="noopener">gTTS</a> (open source), served as static MP3s.</p>
+    <div class="offline-box hidden-bar" id="offline-box">
+      <button id="offline-save" class="offline-btn" type="button"
+        title="Download every audio clip so the app works with no connection">⬇ Save audio for offline</button>
+      <div class="offline-bar"><div id="offline-bar-fill"></div></div>
+      <span class="offline-status" id="offline-status"></span>
+    </div>
     <button id="reset-all" class="reset-btn">🗑 Reset all progress</button>
   </footer>
 
@@ -398,6 +409,6 @@
     <div class="toast-text"></div>
   </div>
 
-  <script src="app.js?v=35"></script>
+  <script type="module" src="js/main.js?v=6960442b4d"></script>
 </body>
 </html>

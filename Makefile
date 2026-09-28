@@ -2,9 +2,17 @@ PORT ?= 8000
 VENV ?= .venv
 
 .PHONY: serve
-serve:
+serve: stamp
 	@echo "Serving hindlearn at http://localhost:$(PORT)"
 	@python3 -m http.server $(PORT)
+
+# ---- asset stamping ----
+# Rewrites the ?v=<hash> on every local css/js/json in index.html and
+# regenerates sw-shell.js (the service worker's precache list + version).
+# Replaces the hand-bumped ?v=N that kept going stale.
+.PHONY: stamp
+stamp:
+	@python3 scripts/stamp.py
 
 .PHONY: open
 open:

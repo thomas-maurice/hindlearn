@@ -14,6 +14,10 @@ Outputs:
     audio/manifest.json              — for debugging
 
 Only regenerates files that are missing. Pass --force to redo everything.
+
+All source data is read from data/characters.json — the single source of
+truth also read by app.js/js/data.js at runtime. Nothing here hand-mirrors
+the character list anymore.
 """
 from __future__ import annotations
 
@@ -28,149 +32,34 @@ try:
 except ImportError:
     sys.exit("gTTS not installed. Run `make audio` or `pip install gTTS`.")
 
-# Mirror of the CHARACTERS list in app.js. Add entries here if app.js changes.
-# (char, translit, example_word)
-DATA = [
-    # vowels
-    ("अ", "a",   "अब"),
-    ("आ", "aa",  "आम"),
-    ("इ", "i",   "इस"),
-    ("ई", "ii",  "ईख"),
-    ("उ", "u",   "उन"),
-    ("ऊ", "uu",  "ऊन"),
-    ("ए", "e",   "एक"),
-    ("ऐ", "ai",  "ऐनक"),
-    ("ओ", "o",   "ओर"),
-    ("औ", "au",  "और"),
-    ("ऋ", "ri",  "ऋषि"),
-    # gutturals
-    ("क", "ka",  "कल"),
-    ("ख", "kha", "खाना"),
-    ("ग", "ga",  "गाना"),
-    ("घ", "gha", "घर"),
-    ("ङ", "nga", "वाङ्मय"),
-    # palatals
-    ("च", "cha",  "चाय"),
-    ("छ", "chha", "छह"),
-    ("ज", "ja",   "जल"),
-    ("झ", "jha",  "झील"),
-    ("ञ", "nya",  "ज्ञान"),
-    # retroflex
-    ("ट",  "Ta",  "टमाटर"),
-    ("ठ",  "Tha", "ठंडा"),
-    ("ड",  "Da",  "डर"),
-    ("ढ",  "Dha", "ढक्कन"),
-    ("ण",  "Na",  "कोण"),
-    ("ड़", "Ra",  "लड़का"),
-    ("ढ़", "Rha", "पढ़ना"),
-    # dentals
-    ("त", "ta",  "तुम"),
-    ("थ", "tha", "थाली"),
-    ("द", "da",  "दस"),
-    ("ध", "dha", "धन"),
-    ("न", "na",  "नया"),
-    # labials
-    ("प", "pa",  "पानी"),
-    ("फ", "pha", "फल"),
-    ("ब", "ba",  "बस"),
-    ("भ", "bha", "भाई"),
-    ("म", "ma",  "माँ"),
-    # semivowels
-    ("य", "ya", "यह"),
-    ("र", "ra", "राम"),
-    ("ल", "la", "लाल"),
-    ("व", "va", "वह"),
-    # sibilants + h
-    ("श", "sha", "शहर"),
-    ("ष", "Sha", "भाषा"),
-    ("स", "sa",  "साल"),
-    ("ह", "ha",  "हम"),
-]
+ROOT = Path(__file__).resolve().parent.parent
+OUT = ROOT / "audio"
+DATA_PATH = ROOT / "data" / "characters.json"
 
-# ---- Extra characters: nukta, conjuncts, numerals ----
-# Mirrors the tail of CHARACTERS in app.js. Kept OUT of DATA on purpose:
-# DATA is what the syllable and r-blend bases are derived from, and none of
-# these take a matra or an r-blend.
-EXTRA_DATA = [
-    # nukta
-    ("क़", "qa", "क़लम"),
-    ("ख़", "xa", "ख़बर"),
-    ("ग़", "Ga", "ग़लत"),
-    ("ज़", "za", "ज़रूरी"),
-    ("फ़", "fa", "फ़ोन"),
-    # conjuncts (त्र / श्र are the rakar forms and already covered)
-    ("क्ष", "ksha", "क्षमा"),
-    ("ज्ञ", "gya",  "ज्ञान"),
-    ("द्ध", "ddha", "बुद्ध"),
-    ("क्त", "kta",  "शक्ति"),
-    ("स्त", "sta",  "नमस्ते"),
-    ("न्द", "nda",  "हिन्दी"),
-    ("द्व", "dva",  "द्वार"),
-    ("श्व", "shva", "विश्व"),
-    ("ट्ट", "TTa",  "छुट्टी"),
-    # numerals
-    ("०", "0", "शून्य"),
-    ("१", "1", "एक"),
-    ("२", "2", "दो"),
-    ("३", "3", "तीन"),
-    ("४", "4", "चार"),
-    ("५", "5", "पाँच"),
-    ("६", "6", "छह"),
-    ("७", "7", "सात"),
-    ("८", "8", "आठ"),
-    ("९", "9", "नौ"),
-]
+with DATA_PATH.open(encoding="utf-8") as f:
+    DATA = json.load(f)
 
-# ---- Minimal pairs (vowel length) — mirrors MINIMAL_PAIRS in app.js ----
-# Real words differing by exactly one vowel length. gTTS renders the
-# contrast correctly inside a word even though it cannot on a bare letter,
-# which is the entire reason this list exists.
-# (word, translit) -> audio/pair_<translit>.mp3
-PAIR_WORDS = [
-    ("दल", "dal"),   ("दाल", "daal"),
-    ("बल", "bal"),   ("बाल", "baal"),
-    ("कल", "kal"),   ("काल", "kaal"),
-    ("मन", "man"),   ("मान", "maan"),
-    ("पल", "pal"),   ("पाल", "paal"),
-    ("दिन", "din"),  ("दीन", "diin"),
-    ("मिल", "mil"),  ("मील", "miil"),
-    ("कुल", "kul"),  ("कूल", "kuul"),
-]
+CHARACTERS = DATA["characters"]
+CONSONANT_CATS = set(DATA["consonantCats"])
 
-# ---- Nasal-mark example words (ं / ँ) — mirrors NASALS in app.js ----
-# (word, slug) -> audio/nasal_<slug>.mp3
-NASAL_WORDS = [
-    ("हिंदी", "hindii"),
-    ("अंडा", "anDaa"),
-    ("रंग", "rang"),
-    ("माँ", "maa"),
-    ("आँख", "aankh"),
-    ("हँसना", "hansnaa"),
-]
+# ---- Syllable + r-blend bases — every character whose category can take a
+# matra or an r-blend (mirrors CONSONANT_CATS / SYLLABLE_BASES in js/data.js).
+# Replaces the old DATA[VOWEL_COUNT:] slice: vowels, nukta, conjuncts and
+# digits are all naturally excluded because their `cat` isn't in this set.
+SYLLABLE_BASES = {c["translit"]: c["char"] for c in CHARACTERS if c["cat"] in CONSONANT_CATS}
 
-# ---- Syllables (consonant + matra) — mirrors SYLLABLES in app.js ----
-# Derived from DATA: every consonant base × 9 vowel matras. The inherent-'a'
-# form is the bare consonant which is already in DATA above. The first 11
-# DATA entries are vowels; everything after is a consonant base.
-VOWEL_COUNT = 11
-SYLLABLE_BASES = {translit: char for char, translit, _ in DATA[VOWEL_COUNT:]}
+# All consonants except र itself (र + र is degenerate) and ड़ (flapped
+# retroflex Ra): its translit "Ra" produces a slug ("rra") that collides
+# with rRa on case-insensitive filesystems, and र-blends with ड़ are
+# vanishingly rare in actual Hindi anyway.
+R_BLEND_BASES = {t: c for t, c in SYLLABLE_BASES.items() if t not in ("ra", "Ra")}
 
-MATRA_DEFS = [
-    ("aa", "ा"), ("i", "ि"), ("ii", "ी"), ("u", "ु"), ("uu", "ू"),
-    ("e", "े"),  ("ai", "ै"), ("o", "ो"), ("au", "ौ"),
-]
+MATRA_DEFS = [(m["matra"], m["mark"]) for m in DATA["matraDefs"]]
 
 # Hand-picked example words for the matras-intro level (k/m/n bases only).
 # All other syllables are generated without an example word — the mega-level
 # is about pure syllable reading, not vocabulary.
-SYLLABLE_EXAMPLES = {
-    "kaa": "काम", "ki": "किसी", "kii": "की", "ku": "कुछ",
-    "ke":  "के",  "kai": "कैसे", "ko":  "को", "kau": "कौन",
-    "maa": "माँ", "mii": "मीन", "mu":  "मुख", "muu": "मूल",
-    "me":  "मेज़", "mai": "मैं",  "mo":  "मोर", "mau": "मौसम",
-    "naa": "नाम", "nii": "नीला", "ne":  "ने",  "no":  "नोट",
-    "nau": "नौ",
-}
+SYLLABLE_EXAMPLES = {k: v["word"] for k, v in DATA["syllableExamples"].items()}
 
 
 def safe_syl_slug(translit: str) -> str:
@@ -192,21 +81,8 @@ for _base, _base_char in SYLLABLE_BASES.items():
 
 
 # ---- R-blends — rakar (consonant + ्र) and reph (र् + consonant) ----
-# Mirrors R_BLENDS in app.js. Excludes र itself as a base.
-R_BLEND_BASES = {translit: char for char, translit, _ in DATA[VOWEL_COUNT:] if translit not in ("ra", "Ra")}
-
-R_BLEND_EXAMPLES = {
-    # rakar
-    "kra":  "क्रम",   "gra":  "ग्राम",  "ghra": "घ्राण",  "pra":  "प्रेम",
-    "phra": "फ्रांस", "bra":  "ब्रज",   "bhra": "भ्रम",   "tra":  "त्रिवेणी",
-    "dra":  "द्रव",   "dhra": "ध्रुव",  "sra":  "स्रोत",  "shra": "श्रम",
-    "hra":  "ह्रास",
-    # reph
-    "rka":  "अर्क",   "rga":  "मार्ग",  "rja":  "ऊर्जा",  "rta":  "वर्तमान",
-    "rtha": "अर्थ",   "rda":  "दर्द",   "rdha": "वर्धन",  "rNa":  "वर्ण",
-    "rpa":  "दर्पण",  "rbha": "गर्भ",   "rma":  "कर्म",   "rya":  "कार्य",
-    "rva":  "रिज़र्व", "rla":  "दुर्लभ", "rSha": "वर्ष",
-}
+# Mirrors R_BLENDS in js/data.js. Excludes र itself as a base.
+R_BLEND_EXAMPLES = {k: v["word"] for k, v in DATA["rBlendExamples"].items()}
 
 # Built as (blend_char, blend_translit, example_word_or_None)
 R_BLEND_DATA: list[tuple[str, str, str | None]] = []
@@ -220,15 +96,29 @@ for _base, _base_char in R_BLEND_BASES.items():
     R_BLEND_DATA.append(("र्" + _base_char, _reph_t, R_BLEND_EXAMPLES.get(_reph_t)))
 
 
-ROOT = Path(__file__).resolve().parent.parent
-OUT = ROOT / "audio"
+# ---- Minimal pairs (vowel length) — mirrors MINIMAL_PAIRS in js/data.js ----
+# Real words differing by exactly one vowel length. gTTS renders the
+# contrast correctly inside a word even though it cannot on a bare letter,
+# which is the entire reason this list exists.
+# (word, translit) -> audio/pair_<translit>.mp3
+PAIR_WORDS: list[tuple[str, str]] = []
+for _pair in DATA["minimalPairs"]:
+    PAIR_WORDS.append((_pair["a"]["word"], _pair["a"]["translit"]))
+    PAIR_WORDS.append((_pair["b"]["word"], _pair["b"]["translit"]))
+
+# ---- Nasal-mark example words (ं / ँ) — mirrors NASALS in js/data.js ----
+# (word, slug) -> audio/nasal_<slug>.mp3
+NASAL_WORDS: list[tuple[str, str]] = [
+    (e["word"], e["slug"]) for _n in DATA["nasals"] for e in _n["examples"]
+]
+
 
 # Any capital in a translit means the lowercase spelling belongs to a
 # DIFFERENT character (Ta/ta, Na/na, Ga/ga, TTa/tta). On case-insensitive
 # filesystems (macOS default) those would collide, so such files get a
 # "ret_" prefix. Was a hardcoded retroflex set; same result for the eight
 # retroflex letters, and it extends to the nukta/conjunct additions.
-# Mirrors safeSlug in app.js.
+# Mirrors safeSlug in js/audio.js.
 
 
 def safe_slug(translit: str) -> str:
@@ -256,7 +146,8 @@ def main() -> int:
     made = 0
     skipped = 0
 
-    for char, translit, word in DATA + EXTRA_DATA:
+    for entry in CHARACTERS:
+        char, translit, word = entry["char"], entry["translit"], entry["ex"]["word"]
         slug = safe_slug(translit)
         for label, text, name in (
             ("char", char, f"char_{slug}.mp3"),

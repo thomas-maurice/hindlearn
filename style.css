@@ -1980,3 +1980,51 @@ footer a:hover { text-decoration: underline; }
 @media (max-width: 600px) {
   .pair-row { flex-direction: column; align-items: flex-start; gap: 0.4rem; }
 }
+
+/* -------- Offline / install -------- */
+
+.offline-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin: 0.6rem 0 0;
+}
+
+.offline-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 8px;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.offline-btn:hover:not(:disabled) { border-color: var(--accent-2); color: var(--accent); }
+.offline-btn:disabled { opacity: 0.55; cursor: default; }
+
+.offline-status {
+  font-size: 0.75rem;
+  color: var(--muted);
+  min-width: 10ch;
+}
+
+.offline-bar {
+  width: 160px;
+  height: 5px;
+  background: var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.offline-bar > div {
+  height: 100%;
+  width: 0;
+  background: var(--ok);
+  border-radius: 999px;
+  transition: width 0.2s;
+}
+
+.offline-box.hidden-bar .offline-bar { display: none; }
